@@ -1,0 +1,65 @@
+
+#container {
+    position: relative;
+    background-color: #7f7a77;
+    padding: 1px;
+    margin: 0px 0px 0px 0px;
+    width:900px;
+    margin-left: 50%;
+    left: -450px;
+    margin-top: 10px;
+}
+#top {
+    position: relative;
+    background-color: #e5dcd5;
+    color: white;
+    padding: 5px;
+    margin: 0px 0px 0px 0px;
+}
+
+#menu {
+    position: relative;
+    background-color: #403d3b;
+    color: white;
+    padding: 0px;
+    margin: 0px 0px 0px 0px;
+    height: 37px;
+    font-family: 'Arimo';
+    font-size:  18px;
+
+}
+#opciones {
+    cursor: pointer;
+}
+.mopon {
+    float:left;
+    background-color: grey;
+    padding: 8px;
+}
+.mopoff {
+    float:left;
+    background-color: #403d3b;
+    padding: 8px;
+    border-right: 1px solid grey;
+}
+.mophover {
+    float:left;
+    background-color:darkmagenta;    
+    padding: 8px;
+}
+
+#content {
+    clear: both;
+    position: relative;
+    background-color: #fff5ed;
+    padding: 5px;
+    margin: 0px 0px 0px 0px;
+}
+
+#bottom {
+    color: white;
+    position: relative;
+    background-color: #7f7a77;
+    padding: 5px;
+    margin: 0px 0px 0px 0px;
+}

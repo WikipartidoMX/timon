@@ -1,0 +1,28 @@
+body {
+    background-color: #bfb8b2;
+    font-size: 14px;
+    font-family: 'Molengo';
+    color: #555555;  
+    margin: 0px;
+}
+
+h1 {
+    font-family: 'Arimo';
+    font-size:  18px;
+    font-weight: bold;
+    margin: 0px;
+    color: #555555;
+
+}
+
+a:link, a:visited {
+  color: #045491;
+  font-weight : bold;
+  text-decoration: none;
+}
+
+a:link:hover, a:visited:hover  {
+  color: #045491;
+  font-weight : bold;
+  text-decoration : underline;
+}

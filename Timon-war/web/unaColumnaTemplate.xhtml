@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html" 
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link href="http://fonts.googleapis.com/css?family=Arimo" rel="stylesheet" type="text/css" />
+        <link href="http://fonts.googleapis.com/css?family=Molengo" rel="stylesheet" type="text/css" />        
+        <link href="./resources/css/default.css" rel="stylesheet" type="text/css" />
+        <link href="./resources/css/cssLayout.css" rel="stylesheet" type="text/css" />        
+        <h:outputScript library="primefaces" name="jquery/jquery.js" target="head" />
+        <script type="text/javascript" src="resources/js/jquery.illuminate.0.7.js"></script>        
+        <title>Wikipartido de México</title>
+    </h:head>
+
+    <h:body>
+
+        <div id="container">
+            <div id="top"><ui:include src="header.xhtml" /></div>
+            <div id="menu">
+                <ui:insert name="menu"><ui:include src="menu.xhtml" /></ui:insert>
+            </div>        
+            <div id="content">
+                <ui:insert name="content">Content</ui:insert>
+            </div>        
+
+            <div id="bottom">
+                <ui:insert name="bottom"><ui:include src="footer.xhtml" /></ui:insert>
+            </div>
+        </div>
+        
+    </h:body>
+
+</html>
