@@ -49,7 +49,6 @@
 }
 
 #content {
-    clear: both;
     position: relative;
     background-color: #fff5ed;
     padding: 5px;
@@ -62,4 +61,15 @@
     background-color: #7f7a77;
     padding: 5px;
     margin: 0px 0px 0px 0px;
+}
+
+
+.caja {
+    position: relative;
+    border: 1px solid #e5dfd8;
+    border-radius: 10px 10px 10px 10px;
+
+    margin: 0px auto;
+    padding: 15px;
+
 }

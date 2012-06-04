@@ -26,3 +26,8 @@ a:link:hover, a:visited:hover  {
   font-weight : bold;
   text-decoration : underline;
 }
+
+.campo {
+    font-size: 18px;
+    margin-top: 15px;
+}
