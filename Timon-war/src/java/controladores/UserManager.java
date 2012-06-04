@@ -41,7 +41,7 @@ public class UserManager implements Serializable {
     private String passw;
     private String origen;
     private String estiforma;
-    @PersistenceContext(unitName = "WPOSPU")
+    @PersistenceContext(unitName = "Timon-warPU")
     private EntityManager em;
     @Resource
     private javax.transaction.UserTransaction utx;

@@ -14,13 +14,23 @@
             });
         });
     </script>    
-
+    <c:set var="clase" value="mopoff"/>
     <div id="opciones">
-        <div id="menuinicio" class="mopoff" >Inicio</div>
-        <div id="menupropue" class="mopoff">Plataforma</div>
-        <div id="menuvotdeb" class="mopoff">Votación y Debate</div>    
-        <div id="menuque_es" class="mopoff">¿Qué es?</div>
-        <div id="menuregist" class="mopoff">Registro</div>
+        <c:if test="#{donde eq 'menuinicio'}"><c:set var="clase" value="mopon" /></c:if>
+        <div id="menuinicio" class="#{clase}" onclick="location='#{facesContext.externalContext.request.contextPath}/';">Inicio</div>
+        <c:if test="#{donde eq 'menuinicio'}"><c:set var="clase" value="mopoff" /></c:if>
+        <c:if test="#{donde eq 'menupropue'}"><c:set var="clase" value="mopon" /></c:if>
+        <div id="menupropue" class="#{clase}">Plataforma</div>
+        <c:if test="#{donde eq 'menupropue'}"><c:set var="clase" value="mopoff" /></c:if>
+        <c:if test="#{donde eq 'menuvotdeb'}"><c:set var="clase" value="mopon" /></c:if>
+        <div id="menuvotdeb" class="#{clase}">Votación y Debate</div>
+        <c:if test="#{donde eq 'menuvotdeb'}"><c:set var="clase" value="mopoff" /></c:if>
+        <c:if test="#{donde eq 'menuque_es'}"><c:set var="clase" value="mopon" /></c:if>
+        <div id="menuque_es" class="#{clase}">¿Qué es?</div>
+        <c:if test="#{donde eq 'menuque_es'}"><c:set var="clase" value="mopoff" /></c:if>
+        <c:if test="#{donde eq 'menuregist'}"><c:set var="clase" value="mopon" /></c:if>
+        <div id="menuregist" class="#{clase}" onclick="location='#{facesContext.externalContext.request.contextPath}/faces/registro/registro.xhtml';">Registro</div>
+        <c:if test="#{donde eq 'menuregist'}"><c:set var="clase" value="mopoff" /></c:if>
     </div>
 
 </ui:composition>

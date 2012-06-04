@@ -56,7 +56,7 @@ public class Registro implements Serializable {
     private UploadedFile ufile; // Para inclusion de avatar
     @Inject
     private UserManager um;
-    @PersistenceContext(unitName = "WPOSPU")
+    @PersistenceContext(unitName = "Timon-warPU")
     private EntityManager em;
     @Resource
     private javax.transaction.UserTransaction utx;

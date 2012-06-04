@@ -8,6 +8,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:c="http://java.sun.com/jsp/jstl/core">
 
+    <ui:param name="donde" value="menuregist" />
     
     <h1>Registro y Afiliación</h1>
 
@@ -100,7 +101,7 @@
                     <p:captcha label="Captcha" id="captcha" language="es" validatorMessage="El valor del captcha es incorrecto" />
                     <h:message for="captcha" id="errorcaptcha" style="color:red"/>
                     <br/>
-                    <ui:include src="avisolegal.xhtml" />
+                    <ui:include src="../avisolegal.xhtml" />
                     <br/>
                     <p:messages id="mensajes" />
 

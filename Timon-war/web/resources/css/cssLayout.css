@@ -11,7 +11,7 @@
 }
 #top {
     position: relative;
-    background-color: #e5dcd5;
+    background-color: #e5dfd8;
     color: white;
     padding: 5px;
     margin: 0px 0px 0px 0px;
@@ -33,7 +33,7 @@
 }
 .mopon {
     float:left;
-    background-color: grey;
+    background-color: #651759;
     padding: 8px;
 }
 .mopoff {
