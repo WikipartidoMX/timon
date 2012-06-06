@@ -7,7 +7,32 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:c="http://java.sun.com/jsp/jstl/core">
 
-    <p:graphicImage url="/images/logo.png" />
-    <ui:insert name="top">Top Element</ui:insert>
+
+
+    <div>
+        <div style="float:left;">
+            <p:graphicImage url="/images/logo.png" />
+        </div>
+        <ui:insert name="top"></ui:insert>
+        <div style="float: right">
+
+            <h:panelGroup rendered="#{empty um.user}">
+                <c:set var="clase" value="mopoff"/>
+                <c:if test="#{donde eq 'login'}"><c:set var="clase" value="mopon" /></c:if>
+                <div class="#{clase}" onclick="location='#{facesContext.externalContext.request.contextPath}/faces/login.xhtml?origen=#{facesContext.externalContext.request.pathInfo}';" style="color: white; border: 1px solid black; width: 80px; height: 80px; text-align: center; cursor: pointer">
+                    <div style="font-size: 48px;">?</div>
+                    <div>ACCESO</div>
+                </div>
+                <c:if test="#{donde eq 'login'}"><c:set var="clase" value="mopoff" /></c:if>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{!empty um.user}">
+                <div class="avatar" style="width:80px; height:80px; background-image: url(#{facesContext.externalContext.request.contextPath}/ShowAvatar?mid=#{um.user.id})">
+
+                </div>
+
+            </h:panelGroup>
+        </div>
+    </div>
+    <div style="clear: both" />
 
 </ui:composition>

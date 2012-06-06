@@ -60,6 +60,7 @@ public class Miembro implements Serializable {
     private String clavedeusuario;
     private Long paso; // En que paso esta 1. Wiki 2. Afiliado
 
+
     public Long getId() {
         return id;
     }

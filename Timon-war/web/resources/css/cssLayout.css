@@ -12,7 +12,6 @@
 #top {
     position: relative;
     background-color: #e5dfd8;
-    color: white;
     padding: 5px;
     margin: 0px 0px 0px 0px;
 }
@@ -71,5 +70,14 @@
 
     margin: 0px auto;
     padding: 15px;
+    margin-bottom: 15px;
+    margin-top: 15px;
+
+}
+
+.avatar {
+
+    border: 1px solid #e5dfd8;
+    border-radius: 5px 5px 5px 5px;
 
 }

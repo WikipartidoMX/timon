@@ -24,6 +24,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.servlet.http.HttpServletRequest;
+import sessionbeans.TimonLogic;
 
 /**
  *
@@ -35,20 +37,18 @@ public class UserManager implements Serializable {
     
     @Inject
     private Registro registro;
-    
+    @Inject
+    private TimonLogic tl;
     private Miembro user;
     private String email;
-    private String passw;
+    private String passwd;
     private String origen;
-    private String estiforma;
-    @PersistenceContext(unitName = "Timon-warPU")
-    private EntityManager em;
+
     @Resource
     private javax.transaction.UserTransaction utx;
     
     public UserManager() {
-        user = null;
-        estiforma = "none";        
+        user = null;      
     }
     
     public boolean isValid() {
@@ -69,17 +69,15 @@ public class UserManager implements Serializable {
     }
 
     public String login() {
-        System.out.println("Login con: "+email+" y "+passw);
+        System.out.println("Login con: "+email+" y "+passwd+" desde "+origen);
         String r = "";
         
         Miembro u = null;
         try {
-        u= (Miembro)em.createQuery("select m from Miembro m "
-                + "where m.email=:email and m.password=:passw").setParameter("email", email)
-                .setParameter("passw", passw).getSingleResult();
+        u= tl.login(email, passwd);
         registro.setMiembro(u);
         } catch (Exception e) {
-            
+            System.out.println(e.getMessage());
         }
         if (u != null) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Bienvenido " + u.getNombre(), null));
@@ -89,17 +87,14 @@ public class UserManager implements Serializable {
                 r = origen + "?faces-redirect=true";
             } else {
                 r = null;
-                setEstiforma("block");
             }
             this.user = u;
-            setEstiforma("none");
+
         }
         if (u == null) {
             r = null;
+            System.out.println("No hay acceso para ti");
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Usuario inválido...", null));
-            if (origen == null) {
-                setEstiforma("block");
-            }
         }
         this.user = u;
         
@@ -142,15 +137,15 @@ public class UserManager implements Serializable {
     /**
      * @return the passw
      */
-    public String getPassw() {
-        return passw;
+    public String getPasswd() {
+        return passwd;
     }
 
     /**
-     * @param passw the passw to set
+     * @param passwd the passw to set
      */
-    public void setPassw(String passw) {
-        this.passw = passw;
+    public void setPasswd(String passwd) {
+        this.passwd = passwd;
     }
 
     /**
@@ -165,20 +160,6 @@ public class UserManager implements Serializable {
      */
     public void setOrigen(String origen) {
         this.origen = origen;
-    }
-
-    /**
-     * @return the estiforma
-     */
-    public String getEstiforma() {
-        return estiforma;
-    }
-
-    /**
-     * @param estiforma the estiforma to set
-     */
-    public void setEstiforma(String estiforma) {
-        this.estiforma = estiforma;
     }
 
     
