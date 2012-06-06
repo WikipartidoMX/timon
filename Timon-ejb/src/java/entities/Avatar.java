@@ -15,8 +15,8 @@
 
 package entities;
 
-import static javax.persistence.FetchType.LAZY;
 import java.io.Serializable;
+import static javax.persistence.FetchType.LAZY;
 import javax.persistence.*;
 
 /**
