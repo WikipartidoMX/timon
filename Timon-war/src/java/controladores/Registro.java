@@ -14,6 +14,7 @@
  */
 package controladores;
 
+import entities.Avatar;
 import entities.Estado;
 import entities.Miembro;
 import java.io.Serializable;
@@ -40,7 +41,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
+import sessionbeans.TimonLogic;
 
 /**
  *
@@ -56,8 +59,8 @@ public class Registro implements Serializable {
     private UploadedFile ufile; // Para inclusion de avatar
     @Inject
     private UserManager um;
-    @PersistenceContext(unitName = "Timon-warPU")
-    private EntityManager em;
+    @Inject
+    private TimonLogic tl;
     @Resource
     private javax.transaction.UserTransaction utx;
 
@@ -67,24 +70,75 @@ public class Registro implements Serializable {
     public Registro() {
         miembro = new Miembro();
     }
+    
+    public String handleFileUpload(FileUploadEvent event) {
+        System.out.println("El evento...");
+        ufile = event.getFile();
+        Avatar a = tl.getAvatar(miembro.getId());
+        if (a == null) {
+            System.out.println("El avatar regresa nulo");
+            a = new Avatar();
+            System.out.println(ufile.getFileName());
+            a.setFile(ufile.getContents());
+            a.setMiembro(miembro);
+            try {
+                utx.begin();
+                System.out.println("Persistiendo...");
+                tl.persist(a);
+                utx.commit();
+                return "index.xhtml?faces-redirect=true";
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        "No es posible cambiar el avatar.", null));
+            }
+
+        } else {
+            a.setMiembro(miembro);
+            System.out.println("El archivo mide" + ufile.getSize());
+            a.setFile(ufile.getContents());
+            try {
+                utx.begin();
+                System.out.println("Actualizando...");
+                tl.merge(a);
+                utx.commit();
+                return "index.xhtml?faces-redirect=true";
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        "No es posible cambiar el avatar.", null));
+            }
+        }        
+        return "index.xhtml?faces-redirect=true";
+    }
+
+    public String actualizarAvatar() {
+        
+
+        return "";
+    }
 
     public String agregarAlWiki() {
-
         // Revisa si el mail ya está registrado
-
         Miembro existe = null;
-        try {
-            existe = (Miembro) em.createQuery("select m from Miembro m where m.email=:email").setParameter("email", miembro.getEmail()).getSingleResult();
-        } catch (javax.persistence.NoResultException nr) {
-            System.out.println("No existe");
-        }
+        existe = tl.getMiembroFromEmail(miembro.getEmail());
         if (existe != null) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Ya está registrado tu mail en el registro del Wiki,"
-                    + "para afiliarte debes ingresar a la sección de miembros (parte superior derecha).", null));
+                    "Ya está registrado tu mail en el registro del Wiki,", null));
             return "";
         }
+        existe = tl.getMiembroFromClavedeusuario(miembro.getClavedeusuario());
+        if (existe != null) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Ya está registrado tu clave de usuario en el registro del Wiki.", null));
+            return "";
+        }
+
+
         //httppost al Wiki
         long codigo = 0;
         String resp = "";
@@ -131,13 +185,13 @@ public class Registro implements Serializable {
         if (codigo != 200) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Ocurrió un error en el servidor de wiki, intente más tarde (código: "+codigo+" )", null));
+                    "Ocurrió un error en el servidor de wiki, intente más tarde (código: " + codigo + " )", null));
             return "";
         }
         if (!resp.equals("agregado")) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "El servidor de Wiki rechazó la clave de usuario ("+resp+"), intente usar otra clave de usuario.", null));
+                    "El servidor de Wiki rechazó la clave de usuario (" + resp + "), intente usar otra clave de usuario.", null));
             return "";
         }
         try {
@@ -159,7 +213,7 @@ public class Registro implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO,
                     "Usuario Agregado.", null));
-            return "afiliacion.xhtml?faces-redirect=true";
+            return "";
         } catch (Exception e) {
 
             System.out.println(e.getMessage());
@@ -168,44 +222,30 @@ public class Registro implements Serializable {
                     "Ocurrió un error al tratar de ingresar el registro.", null));
         }
 
-
-
-
         return "";
     }
 
     public Number cuantos() {
-        Number c = (Number) em.createQuery("select count(m) from Miembro m").getSingleResult();
+        Number c = tl.cuantosMiembros();
         return c;
     }
 
-    public Number llevamosEnPorcentaje(Number total) {
-        Number c = (Number) em.createQuery("select count(m) from Miembro m").getSingleResult();
-        Number p = (c.floatValue() / total.floatValue()) * 100;
-        return p;
-    }
-
     public String nombreDeEstado(Long id) {
-        Estado estado = em.find(Estado.class, id);
+        Estado estado = tl.getEstado(id);
         return estado.getNombre();
     }
 
     public String registrar() {
 
         Miembro existe = null;
-        try {
-            existe = (Miembro) em.createQuery("select m from Miembro m where m.email=:email").setParameter("email", miembro.getEmail()).getSingleResult();
-        } catch (javax.persistence.NoResultException nr) {
-            System.out.println("No existe");
-            return "registro.xhtml?faces-redirect=true";
-        }
+        existe = tl.getMiembroFromEmail(miembro.getEmail());
         if (existe != null) {
 
             try {
                 miembro.setPaso(2L);
-                miembro.setEstado(em.find(Estado.class, estadoid));
+                miembro.setEstado(tl.getEstado(estadoid));
                 utx.begin();
-                em.merge(miembro);
+                tl.merge(miembro);
                 utx.commit();
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -235,7 +275,7 @@ public class Registro implements Serializable {
     public void persist(Object object) {
         try {
             utx.begin();
-            em.persist(object);
+            tl.persist(object);
             utx.commit();
         } catch (Exception e) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", e);
@@ -246,7 +286,7 @@ public class Registro implements Serializable {
     public void merge(Object object) {
         try {
             utx.begin();
-            em.merge(object);
+            tl.merge(object);
             utx.commit();
         } catch (Exception e) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", e);
@@ -259,7 +299,7 @@ public class Registro implements Serializable {
      */
     public List<SelectItem> getEstados() {
         estados = new ArrayList<SelectItem>();
-        List<Estado> eds = em.createQuery("select e from Estado e").getResultList();
+        List<Estado> eds = tl.getEstados();
         for (Estado e : eds) {
             estados.add(new SelectItem(e.getId(), e.getNombre()));
         }
