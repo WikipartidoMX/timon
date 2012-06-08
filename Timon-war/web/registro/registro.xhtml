@@ -26,11 +26,11 @@
             <h:panelGroup rendered="#{registro.miembro.paso == 1}">
 
                 <div id="encabezadoPasos">
-                    YA ESTÁS REGISTRADO EN EL WIKI CON EL USUARIO #{registro.miembro.clavedeusuario} (<a href="http://wiki.wikipartido.mx/wiki/index.php?title=Especial:Entrar&amp;returnto=Página_principal">IR AL WIKI</a>)
+                    1. YA ESTÁS REGISTRADO EN EL WIKI CON EL USUARIO <b>#{registro.miembro.clavedeusuario}</b> (<a href="http://wiki.wikipartido.mx/wiki/index.php?title=Especial:Entrar&amp;returnto=Página_principal">IR AL WIKI</a>)
                 </div>
                 <br/><br/>
                 <div id="encabezadoPasos">
-                    SI NO TE HAS AFILIADO O QUIERES IMPRIMIR TU FORMA DE AFILIACIÓN <a href="afiliacion.xhtml">HAZLO AQUÍ</a>
+                    2. SI NO TE HAS AFILIADO O QUIERES IMPRIMIR TU FORMA DE AFILIACIÓN <a href="afiliacion.xhtml">HAZLO AQUÍ</a>
                 </div>            
             </h:panelGroup>
             <h:panelGroup rendered="#{registro.miembro.paso == 2}">
@@ -43,6 +43,22 @@
                     O SI QUIERES IMPRIMIR TU CONSTANCIA DE AFILIACIÓN <a href="afiliacion.xhtml">HAZLO AQUÍ</a>
                 </div>            
             </h:panelGroup>          
+            <h:panelGroup rendered="#{registro.miembro.paso >= 1}">
+                <div style="margin-top:20px;">
+                    <h:form id="formavatar" enctype="multipart/form-data">
+                        <p:fileUpload allowTypes="/(\.|\/)(gif|jpe?g|png)$/" sizeLimit="500000"
+                                      auto="true"
+                                      style="width: 190px;"
+                                      fileUploadListener="#{registro.handleFileUpload}"
+                                      label="Actualizar Avatar"
+                                      oncomplete="location='#{facesContext.externalContext.request.contextPath}/faces/registro/registro.xhtml';"
+                                      invalidFileMessage="EL formato de la imagen no es correcto" 
+                                      invalidSizeMessage="No se permiten imagenes mayores a 500kb" 
+                                      value="#{registro.ufile}" /> 
+
+                    </h:form>
+                </div>
+            </h:panelGroup>
 
             <br/>
             <h:panelGroup rendered="#{empty registro.miembro.paso}">
