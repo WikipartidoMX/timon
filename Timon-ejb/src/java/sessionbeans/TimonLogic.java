@@ -96,7 +96,6 @@ public class TimonLogic implements Serializable {
     public byte[] getAvatarFile(long mid) {
         try {
             Avatar a = (Avatar)em.createQuery("select a from Avatar a where a.miembro.id=:mid").setParameter("mid", mid).getSingleResult();
-            System.out.println("Regresando el AVATAR" +a.getId());
             return a.getFile();
         } catch (Exception e) {
             //System.out.println(e.getMessage());

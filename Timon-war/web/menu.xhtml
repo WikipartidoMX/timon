@@ -29,8 +29,14 @@
         <div id="menuque_es" class="#{clase}">¿Qué es?</div>
         <c:if test="#{donde eq 'menuque_es'}"><c:set var="clase" value="mopoff" /></c:if>
         <c:if test="#{donde eq 'menuregist'}"><c:set var="clase" value="mopon" /></c:if>
-        <div id="menuregist" class="#{clase}" onclick="location='#{facesContext.externalContext.request.contextPath}/faces/registro/registro.xhtml';">Perfil</div>
+        <div id="menuregist" class="#{clase}" onclick="location='#{facesContext.externalContext.request.contextPath}/faces/registro/registro.xhtml';">Registro y Afiliación</div>
         <c:if test="#{donde eq 'menuregist'}"><c:set var="clase" value="mopoff" /></c:if>
+        <h:form>
+            <h:panelGroup rendered="#{!empty um.user}">
+                <div id="menusalir" class="#{clase}" style="float:right;border-left: 1px solid grey;" ><p:commandLink style="font-weight: normal; color:white;" value="Salir" action="#{um.logout}" /></div>                
+            </h:panelGroup>
+        </h:form>
     </div>
+
 
 </ui:composition>

@@ -20,16 +20,19 @@
                 <c:set var="clase" value="mopoff"/>
                 <c:if test="#{donde eq 'login'}"><c:set var="clase" value="mopon" /></c:if>
                 <div class="#{clase}" onclick="location='#{facesContext.externalContext.request.contextPath}/faces/login.xhtml?origen=#{facesContext.externalContext.request.pathInfo}';" style="color: white; border: 1px solid black; width: 80px; height: 80px; text-align: center; cursor: pointer">
-                    <div style="font-size: 48px;">?</div>
-                    <div>ACCESO</div>
+                    <div style="font-size: 38px;">?</div>
+                    <div>INGRESA AQUÍ</div>
                 </div>
                 <c:if test="#{donde eq 'login'}"><c:set var="clase" value="mopoff" /></c:if>
             </h:panelGroup>
             <h:panelGroup rendered="#{!empty um.user}">
-                <div class="avatar" style="width:80px; height:80px; background-image: url(#{facesContext.externalContext.request.contextPath}/ShowAvatar?mid=#{um.user.id})">
+                <div>
+                    <div style="float:left; margin-right: 5px;">#{um.user.nombre} #{um.user.paso}</div>
+                    <div class="avatar" style="float:left; width:80px; height:80px; background-image: url(#{facesContext.externalContext.request.contextPath}/ShowAvatar?mid=#{um.user.id})">
 
+                    </div>
+                    
                 </div>
-
             </h:panelGroup>
         </div>
     </div>

@@ -1,210 +1,208 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                template="/unaColumnaTemplate.xhtml"
-                xmlns:h="http://java.sun.com/jsf/html" 
+                template="/unaColumnaTemplate.xhtml"                 
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:c="http://java.sun.com/jsp/jstl/core">
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                >
 
 
 
     <ui:define name="content">
-        <h:panelGroup rendered="#{registro.miembro.paso == 1}">
+        <link href="#{facesContext.externalContext.request.contextPath}/resources/css/afiliacion.css" rel="stylesheet" type="text/css" />        
+        <div class="caja" style="width: 800px; margin-top: 20px; position: relative;">
 
-            <div id="encabezadoPasos">
-                ¡YA ESTÁS REGISTRADO EN EL WIKI! <a href="http://wiki.wikipartido.mx/wiki">IR AL WIKI</a><br/>
-                Si te acabas de registrar, revisa tu correo y revisa el mensaje de confirmación que se te acaba de enviar.
-            </div>
-        </h:panelGroup>
-        <br/>
-
-
-        <br/>
-        <h:panelGroup rendered="#{registro.miembro.paso == 1}">
-            <div id="encabezadoPasos">
-                <span style="color:#c9c9c9">PASO 1: REGISTRO EN EL WIKI (COLABORADOR)</span> &nbsp;&nbsp; &nbsp;&nbsp; 
-                &rarr; PASO 2: AFILIACIÓN AL PARTIDO (DERECHO A VOTO)
-            </div>
-            <br/>
-        </h:panelGroup>
-
-        <p:messages />
-        <h:panelGroup id="afilia" rendered="#{registro.miembro.paso == 1}">
-            <h:form id="formaDeRegistro">
-
-                <div id="encabezadoFormaRegistro">
-                    PASO 2. AFILIACIÓN AL PARTIDO
-                    <br/>
-                    <div style="font-size: 12px;">
-                        ¡Tu afiliación al Wikipartido te permite votar y ayudar a conseguir el registro como partido! 
-
-                    </div>
+            <h:panelGroup rendered="#{registro.miembro.paso == 1}">
+                <div id="encabezadoPasos" style="font-size: 18px;">
+                    <div style="float: left;"><span style="color:#c9c9c9; font-size: 32px">&rarr;PASO 1</span><br/><span style="color:#c9c9c9;">REGISTRO EN EL WIKI (COLABORADOR)</span></div> 
+                    <div style="float: right;"><span style="font-size: 32px">PASO 2</span><br/>AFILIACIÓN AL PARTIDO (DERECHO A VOTO)</div>
                 </div>
-                <div id="infoCredencial">
+                <div style="clear: both;" />
+            </h:panelGroup>
+            <h:panelGroup rendered="#{registro.miembro.paso == 2}">
+                <div id="encabezadoFormaRegistro">¡YA ESTÁS AFILIADO AL WIKIPARTIDO!<p:ajaxStatus /></div>
+                <div id="formaDeAfiliacion" >
+                    Imprime el formato de afiliación y fírmalo:<br/><br/>
+                    <a href="#{facesContext.externalContext.request.contextPath}/faces/registro/formato.xhtml" target="_blank">Ver formato para imprimir</a>
+                    <br/><br/>
+                    Ten el formato firmado a la mano, estamos diseñando el mecanismo de acopio de formatos y te contactaremos para recogerlo.
+                    También puedes dejarlo en el buzón de Tennyson 349 (Entre Homero y Ejército Nacional), Col. Polanco,  Migual Hidalgo, 
+                    México, D.F.
+                    <br/><br/><br/>   
+                </div>
+            </h:panelGroup>
+            <h:panelGroup id="afilia" rendered="#{registro.miembro.paso >= 1}">
+                <h:form id="formaDeRegistro">
+                    <h:panelGroup rendered="#{registro.miembro.paso == 1}">
+                        <h2 style="margin-top:20px;">
+                            ¡Tu afiliación al Wikipartido te permite votar y ayudar a conseguir el registro como partido! 
+                        </h2>
+                    </h:panelGroup>
+                    <br/>
 
-                    <div id="camposCredencial">
-                        <div class="campo">Clave de Elector</div>
-                        <div class="valor">
-                            <p:inputMask size="21" id="claveelector" mask="aaaaaa99999999a999" required="true" requiredMessage="La clave de elector es requerida" onfocus="$('#indicadorClaveElector').fadeIn();" onblur="$('#indicadorClaveElector').fadeOut();" style="font-size: 24px; color:grey;" value="#{registro.miembro.claveDeElector}">
-                                <f:ajax event="blur" render="errorclaveelector"  />
-                            </p:inputMask><br/>
-                            <h:message for="claveelector" id="errorclaveelector" style="color:red"/>
-                        </div>
+                    <div id="infoAfiliacion" >
+                        <div id="camposCredencial" >
 
-                        <div class="campo">CURP (Si tu credencial no la tiene obtenla 
-                            <a href="http://www.renapo.gob.mx/swb/swb/RENAPO/consultacurp" target="_blank">aquí</a>
-                            )</div>
-                        <div class="valor">
-                            <p:inputMask size="21" id="curp" mask="aaaa999999aaaaaa99" required="true" requiredMessage="La curp es requerida" onfocus="$('#indicadorCURP').fadeIn();" onblur="$('#indicadorCURP').fadeOut();" style="font-size: 24px; color:grey;" value="#{registro.miembro.curp}">
-                                <f:ajax event="blur" render="errorcurp"  />
-                            </p:inputMask><br/>
-                            <h:message for="curp" id="errorcurp" style="color:red"/>
-                        </div>
+                            <div id="campoClaveDeElector">
+                                <div class="campo">Clave de Elector</div>
+                                <div class="valor">
+                                    <p:inputMask size="21" id="claveelector" mask="aaaaaa99999999a999" required="true" requiredMessage="La clave de elector es requerida" onfocus="$('#indicadorClaveElector').fadeIn();" onblur="$('#indicadorClaveElector').fadeOut();" style="font-size: 24px; color:grey;" value="#{registro.miembro.claveDeElector}">
+                                        <f:ajax event="blur" render="errorclaveelector"  />
+                                    </p:inputMask><br/>
+                                    <h:message for="claveelector" id="errorclaveelector" style="color:red"/>
+                                </div>
+                            </div>
 
+                            <div id="campoCURP">
+                                <div class="campo">CURP (Si tu credencial no la tiene obtenla 
+                                    <a href="http://www.renapo.gob.mx/swb/swb/RENAPO/consultacurp" target="_blank">aquí</a>
+                                    )</div>
+                                <div class="valor">
+                                    <p:inputMask size="21" id="curp" mask="aaaa999999aaaaaa99" required="true" requiredMessage="La curp es requerida" onfocus="$('#indicadorCURP').fadeIn();" onblur="$('#indicadorCURP').fadeOut();" style="font-size: 24px; color:grey;" value="#{registro.miembro.curp}">
+                                        <f:ajax event="blur" render="errorcurp"  />
+                                    </p:inputMask><br/>
+                                    <h:message for="curp" id="errorcurp" style="color:red"/>
+                                </div>
+                            </div>
 
-
-                        <div id="seccion">
-                            <div class="campo">Sección</div>
-                            <div class="valor">
-                                <h:inputText id="seccion" size="3" required="true" requiredMessage="La sección es requerida"  onfocus="$('#indicadorSeccion').fadeIn();" onblur="$('#indicadorSeccion').fadeOut();" style="font-size: 24px; color:grey;" value="#{registro.miembro.seccion}">
-                                    <f:ajax event="blur" render="errorseccion" />
-                                </h:inputText><br/>
-                                <h:message for="seccion" id="errorseccion" style="color:red"/>
-                            </div>                        
-                        </div>
-
-                        <h:panelGroup rendered="#{registro.miembro.email eq null}">
-                            <div>
-                                <div style="margin-top: 40px;">
-                                    <div class="campo">e·Mail</div>
+                            <div id="campoSeccion">
+                                <div id="seccion">
+                                    <div class="campo">Sección</div>
                                     <div class="valor">
-                                        <p:inputText id="email" size="45" style="font-size: 24px; color:grey;" value="#{registro.miembro.email}" required="true" requiredMessage="El e-Mail es requerido." validatorMessage="El e-Mail no es válido">
-                                            <f:validateRegex pattern="^(([A-Za-z0-9]+_+)|([A-Za-z0-9]+\-+)|([A-Za-z0-9]+\.+)|([A-Za-z0-9]+\++))*[A-Za-z0-9]+@((\w+\-+)|(\w+\.))*\w{1,63}\.[a-zA-Z]{2,6}$"/>
+                                        <h:inputText id="seccion" size="3" required="true" requiredMessage="La sección es requerida"  onfocus="$('#indicadorSeccion').fadeIn();" onblur="$('#indicadorSeccion').fadeOut();" style="font-size: 24px; color:grey;" value="#{registro.miembro.seccion}">
+                                            <f:ajax event="blur" render="errorseccion" />
+                                        </h:inputText><br/>
+                                        <h:message for="seccion" id="errorseccion" style="color:red"/>
+                                    </div>                        
+                                </div>
+                            </div>
 
-                                            <f:ajax event="blur" render="errormail" />
+                        </div>
+                        <p:messages />
+                        <div id="generales" style="margin-top: 10px;"  >
+
+                            <div id="nombreCompleto">
+                                <div style="float:left;  margin-right: 15px;">
+                                    <div class="campo">Nombre</div>
+                                    <div class="valor">
+                                        <p:inputText size="15" id="nombre" required="true" requiredMessage="Nombre Requerido" style="font-size: 24px; color:grey;" value="#{registro.miembro.nombre}">
+                                            <f:ajax event="blur" render="errornombre"  />
                                         </p:inputText><br/>
-                                        <h:message for="email" id="errormail" style="color:red"/>
+                                        <h:message for="nombre" id="errornombre" style="color:red"/>
+                                    </div>
+                                </div>
+                                <div style="float:left;  margin-right: 15px;">
+                                    <div class="campo">Apellido Paterno</div>
+                                    <div class="valor">
+                                        <p:inputText size="15" id="apellidopat" required="true" requiredMessage="Apellido Paterno Requerido" style="font-size: 24px; color:grey;" value="#{registro.miembro.apellidoPaterno}">
+                                            <f:ajax event="blur" render="errorapellidopat"  />             
+                                        </p:inputText><br/>
+                                        <h:message for="apellidopat" id="errorapellidopat" style="color:red"/>
+                                    </div>
+                                </div>
+                                <div style="float:left;">
+                                    <div class="campo">Apellido Materno</div>
+                                    <div class="valor">
+                                        <p:inputText size="15" id="apellidomat" required="true" requiredMessage="Apellido Materno Requerido" style="font-size: 24px; color:grey;" value="#{registro.miembro.apellidoMaterno}">
+                                            <f:ajax event="blur" render="errorapellidomat"  /> 
+                                        </p:inputText><br/>
+                                        <h:message for="apellidomat" id="errorapellidomat" style="color:red"/>
                                     </div>
                                 </div>
                             </div>
-                        </h:panelGroup>
-                        <div id="generales" >
-
-
-                            <div style="float:left;  margin-right: 15px;">
-                                <div class="campo">Nombre <h:message for="nombre" id="errornombre" style="color:red"/></div>
-                                <div class="valor">
-                                    <p:inputText size="15" id="nombre" required="true" requiredMessage="NOMBRE REQUERIDO" style="font-size: 24px; color:grey;" value="#{registro.miembro.nombre}">
-                                        <f:ajax event="blur" render="errornombre"  />
-                                    </p:inputText>
-
-                                </div>
-                            </div>
-                            <div style="float:left;  margin-right: 15px;">
-                                <div class="campo">Apellido Paterno <h:message for="apellidopat" id="errorapellidopat" style="color:red"/></div>
-                                <div class="valor">
-                                    <p:inputText size="15" id="apellidopat" required="true" requiredMessage="APELLIDO PAT REQUERIDO" style="font-size: 24px; color:grey;" value="#{registro.miembro.apellidoPaterno}">
-                                        <f:ajax event="blur" render="errorapellidopat"  />             
-                                    </p:inputText>
-                                </div>
-                            </div>
-                            <div style="float:left;">
-                                <div class="campo">Apellido Materno <h:message for="apellidomat" id="errorapellidomat" style="color:red"/></div>
-                                <div class="valor">
-                                    <p:inputText size="15" id="apellidomat" required="true" requiredMessage="APELLIDO MAT REQUERIDO" style="font-size: 24px; color:grey;" value="#{registro.miembro.apellidoMaterno}">
-                                        <f:ajax event="blur" render="errorapellidomat"  /> 
-                                    </p:inputText>
-                                </div>
-                            </div>
-
-                            <div style="float:left;">
-                                <div class="campo">Calle <h:message for="calle" id="errorcalle" style="color:red"/></div>
-                                <div class="valor">
-                                    <p:inputText size="35" id="calle" required="true" requiredMessage="CALLE REQUERIDA" style="font-size: 24px; margin-right: 15px; color:grey;" value="#{registro.miembro.calle}">
-                                        <f:ajax event="blur" render="errorcalle"  />
-                                    </p:inputText>
-                                </div>
-                            </div>
-                            <div style="float:left;margin-right: 55px;">
-                                <div class="campo">Número Exterior <h:message for="numext" id="errornumext" style="color:red"/></div>
-                                <div class="valor">
-                                    <p:inputText size="2" id="numext" required="true" requiredMessage="NUM EXT REQUERIDO" style="font-size: 24px; margin-right: 55px; color:grey;" value="#{registro.miembro.numeroExterior}">
-                                        <f:ajax event="blur" render="errornumext"  />
-                                    </p:inputText>
-                                </div>
-                            </div>
-                            <div style="float:left; margin-right: 15px;">
-                                <div class="campo">Número Interior</div>
-                                <div class="valor">
-                                    <p:inputText size="2" style="font-size: 24px; margin-right: 15px; color:grey;" value="#{registro.miembro.numeroInterior}">
-                                        <p:ajax update="formaDeRegistro"  />
-                                    </p:inputText>
-                                </div>
-                            </div>       
-                            <div style="float:left;">
-                                <div class="campo">Colonia <h:message for="colonia" id="errorcolonia" style="color:red"/></div>
-                                <div class="valor">
-                                    <p:inputText id="colonia" required="true" requiredMessage="La colonia es necesaria" readonly="false" size="30" style="font-size: 24px; margin-right: 15px; color:grey;" value="#{registro.miembro.colonia}">
-                                        <f:ajax event="blur" render="errorcolonia"  />
-                                    </p:inputText>
-                                </div>
-                            </div>
-                            <div style="float:left;margin-right: 15px;">
-                                <div class="campo">Código Postal <h:message for="cp" id="errorcp" style="color:red"/></div>
-                                <div class="valor">
-                                    <p:inputMask mask="99999" size="6" id="cp" required="true" requiredMessage="REQUERIDO" style="font-size: 24px; margin-right: 15px; color:grey;" value="#{registro.miembro.cp}">
-                                        <f:ajax event="blur" render="errorcp"  />
-                                    </p:inputMask>
-                                </div>
-                            </div>                       
-                            <div style="float:left;">
-                                <div class="campo">Teléfono (inluye clave LD) <h:message for="telefono" id="errortelefono" style="color:red"/></div>
-                                <div class="valor">
-                                    <p:inputMask id="telefono" size="13" mask="(999) 999-9999" required="true" requiredMessage="TEL REQUERIDO" style="font-size: 24px; margin-right: 15px; color:grey;" value="#{registro.miembro.telefono}">
-                                        <f:ajax event="blur" render="errortelefono"  />
-                                    </p:inputMask>
-                                </div>
-                            </div>                          
-                            <div style="float:left;">
-                                <div class="campo">Municipio/Delegación <h:message for="muni" id="errormuni" style="color:red"/></div>
-                                <div class="valor">
-                                    <p:inputText readonly="false" size="30" required="true" requiredMessage="El municipio es requerido" id="muni" style="font-size: 24px; margin-right: 15px; color:grey;" value="#{registro.miembro.municipio}">
-                                        <f:ajax event="blur" render="errormuni"  />
-                                    </p:inputText>
-                                </div>
-                            </div>
-
                             <div style="clear: both;" />
-                        <div class="campo">Estado</div>
-                        <div class="valor">
-                            <h:selectOneMenu  style="color:grey; font-size: 14px;" id="selectEstado"  value="#{registro.estadoid}">
-                                <f:selectItems value="#{registro.estados}" />
-                                <f:ajax event="blur" render="formaDeRegistro"  />
-                            </h:selectOneMenu>
-                        </div>                            
+                            <div id="infocalle">
+                                <div style="float:left;">
+                                    <div class="campo">Calle</div>
+                                    <div class="valor">
+                                        <p:inputText size="30" id="calle" required="true" requiredMessage="Calle Requerida" style="font-size: 24px; margin-right: 15px; color:grey;" value="#{registro.miembro.calle}">
+                                            <f:ajax event="blur" render="errorcalle"  />
+                                        </p:inputText><br/>
+                                        <h:message for="calle" id="errorcalle" style="color:red"/>
+                                    </div>
+                                </div>
+                                <div style="float:left;margin-right: 55px;">
+                                    <div class="campo">Número Exterior</div>
+                                    <div class="valor">
+                                        <p:inputText size="2" id="numext" required="true" requiredMessage="Número ext. requerido" style="font-size: 24px; margin-right: 55px; color:grey;" value="#{registro.miembro.numeroExterior}">
+                                            <f:ajax event="blur" render="errornumext"  />
+                                        </p:inputText><br/>
+                                        <h:message for="numext" id="errornumext" style="color:red"/>
+                                    </div>
+                                </div>
+                                <div style="float:left; margin-right: 15px;">
+                                    <div class="campo">Número Interior</div>
+                                    <div class="valor">
+                                        <p:inputText size="2" style="font-size: 24px; margin-right: 15px; color:grey;" value="#{registro.miembro.numeroInterior}">
+                                            <p:ajax update="formaDeRegistro"  />
+                                        </p:inputText>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="clear: both;" />
+                            <div id="coloniaYcp">
+                                <div style="float:left;">
+                                    <div class="campo">Colonia</div>
+                                    <div class="valor">
+                                        <p:inputText id="colonia" required="true" requiredMessage="La colonia es necesaria" readonly="false" size="30" style="font-size: 24px; margin-right: 15px; color:grey;" value="#{registro.miembro.colonia}">
+                                            <f:ajax event="blur" render="errorcolonia"  />
+                                        </p:inputText><br/>
+                                        <h:message for="colonia" id="errorcolonia" style="color:red"/>
+                                    </div>
+                                </div>
+                                <div style="float:left;margin-right: 15px;">
+                                    <div class="campo">Código Postal</div>
+                                    <div class="valor">
+                                        <p:inputMask mask="99999" size="6" id="cp" required="true" requiredMessage="El CP es requerido" style="font-size: 24px; margin-right: 15px; color:grey;" value="#{registro.miembro.cp}">
+                                            <f:ajax event="blur" render="errorcp"  />
+                                        </p:inputMask><br/>
+                                        <h:message for="cp" id="errorcp" style="color:red"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="clear: both;"/>
+                            <div id="telefonoYmunicipio">
+                                <div style="float:left;">
+                                    <div class="campo">Teléfono (inluye clave LD)</div>
+                                    <div class="valor">
+                                        <p:inputMask id="telefono" size="13" mask="(999) 999-9999" required="true" requiredMessage="Un teléfono es requerido" style="font-size: 24px; margin-right: 15px; color:grey;" value="#{registro.miembro.telefono}">
+                                            <f:ajax event="blur" render="errortelefono"  />
+                                        </p:inputMask><br/>
+                                        <h:message for="telefono" id="errortelefono" style="color:red"/>
+                                    </div>
+                                </div>                          
+                                <div style="float:left;">
+                                    <div class="campo">Municipio/Delegación</div>
+                                    <div class="valor">
+                                        <p:inputText readonly="false" size="30" required="true" requiredMessage="El municipio es requerido" id="muni" style="font-size: 24px; margin-right: 15px; color:grey;" value="#{registro.miembro.municipio}">
+                                            <f:ajax event="blur" render="errormuni"  />
+                                        </p:inputText><br/>
+                                        <h:message for="muni" id="errormuni" style="color:red"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="clear: both;" />
+                            <div class="campo">Estado</div>
+                            <div class="valor">
+                                <h:selectOneMenu  style="color:grey; font-size: 14px;" id="selectEstado"  value="#{registro.estadoid}">
+                                    <f:selectItems value="#{registro.estados}" />
+                                    <f:ajax event="blur" render="formaDeRegistro"  />
+                                </h:selectOneMenu>
+                            </div>                            
                             <div style="float:left;">
-                                <div class="campo">Ocupación <h:message for="ocupa" id="errorocupa" style="color:red"/></div>
+                                <div class="campo">Ocupación</div>
                                 <div class="valor">
-                                    <p:inputText size="45" id="ocupa" required="true" requiredMessage="OCUPACIÓN REQUERIDA" style="font-size: 24px; margin-right: 15px; color:grey;" value="#{registro.miembro.ocupacion}">
+                                    <p:inputText size="45" id="ocupa" required="true" requiredMessage="Su ocupación es requerida" style="font-size: 24px; margin-right: 15px; color:grey;" value="#{registro.miembro.ocupacion}">
                                         <f:ajax event="blur" render="errorocupa"  />
-                                    </p:inputText>
+                                    </p:inputText><br/>
+                                    <h:message for="ocupa" id="errorocupa" style="color:red"/>
                                 </div>
                             </div>
                             <div style="clear:both;" />
-                            <h:panelGroup rendered="#{empty registro.miembro.clavedeusuario}">
-                                <div>
-                                    <div class="campo">Clave de Usuario</div>
-                                    <div class="valor">
-                                        <p:inputText size="21" id="clavedeusuario" required="true" validatorMessage="La clave de usuario no debe tener espacios ni caracteres especiales como acentos o eñes." requiredMessage="La clave de usuario es requerida" style="font-size: 24px; color:grey;" value="#{registro.miembro.clavedeusuario}">
-                                            <f:ajax event="blur" render="errorclavedeusuario"  />
-                                            <f:validateRegex pattern="^[A-Za-z0-9_-]{3,30}$"  />
-                                        </p:inputText><br/>
-                                        <h:message for="clavedeusuario" id="errorclavedeusuario" style="color:red"/>
-                                    </div>
-                                </div>
-                            </h:panelGroup>
+
                             <div>
                                 <div class="campo">Twitter (opcional)</div>
                                 <div class="valor">
@@ -213,61 +211,40 @@
                                     </p:inputText>
                                 </div>
                             </div>                            
-                            <h:panelGroup rendered="#{empty registro.miembro.password}">
-                                <div>
-                                    <div class="campo">Contraseña <h:message for="pass" id="errorpass" style="color:red"/></div>
-                                    <div class="valor">
-                                        <p:password id="pass" promptLabel="Ingrese una contraseña"  weakLabel="Débil" goodLabel="Buena" strongLabel="Fuerte"  required="true" requiredMessage="CONTRASEÑA REQUERIDA" size="20" style="font-size: 24px; margin-right: 15px; color:grey;" value="#{registro.miembro.password}">
-                                            <f:ajax event="blur" render="errorpass"  />
-                                        </p:password>
-                                    </div>
-                                </div>
-                            </h:panelGroup>
+
 
 
                             <br/>
                             <ui:include src="/avisolegal.xhtml" />       <br/>
                             DECLARO BAJO PROTESTA DE DECIR VERDAD QUE NO ME HE AFILIADO A NINGUNA OTRA ASOCIACIÓN POLÍTICA INTERESADA EN OBTENER EL REGISTRO COMO PARTIDO POLÍTICO NACIONAL, DURANTE EL PROCESO DE REGISTRO CORRESPONDIENTE A LOS AÑOS 2013-2014
+                            <br/><br/>
                             <p:commandButton action="#{registro.registrar}" ajax="false" value="AFILIARME AL WIKIPARTIDO" />
+
+
 
                         </div>
 
+                        <div id="credencial">
+                            <img src="../images/credencial.png" alt="Credencial" />
+                        </div>
+                        <div id="indicadorClaveElector">
+                            <img src="../images/indicadorClaveElector.png" alt="Indicador" />
+                        </div>
+                        <div id="indicadorCURP">
+                            <img src="../images/indicadorCURP.png" alt="Indicador" />
+                        </div>
+                        <div id="indicadorSeccion">
+                            <img src="../images/indicadorSeccion.png" alt="Indicador" />
+                        </div>                 
                     </div>
-
-                    <div id="credencial">
-                        <img src="images/credencial.png" alt="Credencial" />
-                    </div>
-                    <div id="indicadorClaveElector">
-                        <img src="images/indicadorClaveElector.png" alt="Indicador" />
-                    </div>
-                    <div id="indicadorCURP">
-                        <img src="images/indicadorCURP.png" alt="Indicador" />
-                    </div>
-                    <div id="indicadorSeccion">
-                        <img src="images/indicadorSeccion.png" alt="Indicador" />
-                    </div>                 
-                </div>
-                <div style="clear:both;" />
-            </h:form>
-        </h:panelGroup>
-        <h:panelGroup rendered="#{registro.miembro.paso == 2}">
-            <div id="encabezadoFormaRegistro">¡YA ESTÁS AFILIADO AL WIKIPARTIDO!<p:ajaxStatus /></div>
-            <div id="formaDeAfiliacion">
-                Imprime el formato de afiliación y fírmalo:<br/><br/>
-                <a href="#{facesContext.externalContext.request.contextPath}/faces/formato.xhtml" target="_blank">Ver formato para imprimir</a>
-                <br/><br/>
-                Ten el formato firmado a la mano, estamos diseñando el mecanismo de acopio de formatos y te contactaremos para recogerlo.
-                También puedes dejarlo en el buzón de Tennyson 349 (Entre Homero y Ejército Nacional), Col. Polanco,  Migual Hidalgo, 
-                México, D.F.
-                <br/><br/><br/>   
-
-            </div>
+                    <div style="clear:both;" />
+                </h:form>
+            </h:panelGroup>
 
 
-        </h:panelGroup>
-        <p:messages />
+            <p:messages />
 
-
+        </div>
     </ui:define>
 
 

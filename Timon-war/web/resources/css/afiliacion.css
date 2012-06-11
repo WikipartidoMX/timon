@@ -1,0 +1,61 @@
+/* 
+    Document   : afiliacion
+    Created on : Jun 8, 2012, 10:21:52 PM
+    Author     : alfonso
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+
+
+#camposCredencial {
+    margin-top: 15px;
+    height: 290px;
+
+    margin: 0px auto;
+}
+#credencial {
+    position: absolute;
+    top: 140px;
+    left: 380px;
+}
+
+#indicadorClaveElector {
+    position: absolute;
+    top: 173px;
+    left: 273px;
+    display: none;
+}
+
+#indicadorCURP {
+    position: absolute;
+    top: 241px;
+    left: 273px;
+    display: none;
+}
+
+#indicadorSeccion {
+    position: absolute;
+    top: 319px;
+    left: 273px;
+    display: none;
+}
+
+#campoClaveDeElector {
+    position: absolute;
+    top: 120px;
+}
+
+#campoCURP {
+    position: absolute;
+    top: 205px;
+}
+
+#campoSeccion {
+    position: absolute;
+    top: 280px;
+    left: 210px;
+}
+
+
+

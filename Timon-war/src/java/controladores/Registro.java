@@ -237,6 +237,7 @@ public class Registro implements Serializable {
 
     public String registrar() {
 
+        System.out.println("Afiliando a "+miembro.getNombre());
         Miembro existe = null;
         existe = tl.getMiembroFromEmail(miembro.getEmail());
         if (existe != null) {
