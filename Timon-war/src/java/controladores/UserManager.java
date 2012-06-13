@@ -14,7 +14,7 @@
  */
 package controladores;
 
-import entities.Miembro;
+import entities.registro.Miembro;
 import java.io.Serializable;
 import javax.annotation.Resource;
 import javax.enterprise.context.SessionScoped;

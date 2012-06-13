@@ -14,9 +14,9 @@
  */
 package sessionbeans;
 
-import entities.Avatar;
-import entities.Estado;
-import entities.Miembro;
+import entities.registro.Avatar;
+import entities.registro.Estado;
+import entities.registro.Miembro;
 import java.io.Serializable;
 import java.util.List;
 import javax.ejb.Stateless;

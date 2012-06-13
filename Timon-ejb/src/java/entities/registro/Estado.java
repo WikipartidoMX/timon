@@ -12,31 +12,26 @@
  * 
  * 
  */
-
-package entities;
+package entities.registro;
 
 import java.io.Serializable;
-import static javax.persistence.FetchType.LAZY;
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 /**
  *
- * @author Alfonso Tames
+ * @author alfonso
  */
 @Entity
-public class Avatar implements Serializable {
+public class Estado implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
-    @OneToOne
-    private Miembro miembro;
-    
-    @Lob @Basic(fetch=LAZY)
-    private byte[] file;
-    
-    
+    private String clave;
+    private String nombre;
 
     public Long getId() {
         return id;
@@ -55,11 +50,11 @@ public class Avatar implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Avatar)) {
+
+        if (!(object instanceof Estado)) {
             return false;
         }
-        Avatar other = (Avatar) object;
+        Estado other = (Estado) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -68,35 +63,35 @@ public class Avatar implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.Avatar[ id=" + id + " ]";
+        return nombre;
     }
 
     /**
-     * @return the miembro
+     * @return the clave
      */
-    public Miembro getMiembro() {
-        return miembro;
+    public String getClave() {
+        return clave;
     }
 
     /**
-     * @param miembro the miembro to set
+     * @param clave the clave to set
      */
-    public void setMiembro(Miembro miembro) {
-        this.miembro = miembro;
+    public void setClave(String clave) {
+        this.clave = clave;
     }
 
     /**
-     * @return the file
+     * @return the nombre
      */
-    public byte[] getFile() {
-        return file;
+    public String getNombre() {
+        return nombre;
     }
 
     /**
-     * @param file the file to set
+     * @param nombre the nombre to set
      */
-    public void setFile(byte[] file) {
-        this.file = file;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
     
 }

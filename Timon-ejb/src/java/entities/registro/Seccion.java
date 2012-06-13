@@ -12,7 +12,7 @@
  * 
  * 
  */
-package entities;
+package entities.registro;
 
 import java.io.Serializable;
 import javax.persistence.*;

@@ -2,29 +2,26 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package entities;
+package entities.votacionydebate;
 
 import java.io.Serializable;
-import java.util.Date;
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 /**
  *
  * @author alfonso
  */
 @Entity
-@Table(uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"NOMBRE"})})
-public class Nombre implements Serializable {
+public class Tema implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nombre;
-    private String promotor;
-    private String ip;
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date fecha;
+    private Long pater;
 
     public Long getId() {
         return id;
@@ -44,10 +41,10 @@ public class Nombre implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Nombre)) {
+        if (!(object instanceof Tema)) {
             return false;
         }
-        Nombre other = (Nombre) object;
+        Tema other = (Tema) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -56,7 +53,7 @@ public class Nombre implements Serializable {
 
     @Override
     public String toString() {
-        return "entidades.Nombre[ id=" + id + " ]";
+        return "votacionydebate.Tema[ id=" + id + " ]";
     }
 
     /**
@@ -74,45 +71,17 @@ public class Nombre implements Serializable {
     }
 
     /**
-     * @return the ip
+     * @return the pater
      */
-    public String getIp() {
-        return ip;
+    public Long getPater() {
+        return pater;
     }
 
     /**
-     * @param ip the ip to set
+     * @param pater the pater to set
      */
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
-    /**
-     * @return the fecha
-     */
-    public Date getFecha() {
-        return fecha;
-    }
-
-    /**
-     * @param fecha the fecha to set
-     */
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
-    }
-
-    /**
-     * @return the promotor
-     */
-    public String getPromotor() {
-        return promotor;
-    }
-
-    /**
-     * @param promotor the promotor to set
-     */
-    public void setPromotor(String promotor) {
-        this.promotor = promotor;
+    public void setPater(Long pater) {
+        this.pater = pater;
     }
     
 }
