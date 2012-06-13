@@ -36,3 +36,7 @@ a:link:hover, a:visited:hover  {
     font-size: 18px;
     margin-top: 15px;
 }
+
+.tipoRegistro {
+    font-size: 10px;
+}

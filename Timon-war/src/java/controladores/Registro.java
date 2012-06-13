@@ -31,8 +31,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -237,7 +235,7 @@ public class Registro implements Serializable {
 
     public String registrar() {
 
-        System.out.println("Afiliando a "+miembro.getNombre());
+        System.out.println("Afiliando a "+miembro.getNombre()+" "+miembro.getApellidoPaterno());
         Miembro existe = null;
         existe = tl.getMiembroFromEmail(miembro.getEmail());
         if (existe != null) {
@@ -254,7 +252,7 @@ public class Registro implements Serializable {
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
-            return "";
+            return "registro.xhtml?faces-redirect=true";
         }
         return "";
     }

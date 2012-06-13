@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Formato de Afiliación al Wikipartido de México</title>
+    </h:head>
+    <h:body>
+
+        <h:panelGroup rendered="#{um.valid}">
+        <table border="0" width="100%">
+            <tr><td><img src="../images/logo.png" /></td><td>FOLIO: #{registro.miembro.id}</td></tr>
+        </table>
+        <br/>
+        <img src="http://qrcode.kaywa.com/img.php?s=5&amp;d=#{registro.miembro.claveDeElector}" alt="QR Code" />
+        
+        <br/>
+        <center><h1 style="text-decoration: underline;">CONSTANCIA DE AFILIACIÓN</h1></center><br/><br/>
+        
+        <table border="0">
+            <tr style="font-size: 24px;">
+                <td style="color:#999999;">Nombre:&nbsp;&nbsp;</td>
+                <td>#{registro.miembro.nombre}&nbsp;&nbsp;</td>
+                <td>#{registro.miembro.apellidoPaterno}&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td>#{registro.miembro.apellidoMaterno}&nbsp;&nbsp;</td>
+            </tr>
+            <tr style="font-size: 10px;">
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>APELLIDO PATERNO</td>
+                <td>APELLIDO MATERNO</td>
+            </tr>
+        </table>
+        <br/>
+        <table border="0">
+            <tr style="font-size: 24px;">
+                <td style="color:#999999;">Dirección:</td>
+                <td>#{registro.miembro.calle} #{registro.miembro.numeroExterior} 
+                    - #{registro.miembro.numeroInterior}</td>                                                    
+            </tr>
+            <tr style="font-size: 24px;">
+                <td>&nbsp;</td><td>#{registro.miembro.colonia}</td><td>CP</td><td>#{registro.miembro.cp}</td>     
+            </tr>
+            <tr style="font-size: 24px;">
+                <td>&nbsp;</td><td colspan="3">#{registro.miembro.municipio}, #{registro.miembro.estado.nombre}. MÉXICO.</td>     
+            </tr>            
+        </table>
+        <br/>
+        <table border="0">
+            <tr style="font-size: 24px;">
+                <td style="color:#999999;">Clave de Elector:</td><td>#{registro.miembro.claveDeElector}</td><td style="color:#999999;">CURP:</td><td>#{registro.miembro.curp}</td>                
+            </tr>           
+        </table>
+        <table border="0">
+            <tr style="font-size: 24px;">
+                <td style="color:#999999;">Ocupación:</td><td>#{registro.miembro.ocupacion}</td>                
+            </tr>
+            <tr style="font-size: 24px;">
+                <td style="color:#999999;">Clave de Usuario en el Wiki:</td><td>#{registro.miembro.clavedeusuario}</td>                
+            </tr>              
+        </table>
+        <br/>
+        <br/>
+        <table border="0" width="100%">
+            <tr><td width="50%">
+        "POR ESTE ACTO MANIFIESTO MI VOLUNTAD DE AFILIARME AL WIKIPARTIDO DE MÉXICO, ASOCIACIÓN POLÍTICA,
+        DE MANERA LIBRE Y CONSCIENTE. ASÍ MISMO ACEPTO RESPETAR SUS PRINCIPIOS Y ESTATUTOS Y CONDUCIRME EN EL 
+        MARCO DE LA LEY ELECTORAL VIGENTE"
+        </td>
+                <td width="50%">
+                    _________________________<br/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    FIRMA
+                </td>
+        </tr>
+        </table>
+        </h:panelGroup>
+    </h:body>
+</html>
+

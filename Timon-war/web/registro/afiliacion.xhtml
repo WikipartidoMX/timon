@@ -19,23 +19,16 @@
                 <div id="encabezadoPasos" style="font-size: 18px;">
                     <div style="float: left;"><span style="color:#c9c9c9; font-size: 32px">&rarr;PASO 1</span><br/><span style="color:#c9c9c9;">REGISTRO EN EL WIKI (COLABORADOR)</span></div> 
                     <div style="float: right;"><span style="font-size: 32px">PASO 2</span><br/>AFILIACIÓN AL PARTIDO (DERECHO A VOTO)</div>
+                    <div style="clear: both;" />
                 </div>
-                <div style="clear: both;" />
+
             </h:panelGroup>
             <h:panelGroup rendered="#{registro.miembro.paso == 2}">
-                <div id="encabezadoFormaRegistro">¡YA ESTÁS AFILIADO AL WIKIPARTIDO!<p:ajaxStatus /></div>
-                <div id="formaDeAfiliacion" >
-                    Imprime el formato de afiliación y fírmalo:<br/><br/>
-                    <a href="#{facesContext.externalContext.request.contextPath}/faces/registro/formato.xhtml" target="_blank">Ver formato para imprimir</a>
-                    <br/><br/>
-                    Ten el formato firmado a la mano, estamos diseñando el mecanismo de acopio de formatos y te contactaremos para recogerlo.
-                    También puedes dejarlo en el buzón de Tennyson 349 (Entre Homero y Ejército Nacional), Col. Polanco,  Migual Hidalgo, 
-                    México, D.F.
-                    <br/><br/><br/>   
-                </div>
+                <h1>Actualiza tus datos</h1>
+
             </h:panelGroup>
             <h:panelGroup id="afilia" rendered="#{registro.miembro.paso >= 1}">
-                <h:form id="formaDeRegistro">
+                <h:form id="formaDeRegistro" accept="text/html" acceptcharset="UTF-8" enctype="multipart/form-data">
                     <h:panelGroup rendered="#{registro.miembro.paso == 1}">
                         <h2 style="margin-top:20px;">
                             ¡Tu afiliación al Wikipartido te permite votar y ayudar a conseguir el registro como partido! 
@@ -79,7 +72,18 @@
                                     </div>                        
                                 </div>
                             </div>
-
+                            <div id="credencial">
+                                <img src="../images/credencial.png" alt="Credencial" />
+                            </div>
+                            <div id="indicadorClaveElector">
+                                <img src="../images/indicadorClaveElector.png" alt="Indicador" />
+                            </div>
+                            <div id="indicadorCURP">
+                                <img src="../images/indicadorCURP.png" alt="Indicador" />
+                            </div>
+                            <div id="indicadorSeccion">
+                                <img src="../images/indicadorSeccion.png" alt="Indicador" />
+                            </div>
                         </div>
                         <p:messages />
                         <div id="generales" style="margin-top: 10px;"  >
@@ -210,7 +214,16 @@
                                         <p:ajax update="formaDeRegistro"  />
                                     </p:inputText>
                                 </div>
-                            </div>                            
+                            </div>
+                            <div>
+                                <div class="campo">Contraseña</div>
+                                <div class="valor">
+                                    <p:password feedback="true"  id="pass" promptLabel="Ingrese una contraseña"  weakLabel="Débil" goodLabel="Buena" strongLabel="Fuerte"  required="true" requiredMessage="CONTRASEÑA REQUERIDA" size="20" style="font-size: 24px; margin-right: 15px; color:grey;" value="#{registro.miembro.password}">
+                                        <f:ajax event="blur" render="errorpass"  />
+                                    </p:password><br/>
+                                    <h:message for="pass" id="errorpass" style="color:red"/>
+                                </div>
+                            </div>
 
 
 
@@ -218,23 +231,8 @@
                             <ui:include src="/avisolegal.xhtml" />       <br/>
                             DECLARO BAJO PROTESTA DE DECIR VERDAD QUE NO ME HE AFILIADO A NINGUNA OTRA ASOCIACIÓN POLÍTICA INTERESADA EN OBTENER EL REGISTRO COMO PARTIDO POLÍTICO NACIONAL, DURANTE EL PROCESO DE REGISTRO CORRESPONDIENTE A LOS AÑOS 2013-2014
                             <br/><br/>
-                            <p:commandButton action="#{registro.registrar}" ajax="false" value="AFILIARME AL WIKIPARTIDO" />
+                            <p:commandButton action="#{registro.registrar}" update="formaDeRegistro"  value="AFILIARME AL WIKIPARTIDO" />
 
-
-
-                        </div>
-
-                        <div id="credencial">
-                            <img src="../images/credencial.png" alt="Credencial" />
-                        </div>
-                        <div id="indicadorClaveElector">
-                            <img src="../images/indicadorClaveElector.png" alt="Indicador" />
-                        </div>
-                        <div id="indicadorCURP">
-                            <img src="../images/indicadorCURP.png" alt="Indicador" />
-                        </div>
-                        <div id="indicadorSeccion">
-                            <img src="../images/indicadorSeccion.png" alt="Indicador" />
                         </div>                 
                     </div>
                     <div style="clear:both;" />

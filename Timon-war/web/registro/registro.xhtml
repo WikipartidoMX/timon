@@ -23,25 +23,30 @@
 
     <ui:define name="content">
         <div class="caja" style="width: 80%; margin-top: 20px;">
+
             <h:panelGroup rendered="#{registro.miembro.paso == 1}">
 
-                <div id="encabezadoPasos">
-                    1. Ya estás registrado en el Wiki con el usuario <b>#{registro.miembro.clavedeusuario}</b> (<a href="http://wiki.wikipartido.mx/wiki/index.php?title=Especial:Entrar&amp;returnto=Página_principal">IR AL WIKI</a>)
-                </div>
+
+                1. Ya estás registrado en el Wiki con el usuario <b>#{registro.miembro.clavedeusuario}</b> (<a href="http://wiki.wikipartido.mx/wiki/index.php?title=Especial:Entrar&amp;returnto=Página_principal">IR AL WIKI</a>)
+
                 <br/><br/>
-                <div id="encabezadoPasos">
-                    2. <b>¡AFÍLITATE HOY!</b> Adquiere el derecho a votar y ayúdanos a registrar el partido <a href="afiliacion.xhtml">HAZLO AQUÍ</a>
-                </div>            
+
+                2. <b>¡AFÍLITATE HOY!</b> Adquiere el derecho a votar y ayúdanos a registrar el partido <a href="afiliacion.xhtml">HAZLO AQUÍ</a>
+                <br/><br/>
+                3. Actualiza tu avatar:
             </h:panelGroup>
             <h:panelGroup rendered="#{registro.miembro.paso == 2}">
 
-                <div id="encabezadoPasos">
-                    1. Ya estás registrado en el Wiki con el usuario <b>#{registro.miembro.clavedeusuario}</b> (<a href="http://wiki.wikipartido.mx/wiki/index.php?title=Especial:Entrar&amp;returnto=Página_principal">IR AL WIKI</a>)
-                </div>
+                1. Ya estás registrado en el Wiki con el usuario <b>#{registro.miembro.clavedeusuario}</b> (<a href="http://wiki.wikipartido.mx/wiki/index.php?title=Especial:Entrar&amp;returnto=Página_principal">IR AL WIKI</a>)
+
                 <br/><br/>
-                <div id="encabezadoPasos">
-                    2. Imprime tu constancia de afiliación o modifica tus datos <a href="afiliacion.xhtml">AQUÍ</a>
-                </div>            
+                2. Imprime tu constancia de afiliación <a href="formato.xhtml" target="blank_">AQUÍ</a>
+                <br/><br/>
+
+                3. Actualiza tus datos de afiliación <a href="afiliacion.xhtml">AQUÍ</a>
+
+                <br/><br/>
+                4. Actualiza tu avatar:
             </h:panelGroup>          
             <h:panelGroup rendered="#{registro.miembro.paso >= 1}">
                 <div style="margin-top:20px;">
@@ -50,7 +55,7 @@
                                       auto="true"
                                       style="width: 600px;"
                                       fileUploadListener="#{registro.handleFileUpload}"
-                                      label="Actualizar Avatar"
+                                      label="Elige una imagen para tu avatar"
                                       oncomplete="location='#{facesContext.externalContext.request.contextPath}/faces/registro/registro.xhtml';"
                                       invalidFileMessage="EL formato de la imagen no es correcto" 
                                       invalidSizeMessage="No se permiten imagenes mayores a 500kb" 
@@ -118,16 +123,17 @@
                     <br/>
                     <ui:include src="/avisolegal.xhtml" />
                     <br/>
-                    <p:messages id="mensajes" />
+
 
                     <p:commandButton value="REGISTRAR EN EL WIKI" ajax="false" update="mensajes, wikiform" action="#{registro.agregarAlWiki}" />
 
-
+                    <p:messages id="mensajes" />
 
                 </h:form>
                 <div style="clear:both;" />
             </h:panelGroup>
-            <br/><br/>
+            <br/>
+
         </div>
     </ui:define>
 

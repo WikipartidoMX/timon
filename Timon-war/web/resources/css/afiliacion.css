@@ -6,54 +6,56 @@
         Purpose of the stylesheet follows.
 */
 
+#infoAfiliacion {
 
+}
 
 #camposCredencial {
+    position:relative;
     margin-top: 15px;
     height: 290px;
-
     margin: 0px auto;
 }
 #credencial {
     position: absolute;
-    top: 140px;
+    top: 20px;
     left: 380px;
 }
 
 #indicadorClaveElector {
     position: absolute;
-    top: 173px;
+    top: 53px;
     left: 273px;
     display: none;
 }
 
 #indicadorCURP {
     position: absolute;
-    top: 241px;
+    top: 121px;
     left: 273px;
     display: none;
 }
 
 #indicadorSeccion {
     position: absolute;
-    top: 319px;
+    top: 199px;
     left: 273px;
     display: none;
 }
 
 #campoClaveDeElector {
     position: absolute;
-    top: 120px;
+    top: 0px;
 }
 
 #campoCURP {
     position: absolute;
-    top: 205px;
+    top: 85px;
 }
 
 #campoSeccion {
     position: absolute;
-    top: 280px;
+    top: 160px;
     left: 210px;
 }
 
