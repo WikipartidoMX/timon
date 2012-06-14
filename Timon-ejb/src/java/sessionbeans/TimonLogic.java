@@ -14,9 +14,9 @@
  */
 package sessionbeans;
 
-import entities.Avatar;
-import entities.Estado;
-import entities.Miembro;
+import entities.registro.Avatar;
+import entities.registro.Estado;
+import entities.registro.Miembro;
 import java.io.Serializable;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -96,7 +96,6 @@ public class TimonLogic implements Serializable {
     public byte[] getAvatarFile(long mid) {
         try {
             Avatar a = (Avatar)em.createQuery("select a from Avatar a where a.miembro.id=:mid").setParameter("mid", mid).getSingleResult();
-            System.out.println("Regresando el AVATAR" +a.getId());
             return a.getFile();
         } catch (Exception e) {
             //System.out.println(e.getMessage());

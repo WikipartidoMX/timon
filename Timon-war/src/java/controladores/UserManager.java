@@ -14,7 +14,7 @@
  */
 package controladores;
 
-import entities.Miembro;
+import entities.registro.Miembro;
 import java.io.Serializable;
 import javax.annotation.Resource;
 import javax.enterprise.context.SessionScoped;
@@ -62,7 +62,7 @@ public class UserManager implements Serializable {
     public String logout() {
         
         FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
-        return "index.xhtml?faces-redirect=true";
+        return "/index.xhtml?faces-redirect=true";
     }
 
     public String login() {
