@@ -8,9 +8,7 @@ import entities.registro.Miembro;
 import entities.votacionydebate.Opcion;
 import entities.votacionydebate.Voto;
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -47,33 +45,79 @@ public class VotoYDebateLogic implements Serializable {
             }
         }
 
-        // Algoritmo para el Metodo Schulze (Thanks http://wiki.electorama.com/wiki/Schulze_method !)
-        Map<DoubleKey,Long> p = new HashMap<DoubleKey,Long>();
-        
-        
-        for (Opcion i : opciones) {
-            for (Opcion j : opciones) {
-                if (!i.equals(j)) {
-                    if (cuantosPrefieren(i,j) > cuantosPrefieren(j,i)) {
-                        p.put(new DoubleKey(i,j), cuantosPrefieren(i,j));
+        // Implementacion del Metodo Schulze (Thanks http://wiki.electorama.com/wiki/Schulze_method !)
+
+
+        int i = 0;
+        int j = 0;
+        int k = 0;
+
+        int c = opciones.size();
+
+        for (i = 0; i < c; i++) {
+            System.out.println("Opcion " + i + ".- " + opciones.get(i).getNombre());
+        }
+
+        boolean[] winner = new boolean[c];
+        long[][] p = new long[c][c];
+
+        for (i = 0; i < c; i++) {
+            for (j = 0; j < c; j++) {
+                if (!opciones.get(i).equals(opciones.get(j))) {
+                    if (cuantosPrefieren(opciones.get(i), opciones.get(j)) > cuantosPrefieren(opciones.get(j), opciones.get(i))) {
+                        p[i][j] = cuantosPrefieren(opciones.get(i), opciones.get(j));
                     } else {
-                        p.put(new DoubleKey(i,j), 0L);
+                        p[i][j] = 0;
                     }
                 }
             }
         }
-        String matriz = "";
+        for (i = 0; i < c; i++) {
+            for (j = 0; j < c; j++) {
+                if (!opciones.get(i).equals(opciones.get(j))) {
+                    for (k = 0; k < c; k++) {
+                        if (!opciones.get(i).equals(opciones.get(k))) {
+                            if (!opciones.get(j).equals(opciones.get(k))) {
+                                p[j][k] = Math.max(p[j][k], Math.min(p[j][i], p[i][k]));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        for (i = 0; i < c; i++) {
+            winner[i] = true;
+        }
+
+        for (i = 0; i < c; i++) {
+            for (j = 0; j < c; j++) {
+                if (!opciones.get(i).equals(opciones.get(j))) {
+                    if (p[j][i] > p[i][j]) {
+                        winner[i] = false;
+                    }
+                }
+            }
+        }
+
+        for (i = 0; i < c; i++) {
+            if (winner[i]) {
+                System.out.println("GANO "+opciones.get(i).getNombre());
+            }
+        }
+
+
         // Ver la matriz de preferencia
-        for (Opcion i : opciones) {
-            matriz += i.getNombre()+" ";
-            for (Opcion j : opciones) {
-                matriz += p.get(new DoubleKey(i,j))+" ";                               
+        String matriz = "";
+        for (int x = 0; x < c; x++) {
+            matriz += opciones.get(x).getNombre() + " ";
+            for (int y = 0; y < opciones.size(); y++) {
+                matriz += p[x][y] + " ";
             }
             matriz += "\n";
         }
-        System.out.println(matriz);
-
-        long c = cuantosPrefieren(opciones.get(1), opciones.get(2));
+        System.out.println("Matriz de Preferencia: \n\n" + matriz);
+        //****
 
 
     }
@@ -86,7 +130,7 @@ public class VotoYDebateLogic implements Serializable {
             long ri = 0;
             long rj = 0;
 
-            System.out.println("Probando con " + m.getNombre());
+            //System.out.println("Probando con " + m.getNombre());
             try {
                 ri = (Long) em.createQuery("select v.rank from Voto v where v.miembro=:m and v.opcion=:i").setParameter("m", m).setParameter("i", i).getSingleResult();
             } catch (Exception e) {
@@ -107,45 +151,6 @@ public class VotoYDebateLogic implements Serializable {
             }
         }
         System.out.println(c + " lo prefieren");
-        return 0L;
+        return c;
     }
-}
-
-class DoubleKey {   
-    private Opcion i;
-    private Opcion j;
-    
-    public DoubleKey(Opcion i, Opcion j) {
-        this.i = i;
-        this.j = j;
-    }
-
-    /**
-     * @return the i
-     */
-    public Opcion getI() {
-        return i;
-    }
-
-    /**
-     * @param i the i to set
-     */
-    public void setI(Opcion i) {
-        this.i = i;
-    }
-
-    /**
-     * @return the j
-     */
-    public Opcion getJ() {
-        return j;
-    }
-
-    /**
-     * @param j the j to set
-     */
-    public void setJ(Opcion j) {
-        this.j = j;
-    }
-    
 }

@@ -4,6 +4,7 @@
  */
 package entities.votacionydebate;
 
+import entities.registro.Estado;
 import entities.registro.Miembro;
 import java.io.Serializable;
 import java.util.Date;
@@ -21,8 +22,11 @@ public class Votacion implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nombre;
-    @ManyToOne
-    private Tema tema;
+    @OneToMany
+    private List<Tema> temas;
+    @OneToMany
+    private List<Estado> estados;
+    
     @ManyToOne
     private Miembro miembro;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
@@ -67,19 +71,7 @@ public class Votacion implements Serializable {
         return "entities.votacionydebate.Votacion[ id=" + id + " ]";
     }
 
-    /**
-     * @return the tema
-     */
-    public Tema getTema() {
-        return tema;
-    }
 
-    /**
-     * @param tema the tema to set
-     */
-    public void setTema(Tema tema) {
-        this.tema = tema;
-    }
 
     /**
      * @return the miembro
@@ -177,6 +169,34 @@ public class Votacion implements Serializable {
      */
     public void setOpciones(List<Opcion> opciones) {
         this.opciones = opciones;
+    }
+
+    /**
+     * @return the temas
+     */
+    public List<Tema> getTemas() {
+        return temas;
+    }
+
+    /**
+     * @param temas the temas to set
+     */
+    public void setTemas(List<Tema> temas) {
+        this.temas = temas;
+    }
+
+    /**
+     * @return the estados
+     */
+    public List<Estado> getEstados() {
+        return estados;
+    }
+
+    /**
+     * @param estados the estados to set
+     */
+    public void setEstados(List<Estado> estados) {
+        this.estados = estados;
     }
     
 }

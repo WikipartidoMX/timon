@@ -19,8 +19,10 @@
             <h:panelGroup rendered="#{empty um.user}">
                 <c:set var="clase" value="mopoff"/>
                 <c:if test="#{donde eq 'login'}"><c:set var="clase" value="mopon" /></c:if>
-                <div class="#{clase}" onclick="location='#{facesContext.externalContext.request.contextPath}/faces/login.xhtml?origen=#{facesContext.externalContext.request.pathInfo}';" style="color: white; border: 1px solid black; width: 80px; height: 80px; text-align: center; cursor: pointer">
-                    <div style="font-size: 38px;">?</div>
+                <div class="#{clase}" 
+                     onclick="location='#{facesContext.externalContext.request.contextPath}/faces/login.xhtml?origen=#{facesContext.externalContext.request.pathInfo}';"
+                     style="padding: 0px; color: white; border: 1px solid black; width: 80px; height: 80px;  text-align: center; cursor: pointer; border-radius: 5px 5px 5px 5px;">
+                    <div style="font-size: 32px;">?</div>
                     <div>INGRESA AQUÍ</div>
                 </div>
                 <c:if test="#{donde eq 'login'}"><c:set var="clase" value="mopoff" /></c:if>

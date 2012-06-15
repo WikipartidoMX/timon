@@ -17,13 +17,13 @@
 
     <ui:define name="content">
 
-
-        <div class="caja" style="width: 500px;">
-
-
+        <div class="cajaTitulo"  style="width: 500px;">
+            <h1>Ingresar al Wikipartido</h1>
+        </div>
+        <div class="cajaContent" style="width: 500px;">
             <h:form id="loginform">
                 <h:panelGroup rendered="#{empty um.user}">
-                    <h1>Ingresar al Wikipartido</h1>
+                    
                     <div class="campo">Correo Electrónico</div>
                     <div class="valor">
                         <p:inputText id="email" size="28" style="font-size: 24px; color:grey;" value="#{um.email}" required="true" requiredMessage="El e-Mail es requerido." validatorMessage="El e-Mail no es válido">

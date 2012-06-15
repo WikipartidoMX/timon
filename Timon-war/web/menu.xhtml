@@ -23,7 +23,7 @@
         <div id="menupropue" class="#{clase}">Plataforma</div>
         <c:if test="#{donde eq 'menupropue'}"><c:set var="clase" value="mopoff" /></c:if>
         <c:if test="#{donde eq 'menuvotdeb'}"><c:set var="clase" value="mopon" /></c:if>
-        <div id="menuvotdeb" class="#{clase}" onclick="location='#{facesContext.externalContext.request.contextPath}/faces/votacionydebate/test.xhtml';">Votación y Debate</div>
+        <div id="menuvotdeb" class="#{clase}" onclick="location='#{facesContext.externalContext.request.contextPath}/faces/votacionydebate/votaciones.xhtml';">Votación y Debate</div>
         <c:if test="#{donde eq 'menuvotdeb'}"><c:set var="clase" value="mopoff" /></c:if>
         <c:if test="#{donde eq 'menuque_es'}"><c:set var="clase" value="mopon" /></c:if>
         <div id="menuque_es" class="#{clase}">¿Qué es?</div>
