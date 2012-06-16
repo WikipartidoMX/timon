@@ -15,6 +15,7 @@
 package controladores;
 
 import entities.registro.Miembro;
+import entities.votacionydebate.Votacion;
 import java.io.Serializable;
 import javax.annotation.Resource;
 import javax.enterprise.context.SessionScoped;
@@ -33,6 +34,8 @@ import sessionbeans.VotoYDebateLogic;
 @SessionScoped
 public class VotoYDebateController implements Serializable {
     
+    private Votacion nuevaVotacion = new Votacion();
+    
     @Inject
     VotoYDebateLogic vydl;
 
@@ -42,6 +45,20 @@ public class VotoYDebateController implements Serializable {
     public void prueba() {
         vydl.cuentaConSchulze();
         
+    }
+
+    /**
+     * @return the nuevaVotacion
+     */
+    public Votacion getNuevaVotacion() {
+        return nuevaVotacion;
+    }
+
+    /**
+     * @param nuevaVotacion the nuevaVotacion to set
+     */
+    public void setNuevaVotacion(Votacion nuevaVotacion) {
+        this.nuevaVotacion = nuevaVotacion;
     }
     
 }

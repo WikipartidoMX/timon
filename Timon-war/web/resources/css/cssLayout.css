@@ -8,12 +8,14 @@
     margin-left: 50%;
     left: -450px;
     margin-top: 10px;
+    border-radius: 5px 5px 5px 5px;
 }
 #top {
     position: relative;
     background-color: #e5dfd8;
     padding: 5px;
     margin: 0px 0px 0px 0px;
+    border-radius: 5px 5px 0px 0px;
 }
 
 #menu {
@@ -60,6 +62,7 @@
     background-color: #7f7a77;
     padding: 5px;
     margin: 0px 0px 0px 0px;
+    border-radius: 0px 0px 5px 5px;
 }
 
 
@@ -71,8 +74,31 @@
     padding: 15px;
     margin-bottom: 15px;
     margin-top: 15px;
-
 }
+
+.cajaTitulo {
+    margin-top: 15px;
+    position: relative;
+    border: 1px solid #e5dfd8;
+    border-radius: 10px 10px 0px 0px;
+    margin: 0px auto;
+    padding: 10px;
+    background-color: #e5dfd8;
+    margin-top: 15px;
+}
+
+.cajaContent {
+    position: relative;
+    border: 1px solid #e5dfd8;
+    border-radius: 0px 0px 10px 10px;
+    margin: 0px auto;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    
+}
+
 
 .avatar {
 
@@ -80,9 +106,10 @@
     border: 1px solid #a59f98;
     border-radius: 5px 5px 5px 5px;
 
+
 }
 #encabezadoPasos {
-    
 
-    
+
+
 }
