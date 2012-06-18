@@ -11,9 +11,11 @@
 
 
     <ui:define name="content">
+        <link href="#{facesContext.externalContext.request.contextPath}/resources/css/votacion.css" rel="stylesheet" type="text/css" /> 
+
         <h:form id="formaNuevaVotacion">
             <div class="cajaTitulo" style="width: 650px;">
-                <h1>Crear Nueva Votación</h1>
+                <h1>Crea una nueva Votación</h1>
             </div>
             <div class="cajaContent" style="width: 650px;">
                 <div style=" margin-top: 15px;">
@@ -26,9 +28,93 @@
                     </div>
                 </div>
                 <div style=" margin-top: 15px;">
+                    <div class="campo">Descripción</div>
                     <p:editor id="editor" value="#{vydc.nuevaVotacion.descripcion}" width="645" />
                 </div>
+                <div>
+                    <div class="caja" style="float:left; width:285px;">
+                        Clasificación de la votación: 
+                        <br/><br/>
+                        <p:tree value="#{vydc.raiz}" style="width:270px; "  var="node" id="tree" selection="#{vydc.selectedTema}" selectionMode="single">
+                            <p:treeNode id="treenode">
+                                #{node.nombre}
+                            </p:treeNode>
+                        </p:tree>
+                        <div class="agregar">
+                            <p:commandLink style="font-size:16px; text-decoration: none;"  value="&darr; AGREGAR &darr;" process="@this,tree"  action="#{vydc.agregarTema}" update="panelListaTemas" />
+                        </div>
+                        <h:panelGroup id="panelListaTemas">
+                            <div class="headerTabla">La votación pertenece a estos temas:</div>
+                            <div class="tabla">
+
+
+                                <ui:repeat id="listaTemas" value="#{vydc.selecTemas}" var="tema">
+                                    <div class="renglonTabla" onmouseover="$('#borraTema#{tema.id}').toggle();" onmouseout="$('#borraTema#{tema.id}').toggle();">
+                                        <div style="float: left;">
+                                            #{tema.nombre}
+                                        </div>
+                                        <div style="float: right;" >
+                                            <p:commandLink action="#{vydc.borrarTema(tema)}" process="@this" update=":formaNuevaVotacion:panelListaTemas">
+                                                <img style="display: none; cursor: pointer;" id="borraTema#{tema.id}" src="../images/borrar.png" />
+                                            </p:commandLink>
+                                            
+                                        </div>
+                                        <div style="clear:both;"/>
+                                    </div>                                    
+                                   
+                                </ui:repeat>
+
+                            </div>
+                        </h:panelGroup>
+                    </div>
+                    <div class="caja" style="float:right; width:285px;"> 
+                        Restringir a estos estados:
+
+                        <br/><br/>
+                        <div>
+                            <div class="valor">
+
+                                <p:selectOneListbox style="width: 280px; height: 200px;"    id="selectEstado"  value="#{vydc.estadoid}">
+                                    <f:selectItems value="#{vydc.estados}" />
+                                </p:selectOneListbox>
+
+                            </div>
+                        </div>
+                        <div class="agregar">
+                            <p:commandLink style="font-size:16px; text-decoration: none;"  value="&darr; AGREGAR &darr;" process="@this,selectEstado"  action="#{vydc.agregarEstado}" update="panelListaEstados" />
+                        </div>
+                        <h:panelGroup id="panelListaEstados">
+                            <div class="headerTabla">Votación abierta a miembros de estos estados:</div>
+                            <div class="tabla">
+
+
+                                <ui:repeat id="listaEstados" value="#{vydc.selecEstados}" var="estado">
+                                    <div class="renglonTabla" onmouseover="$('#borraEstado#{estado.id}').toggle();" onmouseout="$('#borraEstado#{estado.id}').toggle();">
+                                        <div style="float: left;">
+                                            #{estado.nombre}
+                                        </div>
+                                        <div style="float: right;" >
+                                            <p:commandLink action="#{vydc.borrarEstado(estado)}" process="@this" update=":formaNuevaVotacion:panelListaEstados">
+                                                <img style="display: none; cursor: pointer;" id="borraEstado#{estado.id}" src="../images/borrar.png" />
+                                            </p:commandLink>
+                                            
+                                        </div>
+                                        <div style="clear:both;"/>
+                                    </div>
+                                </ui:repeat>
+
+                            </div>
+                        </h:panelGroup>
+                    </div>
+                </div>
+                <div style="clear: both;" />
+                <div class="caja" style="width:600px;">
+                    <h1>Ingresa las Opciones para la Votación</h1>
+                </div>
             </div>
+            <p:messages />
+
+
         </h:form>
 
     </ui:define>

@@ -1,11 +1,22 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ *   __    __ _ _     _   ___           _   _     _             __  __
+ *  / / /\ \ (_) | __(_) / _ \__ _ _ __| |_(_) __| | ___   /\/\ \ \/ /
+ *  \ \/  \/ / | |/ /| |/ /_)/ _` | '__| __| |/ _` |/ _ \ /    \ \  / 
+ *   \  /\  /| |   < | / ___/ (_| | |  | |_| | (_| | (_) / /\/\ \/  \ 
+ *    \/  \/ |_|_|\_\|_\/    \__,_|_|   \__|_|\__,_|\___/\/    \/_/\_\
+ *                                              
+ *                                              
+ *  
+ * Wikipartido de Mexico
+ * VER ARCHIVO DE LiCENCIA
+ * 
+ * 
  */
 package sessionbeans;
 
 import entities.registro.Miembro;
 import entities.votacionydebate.Opcion;
+import entities.votacionydebate.Tema;
 import entities.votacionydebate.Voto;
 import java.io.Serializable;
 import java.util.List;
@@ -22,6 +33,16 @@ public class VotoYDebateLogic implements Serializable {
 
     @PersistenceContext(unitName = "Timon-ejbPU")
     private EntityManager em;
+    
+    
+    public List<Tema> getTemas() {
+        return em.createQuery("select t from Tema t").getResultList();
+    }
+    
+    public Tema getTema(long id) {
+        return em.find(Tema.class, id);
+    }
+    
 
     public void cuentaConSchulze() {
         System.out.println("Conteo con Schulze...\n\n");

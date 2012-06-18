@@ -68,7 +68,7 @@ public class Registro implements Serializable {
     public Registro() {
         miembro = new Miembro();
     }
-    
+
     public String handleFileUpload(FileUploadEvent event) {
         System.out.println("El evento...");
         ufile = event.getFile();
@@ -108,12 +108,12 @@ public class Registro implements Serializable {
                         new FacesMessage(FacesMessage.SEVERITY_ERROR,
                         "No es posible cambiar el avatar.", null));
             }
-        }        
+        }
         return "index.xhtml?faces-redirect=true";
     }
 
     public String actualizarAvatar() {
-        
+
 
         return "";
     }
@@ -235,7 +235,7 @@ public class Registro implements Serializable {
 
     public String registrar() {
 
-        System.out.println("Afiliando a "+miembro.getNombre()+" "+miembro.getApellidoPaterno());
+        System.out.println("Afiliando a " + miembro.getNombre() + " " + miembro.getApellidoPaterno());
         Miembro existe = null;
         existe = tl.getMiembroFromEmail(miembro.getEmail());
         if (existe != null) {
@@ -297,12 +297,13 @@ public class Registro implements Serializable {
      * @return the estados
      */
     public List<SelectItem> getEstados() {
-        estados = new ArrayList<SelectItem>();
-        List<Estado> eds = tl.getEstados();
-        for (Estado e : eds) {
-            estados.add(new SelectItem(e.getId(), e.getNombre()));
+        if (estados == null) {
+            estados = new ArrayList<SelectItem>();
+            List<Estado> eds = tl.getEstados();
+            for (Estado e : eds) {
+                estados.add(new SelectItem(e.getId(), e.getNombre()));
+            }
         }
-
         return estados;
     }
 

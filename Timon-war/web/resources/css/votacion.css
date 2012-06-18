@@ -10,3 +10,31 @@
     margin: 15px;
     text-align: center;
 }
+
+.tabla {
+
+    width: 285px;
+    border: 1px solid #e5dfd8;
+}
+
+.headerTabla {
+    background-color: #e5dfd8;
+    color: #555555;
+    width: 281px;
+    border: 1px solid #e5dfd8;
+    padding: 2px;
+}
+
+.renglonTabla {
+    border-top: 1px solid #e5dfd8;
+    padding: 2px;    
+    
+}
+
+.agregar {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 285px;
+    text-align: center;
+    border: 1px solid #e5dfd8;
+}
