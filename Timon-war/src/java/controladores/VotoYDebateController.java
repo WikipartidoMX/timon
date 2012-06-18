@@ -107,19 +107,7 @@ public class VotoYDebateController implements Serializable {
         }
     }
 
-    /**
-     * @return the nuevaVotacion
-     */
-    public Votacion getNuevaVotacion() {
-        return nuevaVotacion;
-    }
 
-    /**
-     * @param nuevaVotacion the nuevaVotacion to set
-     */
-    public void setNuevaVotacion(Votacion nuevaVotacion) {
-        this.nuevaVotacion = nuevaVotacion;
-    }
     
     public void borrarEstado(Estado e) {
         selecEstados.remove(e);

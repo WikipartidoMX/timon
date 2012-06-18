@@ -5,3 +5,4 @@
 /Timon-war/dist/
 /Timon-ejb/dist/
 /Timon-ejb/build/
+!/Timon-ejb/dist/Timon-ejb.jar
