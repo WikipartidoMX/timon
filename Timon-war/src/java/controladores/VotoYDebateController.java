@@ -15,6 +15,7 @@
 package controladores;
 
 import entities.registro.Estado;
+import entities.votacionydebate.Opcion;
 import entities.votacionydebate.Tema;
 import entities.votacionydebate.Votacion;
 import java.io.Serializable;
@@ -36,10 +37,12 @@ import sessionbeans.VotoYDebateLogic;
 @SessionScoped
 public class VotoYDebateController implements Serializable {
 
+    private List<Opcion> opciones;
     private TreeNode selectedTema;
     private List<SelectItem> estados;
     private long estadoid;
     private Votacion nuevaVotacion;
+    private Opcion nuevaOpcion;
     private TreeNode raiz = null;
     private List<Estado> selecEstados;
     private List<Tema> selecTemas;
@@ -49,18 +52,38 @@ public class VotoYDebateController implements Serializable {
     private TimonLogic tl;
 
     public VotoYDebateController() {
+        resetVotacion();
+    }
 
+    public void resetVotacion() {
         nuevaVotacion = new Votacion();
         nuevaVotacion.setEstados(new LinkedList<Estado>());
         nuevaVotacion.setTemas(new LinkedList<Tema>());
         selecEstados = new LinkedList<Estado>();
         selecTemas = new LinkedList<Tema>();
 
+        nuevaOpcion = new Opcion();
+        opciones = new LinkedList<Opcion>();
     }
 
     public void prueba() {
         vydl.cuentaConSchulze();
 
+    }
+    
+    public void agregarOpcion() {
+        opciones.add(nuevaOpcion);
+        System.out.println("Queda asi:");
+        for (Opcion o : opciones) {
+            System.out.println(o.getNombre());
+        }
+        nuevaOpcion = new Opcion();
+    }
+    
+    public void borrarOpcion(int o) {
+        System.out.println("Borrando "+o);
+      
+        opciones.remove(o);
     }
 
     /**
@@ -107,12 +130,10 @@ public class VotoYDebateController implements Serializable {
         }
     }
 
-
-    
     public void borrarEstado(Estado e) {
         selecEstados.remove(e);
     }
-    
+
     public void borrarTema(Tema t) {
         selecTemas.remove(t);
     }
@@ -206,5 +227,33 @@ public class VotoYDebateController implements Serializable {
      */
     public void setSelectedTema(TreeNode selectedTema) {
         this.selectedTema = selectedTema;
+    }
+
+    /**
+     * @return the nuevaOpcion
+     */
+    public Opcion getNuevaOpcion() {
+        return nuevaOpcion;
+    }
+
+    /**
+     * @param nuevaOpcion the nuevaOpcion to set
+     */
+    public void setNuevaOpcion(Opcion nuevaOpcion) {
+        this.nuevaOpcion = nuevaOpcion;
+    }
+
+    /**
+     * @return the opciones
+     */
+    public List<Opcion> getOpciones() {
+        return opciones;
+    }
+
+    /**
+     * @param opciones the opciones to set
+     */
+    public void setOpciones(List<Opcion> opciones) {
+        this.opciones = opciones;
     }
 }

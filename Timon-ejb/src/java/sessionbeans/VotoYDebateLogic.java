@@ -43,6 +43,7 @@ public class VotoYDebateLogic implements Serializable {
         return em.find(Tema.class, id);
     }
     
+    
 
     public void cuentaConSchulze() {
         System.out.println("Conteo con Schulze...\n\n");
@@ -67,18 +68,13 @@ public class VotoYDebateLogic implements Serializable {
         }
 
         // Implementacion del Metodo Schulze (Thanks http://wiki.electorama.com/wiki/Schulze_method !)
-
-
         int i = 0;
         int j = 0;
         int k = 0;
-
         int c = opciones.size();
-
         for (i = 0; i < c; i++) {
             System.out.println("Opcion " + i + ".- " + opciones.get(i).getNombre());
         }
-
         boolean[] winner = new boolean[c];
         long[][] p = new long[c][c];
 
@@ -106,11 +102,9 @@ public class VotoYDebateLogic implements Serializable {
                 }
             }
         }
-
         for (i = 0; i < c; i++) {
             winner[i] = true;
         }
-
         for (i = 0; i < c; i++) {
             for (j = 0; j < c; j++) {
                 if (!opciones.get(i).equals(opciones.get(j))) {
@@ -120,14 +114,11 @@ public class VotoYDebateLogic implements Serializable {
                 }
             }
         }
-
         for (i = 0; i < c; i++) {
             if (winner[i]) {
                 System.out.println("GANO "+opciones.get(i).getNombre());
             }
         }
-
-
         // Ver la matriz de preferencia
         String matriz = "";
         for (int x = 0; x < c; x++) {
@@ -138,11 +129,7 @@ public class VotoYDebateLogic implements Serializable {
             matriz += "\n";
         }
         System.out.println("Matriz de Preferencia: \n\n" + matriz);
-        //****
-
-
     }
-
     public long cuantosPrefieren(Opcion i, Opcion j) {
         long c = 0;
         System.out.println("La pregunta es cuantos prefieren " + i.getNombre() + " sobre " + j.getNombre());
