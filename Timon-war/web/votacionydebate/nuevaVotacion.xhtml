@@ -116,7 +116,7 @@
                     <p:commandButton style="margin-top: 15px; margin-bottom: 15px;" value="Agregar Opcion" 
                                      process="@this" 
                                      action="#{vydc.agregarOpcion}"
-                                     update=":formaNuevaVotacion:panelOpciones,tituloOpcion,editorOpcion"
+                                     update="tituloOpcion,editorOpcion,:formaNuevaVotacion:panelOpciones"
                                      />
                     <h:panelGroup id="panelOpciones">
                         <div class="headerTabla" style="width:396px;">Opciones para la votación:</div>
