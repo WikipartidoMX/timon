@@ -21,6 +21,8 @@ import entities.votacionydebate.Votacion;
 import java.io.Serializable;
 import java.util.*;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -37,6 +39,7 @@ import sessionbeans.VotoYDebateLogic;
 @SessionScoped
 public class VotoYDebateController implements Serializable {
 
+    private org.primefaces.component.tabview.TabView tab;
     private List<Opcion> opciones;
     private TreeNode selectedTema;
     private List<SelectItem> estados;
@@ -61,7 +64,6 @@ public class VotoYDebateController implements Serializable {
         nuevaVotacion.setTemas(new LinkedList<Tema>());
         selecEstados = new LinkedList<Estado>();
         selecTemas = new LinkedList<Tema>();
-
         nuevaOpcion = new Opcion();
         opciones = new LinkedList<Opcion>();
     }
@@ -70,7 +72,20 @@ public class VotoYDebateController implements Serializable {
         vydl.cuentaConSchulze();
 
     }
-    
+
+    public String guardarVotacion() {
+        try {
+            System.out.println("Guardando");
+            if (opciones.size() < 2) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "La votación debe contener al menos dos opciones", null));
+                return "";
+            }
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No es posible guardar la votación", null));
+        }
+        return "";
+    }
+
     public void agregarOpcion() {
         opciones.add(nuevaOpcion);
         System.out.println("Queda asi:");
@@ -79,10 +94,10 @@ public class VotoYDebateController implements Serializable {
         }
         nuevaOpcion = new Opcion();
     }
-    
+
     public void borrarOpcion(int o) {
-        System.out.println("Borrando "+o);
-      
+        System.out.println("Borrando " + o);
+
         opciones.remove(o);
     }
 
@@ -255,5 +270,19 @@ public class VotoYDebateController implements Serializable {
      */
     public void setOpciones(List<Opcion> opciones) {
         this.opciones = opciones;
+    }
+
+    /**
+     * @return the tab
+     */
+    public org.primefaces.component.tabview.TabView getTab() {
+        return tab;
+    }
+
+    /**
+     * @param tab the tab to set
+     */
+    public void setTab(org.primefaces.component.tabview.TabView tab) {
+        this.tab = tab;
     }
 }
