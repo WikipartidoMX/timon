@@ -70,7 +70,7 @@ public class VotoYDebateController implements Serializable {
         vydl.cuentaConSchulze();
 
     }
-    
+
     public void agregarOpcion() {
         opciones.add(nuevaOpcion);
         System.out.println("Queda asi:");
@@ -79,10 +79,10 @@ public class VotoYDebateController implements Serializable {
         }
         nuevaOpcion = new Opcion();
     }
-    
+
     public void borrarOpcion(int o) {
-        System.out.println("Borrando "+o);
-      
+        System.out.println("Borrando " + o);
+
         opciones.remove(o);
     }
 
@@ -114,9 +114,13 @@ public class VotoYDebateController implements Serializable {
                 mapa.put(t.getId(), tn);
             }
             for (Long tid : mapa.keySet()) {
-                if (((Tema) mapa.get(tid).getData()).getPater() != 0) {
-                    mapa.get(tid).setParent(mapa.get(((Tema) mapa.get(tid).getData()).getPater()));
+                try {
+                    if (((Tema) mapa.get(tid).getData()).getPater() != 0) {
+                        mapa.get(tid).setParent(mapa.get(((Tema) mapa.get(tid).getData()).getPater()));
+                    }
+                } catch (Exception e) {
                 }
+
 
             }
         }
