@@ -15,20 +15,31 @@
 
     width: 285px;
     border: 1px solid #e5dfd8;
+    font-size: 16px;
+    margin: 0px auto;
 }
 
 .headerTabla {
+    margin: 0px auto;
     background-color: #e5dfd8;
     color: #555555;
     width: 281px;
     border: 1px solid #e5dfd8;
     padding: 2px;
+        font-size: 16px;
 }
 
 .renglonTabla {
     border-top: 1px solid #e5dfd8;
-    padding: 2px;    
-    
+    padding: 2px;        
+}
+.renglonTabla1 {
+    border-top: 1px solid #e5dfd8;
+    padding: 2px;        
+}
+.renglonTabla2 {
+    border-top: 1px solid #e5df08;
+    padding: 2px;        
 }
 
 .agregar {

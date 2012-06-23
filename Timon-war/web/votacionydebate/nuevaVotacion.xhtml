@@ -118,13 +118,16 @@
                                      action="#{vydc.agregarOpcion}"
                                      update="tituloOpcion,editorOpcion,:formaNuevaVotacion:panelOpciones"
                                      />
+                    
                     <h:panelGroup id="panelOpciones">
                         <div class="headerTabla" style="width:396px;">Opciones para la votación:</div>
                         <div class="tabla" style="width:400px;">
-                            <ui:repeat id="listaOpciones" value="#{vydc.opciones}" var="opcion" varStatus="x">
+                            <ui:repeat id="listaOpciones" value="#{vydc.opciones}"  var="opcion" varStatus="x">
+                                #{x.index mod 2 eq 1}
+                                <c:if test="#{(x.index mod 2) eq 1}">Alfonso</c:if>
                                 <div class="renglonTabla" onmouseover="$('#borraOpcion#{x.index}').toggle();" onmouseout="$('#borraOpcion#{x.index}').toggle();">
                                     <div style="float: left;">
-                                        #{opcion.nombre} #{x.index}
+                                        #{opcion.nombre}
                                     </div>
                                     <div style="float: right;" >
                                         <p:commandLink action="#{vydc.borrarOpcion(x.index)}" process="@this" update=":formaNuevaVotacion:panelOpciones">
