@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html" 
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                >
+
+
+    <h1>Selecciona los temas a los que pertenece esta votación</h1>
+    Los miembros que sean delegados en estos temas podrán hacer efectiva su delegación de estos temas en la votación.
+    <div style="margin-top: 20px;">
+        <div style=" float: left;">
+            <p:tree value="#{vydc.raiz}" style="width:270px; "  var="node" id="tree" selection="#{vydc.selectedTema}" selectionMode="single">
+                <p:treeNode id="treenode">
+                    #{node.nombre}
+                </p:treeNode>
+            </p:tree>
+        </div>
+
+        <p:commandLink style="font-size:16px; text-decoration: none;" 
+                       process="@this,tree"  action="#{vydc.agregarTema}" update="panelListaTemas">
+            <div class="mopoff" style="  font-weight: normal; cursor: pointer; color: white; margin-left: 12px; text-align: center;">
+                AGREGAR<br/>
+                <span style="font-size:32px;">&rarr;</span>
+            </div>
+        </p:commandLink>
+
+
+        <div style="float: left; width: 250px; margin-left: 10px;" >
+            <h:panelGroup id="panelListaTemas">
+                <div class="headerTabla">La votación pertenece a estos temas:</div>
+                <div class="tabla">
+                    <ui:repeat id="listaTemas" value="#{vydc.selecTemas}" var="tema">
+                        <div class="renglonTabla" onmouseover="$('#borraTema#{tema.id}').toggle();" onmouseout="$('#borraTema#{tema.id}').toggle();">
+                            <div style="float: left;">
+                                #{tema.nombre}
+                            </div>
+                            <div style="float: right;" >
+                                <p:commandLink action="#{vydc.borrarTema(tema)}"
+                                               process="@this"
+                                               update=":formaNuevaVotacion:panelListaTemas">
+                                    <img style="display: none; cursor: pointer;" id="borraTema#{tema.id}" src="../images/borrar.png" />
+                                </p:commandLink>
+
+                            </div>
+                            <div style="clear:both;"/>
+                        </div>                                    
+                    </ui:repeat>
+                </div>
+            </h:panelGroup>
+        </div>
+        <div style="clear: both;" />
+    </div>
+
+
+
+
+</ui:composition>

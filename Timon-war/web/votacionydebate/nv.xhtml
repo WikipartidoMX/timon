@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html" 
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                template="votacionTemplate.xhtml">
+
+    <ui:param name="donde" value="menuvotdeb" />
+    <ui:param name="dondevot" value="menuvotPonleTitulo" />
+
+    <ui:define name="content">
+        <h:form id="formaNuevaVotacion" enctype="multipart/form-data">
+
+
+            <div id="definicion" class="seccion">
+                <ui:include src="votDefinicion.xhtml" />
+            </div>
+            <div id="temas" style="display: none;" class="seccion">
+                <ui:include src="votTemas.xhtml" />
+            </div>
+            <div id="estados" style="display: none;" class="seccion">
+                <ui:include src="votEstados.xhtml" />
+            </div>
+            <div id="imagen" style="display: none;" class="seccion">
+                <ui:include src="votImagen.xhtml" />
+            </div>
+            <div id="ops" style="display: none;" class="seccion">
+                <ui:include src="votOpciones.xhtml" />
+            </div>   
+            
+            <p:messages id="messages" />
+
+
+        </h:form>
+
+    </ui:define>
+
+
+
+</ui:composition>

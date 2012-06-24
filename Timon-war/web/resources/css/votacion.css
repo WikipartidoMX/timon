@@ -49,3 +49,32 @@
     text-align: center;
     border: 1px solid #e5dfd8;
 }
+
+#menuNuevaVotacion {
+    position: relative;
+    background-color: #403d3b;
+    color: white;
+    padding: 0px;
+    margin: 0px 0px 0px 0px;
+    height: 33px;
+    font-family: 'Arimo';
+    font-size:  14px;
+
+}
+
+.votmopon {
+    float:left;
+    background-color: #651759;
+    padding: 8px;
+}
+.votmopoff {
+    float:left;
+    background-color: #403d3b;
+    padding: 8px;
+    border-right: 1px solid grey;
+}
+.votmophover {
+    float:left;
+    background-color:darkmagenta;    
+    padding: 8px;
+}
