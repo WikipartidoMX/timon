@@ -1,12 +1,14 @@
 
+
+
 #container {
     position: relative;
     background-color: #7f7a77;
     padding: 1px;
     margin: 0px 0px 0px 0px;
-    width:900px;
+    width:1000px;
     margin-left: 50%;
-    left: -450px;
+    left: -500px;
     margin-top: 10px;
     margin-bottom: 10px;
     
@@ -56,6 +58,7 @@
     background-color: #fff5ed;
     padding: 5px;
     margin: 0px 0px 0px 0px;
+    font-family: 'Molengo';
 }
 
 #bottom {
@@ -76,6 +79,7 @@
     padding: 15px;
     margin-bottom: 15px;
     margin-top: 15px;
+    font-family: 'Molengo';
 }
 
 .cajaTitulo {
@@ -87,8 +91,9 @@
     padding: 10px;
     background-color: #e5dfd8;
     margin-top: 15px;
-    font-family: 'Arimo';
-    font-size:  28px;    
+font-family: 'Francois One', sans-serif;
+    font-weight: bold;
+    font-size:  42px;    
 }
 
 .cajaContent {
@@ -100,7 +105,7 @@
     padding-right: 10px;
     margin-bottom: 15px;
     padding-bottom: 15px;
-    
+    font-family: 'Molengo';
 }
 
 
@@ -117,3 +122,8 @@
 
 
 }
+
+
+
+
+

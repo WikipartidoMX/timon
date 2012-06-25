@@ -10,27 +10,36 @@
 
 
 
-
-            <div style=" margin-top: 15px;">
-                <div class="campo">Título para la Votación</div>
-                <div class="valor">
-                    <p:inputText size="30" id="nombre" required="true"  requiredMessage="Se requiere un título para la votación" style="font-size: 24px; color:grey;" value="#{vydc.nuevaVotacion.nombre}">
-                        <f:ajax event="blur" render="errornombre"  />
-                    </p:inputText><br/>
-                    <h:message for="nombre" id="errornombre" style="color:red"/>
-                </div>
+    <div class="caja" style="width: 800px;">
+        <div style=" margin-top: 15px;">
+            <div class="campo">Título para la Votación</div>
+            <div class="valor">
+                <p:inputText size="30" id="nombre" required="true"  requiredMessage="Se requiere un título para la votación" style="font-size: 24px; color:grey;" value="#{vydc.nuevaVotacion.nombre}">
+                    <f:ajax event="blur" render="errornombre"  />
+                </p:inputText><br/>
+                <h:message for="nombre" id="errornombre" style="color:red"/>
             </div>
-            <div style=" margin-top: 15px;">
-                <div class="campo">Descripción</div>
-                <h:inputTextarea style="font-size:18px; color: #666666;" cols="50" rows="6" id="editorDescripcion" value="#{vydc.nuevaVotacion.descripcion}">
-                    <f:ajax event="blur" render=""  />
-                </h:inputTextarea>
-                
-
-                <h:message for="nombre" id="erroreditorDescripcion" style="color:red"/>
-                
+        </div>
+        <div style=" margin-top: 15px;">
+            <div class="campo">URL (en caso de que exista un documento)</div>
+            <div class="valor">
+                <p:inputText size="30" id="url" required="false"  requiredMessage="Se requiere un URL para la votación" style="font-size: 24px; color:grey;" value="#{vydc.nuevaVotacion.url}">
+                    <f:ajax event="blur" render="errorurl"  />
+                </p:inputText><br/>
+                <h:message for="url" id="errorurl" style="color:red"/>
             </div>
+        </div>        
+        <div style=" margin-top: 15px;">
+            <div class="campo">Descripción</div>
+            <h:inputTextarea style="font-size:18px; color: #666666;" cols="50" rows="6" id="editorDescripcion" value="#{vydc.nuevaVotacion.descripcion}">
+                <f:ajax event="blur" render=""  />
+            </h:inputTextarea>
 
+
+            <h:message for="nombre" id="erroreditorDescripcion" style="color:red"/>
+
+        </div>
+    </div>
 
 
 </ui:composition>

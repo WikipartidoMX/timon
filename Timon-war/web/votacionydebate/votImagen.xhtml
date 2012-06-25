@@ -7,19 +7,21 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
                 >
-
-    <p:fileUpload allowTypes="/(\.|\/)(gif|jpe?g|png)$/" sizeLimit="500000"
-                  auto="true"
-                  style="width: 700px;"
-                  fileUploadListener="#{vydc.handleFileUpload}"
-                  label="Elige una imagen para la votación"
-                  invalidFileMessage="EL formato de la imagen no es correcto" 
-                  invalidSizeMessage="No se permiten imagenes mayores a 500kb" 
-                  value="#{vydc.imagen}" update="imagen" />
-    <div class="caja" style="width:600px">
-        <p:graphicImage cache="false" style="width:600px" id="imagen" url="/ImagenDeNuevaVotacion" />
+    <div class="caja" style="width: 800px;">
+        <div class="caja" style="width:600px">
+            <p:fileUpload allowTypes="/(\.|\/)(gif|jpe?g|png)$/" sizeLimit="500000"
+                          auto="true"
+                          style="width: 600px;"
+                          fileUploadListener="#{vydc.handleFileUpload}"
+                          label="Elige una imagen para la votación"
+                          invalidFileMessage="EL formato de la imagen no es correcto" 
+                          invalidSizeMessage="No se permiten imagenes mayores a 500kb" 
+                          value="#{vydc.imagen}" update="imagen" />
+        </div>
+        <div class="caja" style="width:600px">
+            <p:graphicImage alt="IMAGEN" cache="false" style="width:600px" id="imagen" url="/ImagenDeNuevaVotacion" />
+        </div>
     </div>
-
 
 
 </ui:composition>
