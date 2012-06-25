@@ -97,12 +97,13 @@
                     </div>
                 </div>
                 <div style="clear: both;" />
+
                 <div class="caja" style="width:600px;">
                     <h1>Ingresa las Opciones para la Votación</h1>
                     <div style=" margin-top: 15px;">
                         <div class="campo">Título de la Opción</div>
                         <div class="valor">
-                            <p:inputText size="30" id="tituloOpcion" required="true"  requiredMessage="Se requiere un título para la opción" style="font-size: 24px; color:grey;" value="#{vydc.nuevaOpcion.nombre}">
+                            <p:inputText size="30" id="tituloOpcion"  requiredMessage="Se requiere un título para la opción" style="font-size: 24px; color:grey;" value="#{vydc.nuevaOpcion.nombre}">
                                 <f:ajax event="blur" render="errortituloopcion"  />
                             </p:inputText><br/>
                             <h:message for="tituloOpcion" id="errortituloopcion" style="color:red"/>
@@ -112,33 +113,39 @@
                         <div class="campo">Descripción</div>
                         <p:editor id="editorOpcion" value="#{vydc.nuevaOpcion.descripcion}" width="600" />
                     </div>
-                    <p:commandButton value="Agregar Opcion" 
+                    <p:commandButton style="margin-top: 15px; margin-bottom: 15px;" value="Agregar Opcion" 
                                      process="@this" 
                                      action="#{vydc.agregarOpcion}"
-                                     update="panelListaOpciones,tituloOpcion,editorOpcion"
+                                     update="tituloOpcion,editorOpcion,:formaNuevaVotacion:panelOpciones"
                                      />
-                        <h:panelGroup id="panelListaOpciones">
-                            <div class="headerTabla">Opciones para la votación:</div>
-                            <div class="tabla">
-                                <ui:repeat id="listaOpciones" value="#{vydc.opciones}" var="opcion" varStatus="x">
-                                    <div class="renglonTabla" onmouseover="$('#borraOpcion#{x.index}').toggle();" onmouseout="$('#borraOpcion#{x.index}').toggle();">
-                                        <div style="float: left;">
-                                            #{opcion.nombre} #{x.index}
-                                        </div>
-                                        <div style="float: right;" >
-                                            <p:commandLink action="#{vydc.borrarOpcion(x.index)}" process="@this" update=":formaNuevaVotacion:panelListaOpciones">
-                                                <img style="display: none; cursor: pointer;" id="borraOpcion#{x.index}" src="../images/borrar.png" />
-                                            </p:commandLink>
-
-                                        </div>
-                                        <div style="clear:both;"/>
+                    <h:panelGroup id="panelOpciones">
+                        <div class="headerTabla" style="width:396px;">Opciones para la votación:</div>
+                        <div class="tabla" style="width:400px;">
+                            <ui:repeat id="listaOpciones" value="#{vydc.opciones}" var="opcion" varStatus="x">
+                                <div class="renglonTabla" onmouseover="$('#borraOpcion#{x.index}').toggle();" onmouseout="$('#borraOpcion#{x.index}').toggle();">
+                                    <div style="float: left;">
+                                        #{opcion.nombre} #{x.index}
                                     </div>
-                                </ui:repeat>
-                            </div>
-                        </h:panelGroup>                    
+                                    <div style="float: right;" >
+                                        <p:commandLink action="#{vydc.borrarOpcion(x.index)}" process="@this" update=":formaNuevaVotacion:panelOpciones">
+                                            <img style="display: none; cursor: pointer;" id="borraOpcion#{x.index}" src="../images/borrar.png" />
+                                        </p:commandLink>
+
+                                    </div>
+                                    <div style="clear:both;"/>
+                                </div>
+                            </ui:repeat>
+                        </div>
+                    </h:panelGroup>
                 </div>
+
+                <div class="caja" style="width:600px;">
+                    <h1>Ingresa una imagen</h1>
+                </div>
+                        <center><p:commandButton value="GUARDAR VOTACIÓN" process="@this" action="#{vydc.guardarVotacion}" update="messages" /></center>
             </div>
-            <p:messages />
+
+                <p:messages id="messages" />
 
 
         </h:form>

@@ -49,18 +49,15 @@ public class UserManager implements Serializable {
     }
     
     public boolean isValid() {
-        //System.out.println("isValid...");
         boolean v = false;
         if (user != null) {
             v = true;
-            //System.out.println("Es "+usuario.getNombre());
+
         }
-        //System.out.println(v);
         return v;
     }
 
-    public String logout() {
-        
+    public String logout() {        
         FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
         return "/index.xhtml?faces-redirect=true";
     }
@@ -78,9 +75,7 @@ public class UserManager implements Serializable {
         }
         if (u != null) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Bienvenido " + u.getNombre(), null));
-
             if (origen != null) {
-
                 r = origen + "?faces-redirect=true";
             } else {
                 r = null;
@@ -94,9 +89,6 @@ public class UserManager implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Usuario inválido...", null));
         }
         this.user = u;
-        
-        //System.out.println("Resultado del login: " + r);
-
         return r;
     }
     public String loginsinredirect() {
