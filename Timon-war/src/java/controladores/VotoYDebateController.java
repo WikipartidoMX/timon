@@ -26,8 +26,10 @@ import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
+import org.primefaces.model.UploadedFile;
 import sessionbeans.TimonLogic;
 import sessionbeans.VotoYDebateLogic;
 
@@ -49,6 +51,7 @@ public class VotoYDebateController implements Serializable {
     private TreeNode raiz = null;
     private List<Estado> selecEstados;
     private List<Tema> selecTemas;
+    private UploadedFile imagen;
     @Inject
     VotoYDebateLogic vydl;
     @Inject
@@ -69,8 +72,10 @@ public class VotoYDebateController implements Serializable {
     }
 
     public void prueba() {
-        vydl.cuentaConSchulze();
+    }
 
+    public void handleFileUpload(FileUploadEvent event) {
+        imagen = event.getFile();
     }
 
     public String guardarVotacion() {
@@ -288,5 +293,19 @@ public class VotoYDebateController implements Serializable {
      */
     public void setTab(org.primefaces.component.tabview.TabView tab) {
         this.tab = tab;
+    }
+
+    /**
+     * @return the imagen
+     */
+    public UploadedFile getImagen() {
+        return imagen;
+    }
+
+    /**
+     * @param imagen the imagen to set
+     */
+    public void setImagen(UploadedFile imagen) {
+        this.imagen = imagen;
     }
 }

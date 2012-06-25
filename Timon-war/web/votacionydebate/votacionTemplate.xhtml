@@ -10,12 +10,13 @@
 
 
     <h:head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />        
         <link href="http://fonts.googleapis.com/css?family=Arimo" rel="stylesheet" type="text/css" />
         <link href='http://fonts.googleapis.com/css?family=Francois+One' rel='stylesheet' type='text/css' />
         <link href="http://fonts.googleapis.com/css?family=Molengo" rel="stylesheet" type="text/css" />        
         <link href="#{facesContext.externalContext.request.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css" />
-        <link href="#{facesContext.externalContext.request.contextPath}/resources/css/cssLayout.css" rel="stylesheet" type="text/css" />        
+        <link href="#{facesContext.externalContext.request.contextPath}/resources/css/cssLayout.css" rel="stylesheet" type="text/css" />
+        <link href="#{facesContext.externalContext.request.contextPath}/resources/css/votacion.css" rel="stylesheet" type="text/css" />           
         <h:outputScript library="primefaces" name="jquery/jquery.js" target="head" />     
         <title>Wikipartido de México</title>
     </h:head>
@@ -23,18 +24,27 @@
     <h:body>
 
         <div id="container">
-            <div id="top"><ui:include src="/header.xhtml" /></div>
+            <div id="top"><ui:include src="../header.xhtml" /></div>
             <div id="menu">                
-                <ui:insert name="menu"><ui:include src="/menu.xhtml" /></ui:insert>
+                <ui:insert name="menu"><ui:include src="../menu.xhtml" /></ui:insert>
             </div>
             <div style="clear:both;"  />
             <div id="content">
-
-                <ui:insert name="content">Content</ui:insert>
+                <div class="cajaTitulo" style="width: 935px;">
+                    NUEVA VOTACIÓN
+                </div>
+                <div class="cajaContent" style="width: 955px; padding: 0px;">
+                    <div id="menuNuevaVotacion">                
+                        <ui:insert name="menu"><ui:include src="menuVotacion.xhtml" /></ui:insert>
+                    </div>
+                    <div style="padding: 10px;">
+                        <ui:insert name="content">Content</ui:insert>
+                    </div>
+                </div>                
             </div>        
 
             <div id="bottom">
-                <ui:insert name="bottom"><ui:include src="/footer.xhtml" /></ui:insert>
+                <ui:insert name="bottom"><ui:include src="../footer.xhtml" /></ui:insert>
             </div>
         </div>
 
