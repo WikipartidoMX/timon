@@ -27,7 +27,7 @@
     width: 281px;
     border: 1px solid #e5dfd8;
     padding: 2px;
-        font-size: 16px;
+    font-size: 16px;
 }
 
 .renglonTabla {
@@ -71,4 +71,13 @@
     float:left;
     background-color:darkmagenta;    
     padding: 8px;
+}
+
+
+
+.cajaVot {
+    position: relative;
+    border: 1px solid #e5dfd8;
+    border-radius: 8px 8px 8px 8px;
+
 }

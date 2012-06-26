@@ -1,4 +1,5 @@
 body {
+    background-image: url(../../images/fondo.png);
     background-color: #bfb8b2;
     font-size: 14px;
     font-family: 'Molengo';
@@ -7,7 +8,7 @@ body {
 }
 
 h1 {
-font-family: 'Francois One', sans-serif;
+    font-family: 'Francois One', sans-serif;
     font-size:  42px;
     font-weight: bold;
     margin: 0px;
@@ -29,15 +30,15 @@ h3 {
     color: #555555;
 }
 a:link, a:visited {
-  color: #045491;
-  font-weight : bold;
-  text-decoration: none;
+    color: #045491;
+    font-weight : bold;
+    text-decoration: none;
 }
 
 a:link:hover, a:visited:hover  {
-  color: #045491;
-  font-weight : bold;
-  text-decoration : underline;
+    color: #045491;
+    font-weight : bold;
+    text-decoration : underline;
 }
 
 .campo {
