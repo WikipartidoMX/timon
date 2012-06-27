@@ -26,7 +26,7 @@
                     <div>
                         <div class="campo">URL (en caso de haber un documento)</div>
                         <div class="valor">
-                            <p:inputText size="20" id="urlOpcion" required="false" requiredMessage="Se requiere un url para la opción" style="font-size: 26px; color:grey;" value="#{vydc.nuevaOpcion.nombre}">
+                            <p:inputText size="20" id="urlOpcion" required="false" requiredMessage="Se requiere un url para la opción" style="font-size: 26px; color:grey;" value="#{vydc.nuevaOpcion.url}">
                                 <f:ajax event="blur" render="errorurlopcion"  />
                             </p:inputText><br/>
                             <h:message for="urlOpcion" id="errorurlopcion" style="color:red"/>
@@ -46,7 +46,7 @@
 
             <p:commandLink style="font-size:16px; text-decoration: none;" 
                            process="@this"  action="#{vydc.agregarOpcion}"
-                           update="panelOpciones,tituloOpcion,editorOpcion">
+                           update="panelOpciones,tituloOpcion,editorOpcion,urlOpcion">
                 <div class="mopoff" style="margin-top: 20px; font-weight: normal; cursor: pointer; color: white; margin-left: 20px; text-align: center;">
                     AGREGAR<br/>
                     <span style="font-size:32px;">&rarr;</span>

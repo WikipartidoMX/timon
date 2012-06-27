@@ -53,6 +53,8 @@ public class VotoYDebateController implements Serializable {
     private List<Tema> selecTemas;
     private UploadedFile imagen;
     @Inject
+    UserManager um;
+    @Inject
     VotoYDebateLogic vydl;
     @Inject
     private TimonLogic tl;
@@ -85,10 +87,28 @@ public class VotoYDebateController implements Serializable {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "La votación debe contener al menos dos opciones", null));
                 return "";
             }
+            
+            nuevaVotacion.setOpciones(new LinkedList<Opcion>());            
+            for (Opcion o : opciones) {
+                o.setVotacion(nuevaVotacion);
+                nuevaVotacion.getOpciones().add(o);                
+            }
+            nuevaVotacion.setEstados(selecEstados);
+            nuevaVotacion.setTemas(selecTemas);
+            if (nuevaVotacion.getId() != null) {
+                nuevaVotacion = (Votacion)tl.merge(nuevaVotacion);                
+            }
+            else {
+                nuevaVotacion.setMiembro(um.getUser());
+                tl.persist(nuevaVotacion);
+            }
+            nuevaVotacion = new Votacion();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "La votación ha sido guardada", null));
+
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No es posible guardar la votación", null));
         }
-        return "";
+        return "votaciones.xhtml?faces-redirect=true";
     }
 
     public void agregarOpcion() {

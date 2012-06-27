@@ -44,8 +44,9 @@ public class Votacion implements Serializable {
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date fechaCierre;
     private String url;
+    @Lob
     private String descripcion;
-    @OneToMany(mappedBy="votacion")
+    @OneToMany(mappedBy="votacion", cascade=CascadeType.ALL)
     private List<Opcion> opciones;
 
     public Long getId() {

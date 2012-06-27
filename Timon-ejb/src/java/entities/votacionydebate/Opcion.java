@@ -31,6 +31,7 @@ public class Opcion implements Serializable {
     @ManyToOne
     private Votacion votacion;
     private String url;
+    @Lob
     private String descripcion;
 
     public Long getId() {
