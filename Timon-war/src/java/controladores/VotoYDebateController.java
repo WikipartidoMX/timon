@@ -71,6 +71,7 @@ public class VotoYDebateController implements Serializable {
         selecTemas = new LinkedList<Tema>();
         nuevaOpcion = new Opcion();
         opciones = new LinkedList<Opcion>();
+        imagen = null;
     }
 
     public void prueba() {
@@ -102,7 +103,8 @@ public class VotoYDebateController implements Serializable {
                 nuevaVotacion.setMiembro(um.getUser());
                 tl.persist(nuevaVotacion);
             }
-            nuevaVotacion = new Votacion();
+            resetVotacion();
+            
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "La votación ha sido guardada", null));
 
         } catch (Exception e) {
