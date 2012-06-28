@@ -17,12 +17,14 @@ package sessionbeans;
 import entities.registro.Miembro;
 import entities.votacionydebate.Opcion;
 import entities.votacionydebate.Tema;
+import entities.votacionydebate.Votacion;
 import entities.votacionydebate.Voto;
 import java.io.Serializable;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -43,6 +45,13 @@ public class VotoYDebateLogic implements Serializable {
         return em.find(Tema.class, id);
     }
     
+    public List<Votacion> getVotaciones(int start, int max) {
+        String ejbql = "";
+        Query query = em.createQuery(ejbql);
+        query.setFirstResult(start);
+        query.setMaxResults(max);
+        return query.getResultList();
+    }
     
 
     public void cuentaConSchulze() {
