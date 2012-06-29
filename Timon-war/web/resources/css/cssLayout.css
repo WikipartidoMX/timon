@@ -11,7 +11,7 @@
     left: -500px;
     margin-top: 10px;
     margin-bottom: 10px;
-    
+
     border-radius: 5px 5px 5px 5px;
 }
 #top {
@@ -91,7 +91,7 @@
     padding: 10px;
     background-color: #e5dfd8;
     margin-top: 15px;
-font-family: 'Francois One', sans-serif;
+    font-family: 'Francois One', sans-serif;
     font-weight: bold;
     font-size:  42px;    
 }
@@ -123,7 +123,68 @@ font-family: 'Francois One', sans-serif;
 
 }
 
+.ui-datagrid-content {
+    border: none;
+    padding-left: 20px;
+    background: transparent;
 
+}    
 
+.cajaVot {
+    position: relative;
+    border: 1px solid #e5dfd8;
+    border-radius: 8px 8px 8px 8px;
+    width: 280px;
+    height: 280px;
+    background-size: 280px 280px;
+}
 
+.headerCajaVot {
+    background-color: rgba(0,0,0,0.65);
+    border-radius: 8px 8px 0px 0px;
+    font-family: 'Arimo', sans-serif;
+    font-size:  20px;
+    color:white;     
+}
 
+.tituloCajaVot {
+    padding: 5px 5px 10px 5px;
+    text-shadow: 1px 1px 1px #000;
+}
+
+.avatarCajaVot {
+    position: relative;
+    float: left;
+    -moz-box-shadow:2px 2px 4px 1px rgba(34, 34, 34, 0.5);
+    -webkit-box-shadow:2px 2px 4px 1px rgba(34, 34, 34, 0.5);
+    box-shadow:2px 2px 4px 1px rgba(34, 34, 34, 0.5);                 
+    left: 5px;
+    top:-8px;
+    width:50px;
+    height: 50px;
+    border-radius: 5px 5px 5px 5px;
+}
+
+.convocaCajaVot {
+    float: left;
+    color: white;
+    font-size: 10px;
+    margin-left: 10px;
+    text-shadow: 1px 1px 1px #000;
+}
+
+.descripcionCajaVot {
+    background-color: rgba(0,0,0,0.65);
+    border-radius: 0px 0px 8px 8px;
+    font-family: 'Molengo';
+    font-size:  14px;
+    font-style: italic;
+    text-shadow: 1px 1px 1px #000;
+    color:white;
+    position: absolute;
+    bottom: 0px;    
+}
+
+.textoDescCajaVot {
+    padding: 10px 5px 5px 5px;    
+}

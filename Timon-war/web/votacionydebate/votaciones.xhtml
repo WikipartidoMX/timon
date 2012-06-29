@@ -20,16 +20,28 @@
             <a href="nv.xhtml">+Nueva</a>
         </div>
 
-        <div class="caja" style="width:280px; float: left;">
-            test
-        </div>
-        <div class="caja" style="width:280px; float: left; margin-left: 20px;">
-            test
-        </div>
-        <div class="caja" style="width:280px; float: left; margin-left: 20px;">
-            test
-        </div>
-        <div style="clear: both;" />
+        <p:dataGrid value="#{vydc.votaciones}" var="v">
+            <div class="cajaVot" style="
+                 background-image: url(#{facesContext.externalContext.request.contextPath}/ImagenDeVotacion?vid=#{v.id});
+                 ">
+                <div class="headerCajaVot">
+                    <div class="tituloCajaVot">
+                        #{v.nombre}
+                    </div>
+                </div>
+                <img class="avatarCajaVot" src="#{facesContext.externalContext.request.contextPath}/ShowAvatar?mid=#{v.miembro.id}"
+                     />
+                <div class="convocaCajaVot">
+                    Convocada por <br/> #{v.miembro.nombre} #{v.miembro.apellidoPaterno} #{v.miembro.apellidoMaterno}
+                </div>
+
+                <div class="descripcionCajaVot">
+                    <div class="textoDescCajaVot">
+                        #{v.descripcion}
+                    </div>
+                </div>
+            </div>
+        </p:dataGrid>
     </ui:define>
 
 

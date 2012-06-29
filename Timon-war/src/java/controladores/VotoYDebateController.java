@@ -15,6 +15,7 @@
 package controladores;
 
 import entities.registro.Estado;
+import entities.votacionydebate.ImagenVotacion;
 import entities.votacionydebate.Opcion;
 import entities.votacionydebate.Tema;
 import entities.votacionydebate.Votacion;
@@ -77,11 +78,19 @@ public class VotoYDebateController implements Serializable {
     public void prueba() {
     }
 
+    public List<Votacion> getVotaciones() {
+        return vydl.getVotaciones(0, 100);
+    }
+
     public void handleFileUpload(FileUploadEvent event) {
         imagen = event.getFile();
     }
 
     public String guardarVotacion() {
+        if (um.getUser() == null) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Para guardar la votación debe ingresar a la plataforma como miembro.", null));
+            return "";
+        }
         try {
             System.out.println("Guardando");
             if (opciones.size() < 2) {
@@ -89,22 +98,38 @@ public class VotoYDebateController implements Serializable {
                 return "";
             }
             
-            nuevaVotacion.setOpciones(new LinkedList<Opcion>());            
+            if (nuevaVotacion.getNombre() == null) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "La votación necesita un título", null));
+                return "";                
+            }
+            if (nuevaVotacion.getFechaCierre() == null) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "La votación requiere una fecha de cierre", null));
+                return "";                
+            }            
+
+            nuevaVotacion.setOpciones(new LinkedList<Opcion>());
             for (Opcion o : opciones) {
                 o.setVotacion(nuevaVotacion);
-                nuevaVotacion.getOpciones().add(o);                
+                nuevaVotacion.getOpciones().add(o);
             }
             nuevaVotacion.setEstados(selecEstados);
             nuevaVotacion.setTemas(selecTemas);
             if (nuevaVotacion.getId() != null) {
-                nuevaVotacion = (Votacion)tl.merge(nuevaVotacion);                
-            }
-            else {
+                System.out.println("Mergeando la votacion...");
+                nuevaVotacion = (Votacion) tl.merge(nuevaVotacion);
+            } else {
                 nuevaVotacion.setMiembro(um.getUser());
+                nuevaVotacion.setFechaCreacion(new Date());
                 tl.persist(nuevaVotacion);
+                if (imagen != null) {
+                    ImagenVotacion iv = new ImagenVotacion();
+                    iv.setFile(imagen.getContents());
+                    iv.setVotacion(nuevaVotacion);
+                    tl.persist(iv);
+                }
             }
             resetVotacion();
-            
+
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "La votación ha sido guardada", null));
 
         } catch (Exception e) {
