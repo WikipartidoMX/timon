@@ -14,15 +14,15 @@
  */
 package sessionbeans;
 
+import entities.registro.Estado;
 import entities.registro.Miembro;
-import entities.votacionydebate.Opcion;
-import entities.votacionydebate.Tema;
-import entities.votacionydebate.Voto;
+import entities.votacionydebate.*;
 import java.io.Serializable;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -43,7 +43,36 @@ public class VotoYDebateLogic implements Serializable {
         return em.find(Tema.class, id);
     }
     
+    public List<Votacion> getVotaciones(int start, int max) {
+        return getVotaciones(start, max, null, null);
+    }
     
+
+    public List<Votacion> getVotaciones(int start, int max, List<Tema> temas, Estado estado) {
+        String ejbql = "select v from Votacion v";
+        /* Falta implementar filtros (si llegamos a tener muchas votaciones)
+        for (Tema t : temas) {
+            
+        }
+        * 
+        */
+        Query query = em.createQuery(ejbql);
+        query.setFirstResult(start);
+        query.setMaxResults(max);
+        return query.getResultList();
+    }
+    
+    public byte[] getImagenVotacion(long vid) {
+        try {
+            ImagenVotacion a = (ImagenVotacion)em.createQuery("select i from ImagenVotacion i where i.votacion.id=:vid").setParameter("vid", vid).getSingleResult();
+            return a.getFile();
+        } catch (Exception e) {
+            //System.out.println(e.getMessage());
+            return null;
+        }
+
+    }    
+
 
     public void cuentaConSchulze() {
         System.out.println("Conteo con Schulze...\n\n");
