@@ -6,8 +6,11 @@ package servlets;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -28,7 +31,13 @@ public class ImagenDeVotacion extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         long vid = Integer.parseInt(request.getParameter("vid"));
-        byte[] f = vydl.getImagenVotacion(vid);
+        byte[] f = null;
+        f = vydl.getImagenVotacion(vid);
+        if (f == null) {
+            String path = request.getServletContext().getRealPath("/images/fondoVotacion.png");
+            File file = new File(path);
+            f = org.apache.commons.io.FileUtils.readFileToByteArray(file);
+        }
         if (f != null) {
             ByteArrayInputStream input = new ByteArrayInputStream(f);
             BufferedOutputStream output = new BufferedOutputStream(response.getOutputStream());
@@ -42,10 +51,7 @@ public class ImagenDeVotacion extends HttpServlet {
                 output.close();
             }
         }
-
-
     }
-
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

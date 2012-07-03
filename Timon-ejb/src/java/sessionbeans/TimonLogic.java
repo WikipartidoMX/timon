@@ -70,6 +70,10 @@ public class TimonLogic implements Serializable {
         }
     }
     
+    public Miembro getMiembro(long id) {
+        return em.find(Miembro.class, id);
+    }    
+    
     public Miembro getMiembroFromEmail(String email) {
         try {
             return (Miembro) em.createQuery("select m from Miembro m where m.email=:email").setParameter("email", email).getSingleResult();

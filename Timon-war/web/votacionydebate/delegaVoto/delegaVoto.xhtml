@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html" 
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                template="/unaColumnaTemplate.xhtml">
+    <ui:param name="donde" value="menudelvoto" />
+
+
+    <ui:define name="content">
+        <h:form id="forma">
+            <link href="#{facesContext.externalContext.request.contextPath}/resources/css/votacion.css" rel="stylesheet" type="text/css" /> 
+
+            <div id="headVotaciones">
+                <h1>Delegación del Voto</h1>
+            </div>
+            <div class="cajaTituloChico" style="width: 335px;">Busca un Miembro:</div>
+            <div class="cajaContent" style="width: 320px; padding-top:  5px;">
+                <p:autoComplete
+                    size="35"
+                    value="#{dc.selecMiembro}"
+                    id="miembro"
+                    completeMethod="#{dc.completarMiembro}"
+                    var="m"
+                    itemLabel="#{m.nombre} #{m.apellidoPaterno} #{m.apellidoMaterno}"
+                    itemValue="#{m}"
+                    converter="miembro"
+                    forceSelection="true"
+                    maxResults="8"
+                     
+
+                    >
+                    <p:column>
+                        <p:graphicImage cache="false" value="/ShowAvatar?mid=#{m.id}" width="50" height="50" />
+                    </p:column>
+                    <p:column>
+                        #{m.nombre} #{m.apellidoPaterno} #{m.apellidoMaterno}<br/>
+                        <span style="font-size: 10px;">#{m.municipio}, #{m.estado.nombre}</span>
+                    </p:column>
+
+                </p:autoComplete>
+
+
+            </div>
+            <div class="cajaTituloChico" style="width: 280px;">¿Qué es?</div>
+            <div class="cajaContent" style="width: 265px; padding-top:  5px;">
+                La delegación del voto es un poderoso mecanismo de representación que te permite 
+                designar a otros miembros del partido para representarte en ciertas votaciones. <br/><br/>
+                De esta forma, ya no tienes que estar pendiente de todas las votaciones que se llevan a cabo 
+                en el partido. Así mismo, incentivas y construyes liderazgos en base a su capacidad técnica y capacidad 
+                para debatir.
+                <br/><br/>
+                Se hace por tema y puede ser cancelada en cualquier momento. Ten en cuenta que no 
+                podrás votar en las votaciones de aquellos temas en los que has hecho la delegación, en estos temas 
+                solamente tu delegado puede votar. Puedes designar o cancelar delegados en cualquier momento, incluso 
+                en el transcurso de una votación (antes de su cierre).<br/><br/>
+                La delegación del voto no aplica en votaciones por personas (candidaturas, puestos del partido, etc.)
+
+            </div>
+
+            <div class="cajaTituloChico" style="width: 319px; margin-left: 0px;">Elije un Tema:</div>
+            <div style="">
+                <p:tree value="#{vydc.raiz}" style="width:310px; "  var="node" id="tree" selection="#{vydc.selectedTema}" selectionMode="single">
+                    <p:treeNode id="treenode">
+                        #{node.nombre}
+                    </p:treeNode>
+                </p:tree>
+            </div>
+
+
+        </h:form>
+    </ui:define>
+
+
+
+</ui:composition>

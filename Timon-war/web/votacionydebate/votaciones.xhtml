@@ -17,11 +17,11 @@
             <h1>VOTACIONES</h1>
         </div>
         <div id="menuVotaciones">
-            <a href="nv.xhtml">+Nueva</a>
+            <a href="nuevaVotacion/nv.xhtml">+Nueva</a>
         </div>
 
         <p:dataGrid value="#{vydc.votaciones}" var="v">
-            <div class="cajaVot" style="
+            <div onclick="location='votacion.xhtml?vid=#{v.id}';" class="cajaVot" style="
                  background-image: url(#{facesContext.externalContext.request.contextPath}/ImagenDeVotacion?vid=#{v.id});
                  ">
                 <div class="headerCajaVot">
@@ -40,6 +40,14 @@
                         #{v.descripcion}
                     </div>
                 </div>
+                <div class="timerCajaVot">
+                    <div class="textoTimerCajaVot">La votación cierra el 
+                        <h:outputText value="#{v.fechaCierre}" >
+                            <f:convertDateTime pattern="dd 'de' MMMM yyyy 'a las' K:mm a" locale="es" />
+                        </h:outputText>
+
+                    </div>
+                </div>                
             </div>
         </p:dataGrid>
     </ui:define>

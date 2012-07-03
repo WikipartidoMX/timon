@@ -25,6 +25,9 @@
         <c:if test="#{donde eq 'menuvotdeb'}"><c:set var="clase" value="mopon" /></c:if>
         <div id="menuvotdeb" class="#{clase}" onclick="location='#{facesContext.externalContext.request.contextPath}/faces/votacionydebate/votaciones.xhtml';">Votación y Debate</div>
         <c:if test="#{donde eq 'menuvotdeb'}"><c:set var="clase" value="mopoff" /></c:if>
+        <c:if test="#{donde eq 'menudelvot'}"><c:set var="clase" value="mopon" /></c:if>
+        <div id="menuvotdeb" class="#{clase}" onclick="location='#{facesContext.externalContext.request.contextPath}/faces/votacionydebate/delegaVoto/delegaVoto.xhtml';">Delegación de Voto</div>
+        <c:if test="#{donde eq 'menudelvot'}"><c:set var="clase" value="mopoff" /></c:if>        
         <c:if test="#{donde eq 'menuque_es'}"><c:set var="clase" value="mopon" /></c:if>
         <div id="menuque_es" class="#{clase}">¿Qué es?</div>
         <c:if test="#{donde eq 'menuque_es'}"><c:set var="clase" value="mopoff" /></c:if>

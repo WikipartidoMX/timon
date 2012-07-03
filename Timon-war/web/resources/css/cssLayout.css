@@ -90,10 +90,22 @@
     margin: 0px auto;
     padding: 10px;
     background-color: #e5dfd8;
-    margin-top: 15px;
     font-family: 'Francois One', sans-serif;
     font-weight: bold;
     font-size:  42px;    
+}
+
+.cajaTituloChico {
+    margin-top: 15px;
+    position: relative;
+    border: 1px solid #e5dfd8;
+    border-radius: 10px 10px 0px 0px;
+    margin: 0px auto;
+    padding-left: 5px;
+    background-color: #e5dfd8;
+    font-family: 'Francois One', sans-serif;
+    font-weight: bold;
+    font-size:  21px;    
 }
 
 .cajaContent {
@@ -137,6 +149,7 @@
     width: 280px;
     height: 280px;
     background-size: 280px 280px;
+    cursor: pointer;
 }
 
 .headerCajaVot {
@@ -175,16 +188,34 @@
 
 .descripcionCajaVot {
     background-color: rgba(0,0,0,0.65);
-    border-radius: 0px 0px 8px 8px;
+    width: 100%;
     font-family: 'Molengo';
     font-size:  14px;
     font-style: italic;
     text-shadow: 1px 1px 1px #000;
     color:white;
     position: absolute;
-    bottom: 0px;    
+    bottom: 25px;    
 }
 
 .textoDescCajaVot {
     padding: 10px 5px 5px 5px;    
+}
+
+.timerCajaVot {
+    height: 25px;
+    width: 100%;
+    background-color: #7f7a77;
+    border-radius: 0px 0px 8px 8px;
+    font-family: 'Molengo';
+    font-size:  12px;
+
+    color:white;
+    position: absolute;
+    bottom: 0px;    
+}
+
+.textoTimerCajaVot {
+    margin-left: 6px;
+    margin-top: 6px;
 }

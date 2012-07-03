@@ -42,7 +42,8 @@ import sessionbeans.VotoYDebateLogic;
 @SessionScoped
 public class VotoYDebateController implements Serializable {
 
-    private org.primefaces.component.tabview.TabView tab;
+    private Votacion votacion;
+    private long vid;
     private List<Opcion> opciones;
     private TreeNode selectedTema;
     private List<SelectItem> estados;
@@ -76,6 +77,13 @@ public class VotoYDebateController implements Serializable {
     }
 
     public void prueba() {
+        System.out.println("Prueba " + vid);
+    }
+
+    public void verVotacion() {
+
+            votacion = vydl.getVotacion(vid);
+
     }
 
     public List<Votacion> getVotaciones() {
@@ -97,15 +105,15 @@ public class VotoYDebateController implements Serializable {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "La votación debe contener al menos dos opciones", null));
                 return "";
             }
-            
+
             if (nuevaVotacion.getNombre() == null) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "La votación necesita un título", null));
-                return "";                
+                return "";
             }
             if (nuevaVotacion.getFechaCierre() == null) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "La votación requiere una fecha de cierre", null));
-                return "";                
-            }            
+                return "";
+            }
 
             nuevaVotacion.setOpciones(new LinkedList<Opcion>());
             for (Opcion o : opciones) {
@@ -114,6 +122,8 @@ public class VotoYDebateController implements Serializable {
             }
             nuevaVotacion.setEstados(selecEstados);
             nuevaVotacion.setTemas(selecTemas);
+            // El merge se hace en caso de edicion, pero no estamos seguros de querer editar una votacion
+            // a menos de que se active en una fecha futura.
             if (nuevaVotacion.getId() != null) {
                 System.out.println("Mergeando la votacion...");
                 nuevaVotacion = (Votacion) tl.merge(nuevaVotacion);
@@ -135,7 +145,7 @@ public class VotoYDebateController implements Serializable {
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No es posible guardar la votación", null));
         }
-        return "votaciones.xhtml?faces-redirect=true";
+        return "/votacionydebate/votaciones.xhtml?faces-redirect=true";
     }
 
     public void agregarOpcion() {
@@ -329,20 +339,6 @@ public class VotoYDebateController implements Serializable {
     }
 
     /**
-     * @return the tab
-     */
-    public org.primefaces.component.tabview.TabView getTab() {
-        return tab;
-    }
-
-    /**
-     * @param tab the tab to set
-     */
-    public void setTab(org.primefaces.component.tabview.TabView tab) {
-        this.tab = tab;
-    }
-
-    /**
      * @return the imagen
      */
     public UploadedFile getImagen() {
@@ -354,5 +350,33 @@ public class VotoYDebateController implements Serializable {
      */
     public void setImagen(UploadedFile imagen) {
         this.imagen = imagen;
+    }
+
+    /**
+     * @return the vid
+     */
+    public long getVid() {
+        return vid;
+    }
+
+    /**
+     * @param vid the vid to set
+     */
+    public void setVid(long vid) {
+        this.vid = vid;
+    }
+
+    /**
+     * @return the votacion
+     */
+    public Votacion getVotacion() {
+        return votacion;
+    }
+
+    /**
+     * @param votacion the votacion to set
+     */
+    public void setVotacion(Votacion votacion) {
+        this.votacion = votacion;
     }
 }

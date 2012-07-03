@@ -5,10 +5,7 @@
 package servlets;
 
 import controladores.VotoYDebateController;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,16 +19,22 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "ImagenDeNuevaVotacion", urlPatterns = {"/ImagenDeNuevaVotacion"})
 public class ImagenDeNuevaVotacion extends HttpServlet {
-    
+
     @Inject
     VotoYDebateController vydc;
-
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        byte[] f = null;
+        try {
+            f = vydc.getImagen().getContents();
+        } catch (Exception e) {
+            String path = request.getServletContext().getRealPath("/images/fondoVotacion.png");
+            File file = new File(path);
+            f = org.apache.commons.io.FileUtils.readFileToByteArray(file);
+        }
 
-        byte[] f = vydc.getImagen().getContents();
         if (f != null) {
 
             ByteArrayInputStream input = new ByteArrayInputStream(f);

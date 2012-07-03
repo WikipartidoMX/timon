@@ -19,6 +19,7 @@ import entities.registro.Miembro;
 import entities.votacionydebate.*;
 import java.io.Serializable;
 import java.util.List;
+import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -43,9 +44,25 @@ public class VotoYDebateLogic implements Serializable {
         return em.find(Tema.class, id);
     }
     
+    @PermitAll
     public List<Votacion> getVotaciones(int start, int max) {
         return getVotaciones(start, max, null, null);
     }
+    
+    public Votacion getVotacion(long id) {
+        return em.find(Votacion.class, id);
+    }
+    
+    public List<Miembro> completarMiembro(String q) {
+        return em.createQuery("select m from Miembro m where "
+                + "(m.nombre like :q or "
+                + "m.apellidoPaterno like :q or "
+                + "m.apellidoMaterno like :q) and "
+                + "m.paso = 2")
+                .setParameter("q", "%"+q+"%").getResultList();
+    }
+    
+
     
 
     public List<Votacion> getVotaciones(int start, int max, List<Tema> temas, Estado estado) {

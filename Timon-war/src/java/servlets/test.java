@@ -4,67 +4,49 @@
  */
 package servlets;
 
-import controladores.UserManager;
-import entities.registro.Miembro;
-import java.io.*;
-import javax.inject.Inject;
+import java.io.IOException;
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import sessionbeans.TimonLogic;
 
 /**
  *
  * @author alfonso
  */
-@WebServlet(name = "ShowAvatar", urlPatterns = {"/ShowAvatar"})
-public class ShowAvatar extends HttpServlet {
+@WebServlet(name = "test", urlPatterns = {"/test"})
+public class test extends HttpServlet {
 
-    @Inject
-    TimonLogic tl;
-    @Inject
-    UserManager um;
-
+    /**
+     * Processes requests for both HTTP
+     * <code>GET</code> and
+     * <code>POST</code> methods.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        long mid = 0;
+        response.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = response.getWriter();
         try {
-            mid = Integer.parseInt(request.getParameter("mid"));
-        } catch (Exception e) {
-        }
-        byte[] f = null;
-        String filename = "camafeom.png";
-        Miembro m = tl.getMiembro(mid);
-        f = tl.getAvatarFile(mid);
-        if (f == null) {
-            String path = request.getServletContext().getRealPath("/images/" + filename);
-            try {
-                String clave = m.getClaveDeElector();
-                String letra = clave.substring(clave.length()-4, clave.length()-3);
-                System.out.println("Letra: "+letra);
-                if (letra.equals("H") || letra.equals("h")) {
-                    filename = "camafeoh.png";
-                    path = request.getServletContext().getRealPath("/images/" + filename);
-                }
-            } catch (Exception e) {
-            }
-            File file = new File(path);
-            f = org.apache.commons.io.FileUtils.readFileToByteArray(file);
-        }
-        if (f != null) {
-            ByteArrayInputStream input = new ByteArrayInputStream(f);
-            BufferedOutputStream output = new BufferedOutputStream(response.getOutputStream());
-            try {
-                int b;
-                byte[] buffer = new byte[10240]; // 10kb buffer
-                while ((b = input.read(buffer, 0, 10240)) != -1) {
-                    output.write(buffer, 0, b);
-                }
-            } finally {
-                output.close();
-            }
+            /*
+             * TODO output your page here. You may use following sample code.
+             */
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet test</title>");            
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet test at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
+        } finally {            
+            out.close();
         }
     }
 
