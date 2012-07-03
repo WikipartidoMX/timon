@@ -43,7 +43,6 @@ public class ShowAvatar extends HttpServlet {
             try {
                 String clave = m.getClaveDeElector();
                 String letra = clave.substring(clave.length()-4, clave.length()-3);
-                System.out.println("Letra: "+letra);
                 if (letra.equals("H") || letra.equals("h")) {
                     filename = "camafeoh.png";
                     path = request.getServletContext().getRealPath("/images/" + filename);
