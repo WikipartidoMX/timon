@@ -15,11 +15,9 @@
 package converters;
 
 import entities.registro.Miembro;
-import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
-import javax.faces.convert.ConverterException;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
 import sessionbeans.TimonLogic;
@@ -40,13 +38,17 @@ public class MiembroConverter implements Converter {
             return null;
         } else {
             try {
+                System.out.println("Conviertiendo: "+value);
                 long id = Long.parseLong(value);
-                tl.getMiembro(id);
+                System.out.println("buscando "+id);
+                Miembro m = tl.getMiembro(id);
+                System.out.println("regreso a "+m.getNombre());
+                return m;
             } catch (Exception e) {
-                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error", "Not a valid member"));
+                System.out.println(e.getMessage());
+                return null;
             }
         }
-        return null;
     }
 
     @Override

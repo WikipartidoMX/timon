@@ -19,6 +19,7 @@ import entities.registro.Estado;
 import entities.registro.Miembro;
 import java.io.Serializable;
 import java.util.List;
+import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -70,8 +71,18 @@ public class TimonLogic implements Serializable {
         }
     }
     
+
     public Miembro getMiembro(long id) {
-        return em.find(Miembro.class, id);
+        System.out.println("getMiembro");
+        try {
+            Miembro m = em.find(Miembro.class, id);
+            System.out.println("Regresandoa a :"+m.getNombre());
+            return m;
+        } catch (Exception e) {
+            System.out.println("Error ");
+            return null;
+        }
+        
     }    
     
     public Miembro getMiembroFromEmail(String email) {

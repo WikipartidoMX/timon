@@ -57,6 +57,7 @@ public class Miembro implements Serializable {
     private Date fechaRegistro;
     private String ip;
     private String twitter;
+    private String url;
     private String clavedeusuario;
     private Long paso; // En que paso esta 1. Wiki 2. Afiliado
 
@@ -445,6 +446,20 @@ public class Miembro implements Serializable {
      */
     public void setPaso(Long paso) {
         this.paso = paso;
+    }
+
+    /**
+     * @return the url
+     */
+    public String getUrl() {
+        return url;
+    }
+
+    /**
+     * @param url the url to set
+     */
+    public void setUrl(String url) {
+        this.url = url;
     }
 
 

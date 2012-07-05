@@ -29,9 +29,7 @@
                     itemValue="#{m}"
                     converter="miembro"
                     forceSelection="true"
-                    maxResults="8"
-                     
-
+                    maxResults="8"                     
                     >
                     <p:column>
                         <p:graphicImage cache="false" value="/ShowAvatar?mid=#{m.id}" width="50" height="50" />
@@ -40,10 +38,14 @@
                         #{m.nombre} #{m.apellidoPaterno} #{m.apellidoMaterno}<br/>
                         <span style="font-size: 10px;">#{m.municipio}, #{m.estado.nombre}</span>
                     </p:column>
+                    <p:ajax event="itemSelect" update="datos,mensajes" />
 
                 </p:autoComplete>
 
-
+                <h:panelGroup id="datos">
+                    Nombre: #{dc.selecMiembro.nombre}
+                </h:panelGroup>
+                <p:messages id="mensajes" />
             </div>
             <div class="cajaTituloChico" style="width: 280px;">¿Qué es?</div>
             <div class="cajaContent" style="width: 265px; padding-top:  5px;">

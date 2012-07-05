@@ -54,7 +54,7 @@
                                     <a href="http://www.renapo.gob.mx/swb/swb/RENAPO/consultacurp" target="_blank">aquí</a>
                                     )</div>
                                 <div class="valor">
-                                    <p:inputMask size="21" id="curp" mask="aaaa999999aaaaaa99" required="true" requiredMessage="La curp es requerida" onfocus="$('#indicadorCURP').fadeIn();" onblur="$('#indicadorCURP').fadeOut();" style="font-size: 24px; color:grey;" value="#{registro.miembro.curp}">
+                                    <p:inputMask size="21" id="curp" mask="aaaa*99999aaaaaa99" required="true" requiredMessage="La curp es requerida" onfocus="$('#indicadorCURP').fadeIn();" onblur="$('#indicadorCURP').fadeOut();" style="font-size: 24px; color:grey;" value="#{registro.miembro.curp}">
                                         <f:ajax event="blur" render="errorcurp"  />
                                     </p:inputMask><br/>
                                     <h:message for="curp" id="errorcurp" style="color:red"/>
@@ -215,6 +215,14 @@
                                     </p:inputText>
                                 </div>
                             </div>
+                            <div>
+                                <div class="campo">Web Site (opcional)</div>
+                                <div class="valor">
+                                    <p:inputText size="20" id="url"  style="font-size: 24px; margin-right: 15px; color:grey;" value="#{registro.miembro.url}">
+                                        <p:ajax update="formaDeRegistro"  />
+                                    </p:inputText>
+                                </div>
+                            </div>                            
                             <div>
                                 <div class="campo">Contraseña</div>
                                 <div class="valor">
