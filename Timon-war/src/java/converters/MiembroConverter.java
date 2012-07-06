@@ -14,23 +14,34 @@
  */
 package converters;
 
+import controladores.UserManager;
 import entities.registro.Miembro;
+import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.persistence.EntityManager;
+import javax.transaction.UserTransaction;
 import sessionbeans.TimonLogic;
 
 /**
  *
  * @author alfonso
  */
-@FacesConverter("miembro")
+@FacesConverter(forClass=Miembro.class,value="miembro")
 public class MiembroConverter implements Converter {
     
-    @Inject
-    TimonLogic tl;
+    // Por alguna razon no esta inyectando el session bean!!!
+    //@Inject
+    //TimonLogic tl;
+    
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
@@ -38,11 +49,11 @@ public class MiembroConverter implements Converter {
             return null;
         } else {
             try {
-                System.out.println("Conviertiendo: "+value);
                 long id = Long.parseLong(value);
-                System.out.println("buscando "+id);
+                // A la antigua :(
+                Context ctx = new InitialContext();
+                TimonLogic tl = (TimonLogic) ctx.lookup("java:global/Timon/Timon-ejb/TimonLogic");
                 Miembro m = tl.getMiembro(id);
-                System.out.println("regreso a "+m.getNombre());
                 return m;
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -59,5 +70,7 @@ public class MiembroConverter implements Converter {
             return String.valueOf(((Miembro)value).getId());
         }
     }
+
+
     
 }

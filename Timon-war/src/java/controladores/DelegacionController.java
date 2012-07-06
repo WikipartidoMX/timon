@@ -21,6 +21,7 @@ import java.util.List;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import org.primefaces.event.SelectEvent;
 import sessionbeans.VotoYDebateLogic;
 
 /**
@@ -39,6 +40,12 @@ public class DelegacionController implements Serializable {
     
     public List<Miembro> completarMiembro(String query) {
         return vydl.completarMiembro(query);
+    }
+    
+    public void asignaMiembro(SelectEvent event) {
+        System.out.println("Asignando!!!");
+        Miembro m = (Miembro)event.getObject();
+        System.out.println("asignaMiembro: "+m.getNombre());
     }
 
     /**

@@ -17,35 +17,82 @@
             <div id="headVotaciones">
                 <h1>Delegación del Voto</h1>
             </div>
-            <div class="cajaTituloChico" style="width: 335px;">Busca un Miembro:</div>
-            <div class="cajaContent" style="width: 320px; padding-top:  5px;">
-                <p:autoComplete
-                    size="35"
-                    value="#{dc.selecMiembro}"
-                    id="miembro"
-                    completeMethod="#{dc.completarMiembro}"
-                    var="m"
-                    itemLabel="#{m.nombre} #{m.apellidoPaterno} #{m.apellidoMaterno}"
-                    itemValue="#{m}"
-                    converter="miembro"
-                    forceSelection="true"
-                    maxResults="8"                     
-                    >
-                    <p:column>
-                        <p:graphicImage cache="false" value="/ShowAvatar?mid=#{m.id}" width="50" height="50" />
-                    </p:column>
-                    <p:column>
-                        #{m.nombre} #{m.apellidoPaterno} #{m.apellidoMaterno}<br/>
-                        <span style="font-size: 10px;">#{m.municipio}, #{m.estado.nombre}</span>
-                    </p:column>
-                    <p:ajax event="itemSelect" update="datos,mensajes" />
+            <div>
+                <div style="float: left;">
+                    <div class="cajaTituloChico" style="width: 335px;">1. Busca un Miembro:</div>
+                    <div class="cajaContent" style="width: 320px; padding-top:  12px;">
+                        <p:autoComplete
+                            size="35"
+                            value="#{dc.selecMiembro}"
+                            id="miembro"
+                            completeMethod="#{dc.completarMiembro}"
+                            var="m"
+                            itemLabel="#{m.nombre} #{m.apellidoPaterno} #{m.apellidoMaterno}"
+                            itemValue="#{m}"
+                            converter="miembro"
+                            forceSelection="true"
+                            maxResults="8"                     
+                            >
+                            <p:column>
+                                <p:graphicImage cache="false" value="/ShowAvatar?mid=#{m.id}" width="50" height="50" />
+                            </p:column>
+                            <p:column>
+                                #{m.nombre} #{m.apellidoPaterno} #{m.apellidoMaterno}<br/>
+                                <span style="font-size: 10px;">#{m.estado.nombre}</span>
+                            </p:column>
+                            <p:ajax event="itemSelect" listener="#{dc.asignaMiembro}" update="panel" />
 
-                </p:autoComplete>
+                        </p:autoComplete>
 
-                <h:panelGroup id="datos">
-                    Nombre: #{dc.selecMiembro.nombre}
-                </h:panelGroup>
-                <p:messages id="mensajes" />
+                        <p:outputPanel id="panel" autoUpdate="true">
+                            <h:panelGroup rendered="#{not empty dc.selecMiembro}">
+                                <div class="caja">
+                                    <div>
+                                        <div class="avatar" style="float:left; width:80px; height:80px; background-image: url(#{facesContext.externalContext.request.contextPath}/ShowAvatar?mid=#{dc.selecMiembro.id})" />
+                                        <div style="float:left; margin-left: 5px;  width: 200px;">
+                                            <strong>#{dc.selecMiembro.nombre} #{dc.selecMiembro.apellidoPaterno} #{dc.selecMiembro.apellidoMaterno}</strong><br/>
+                                            <span style="font-size:12px;">Miembro desde 
+                                                <h:outputText value="#{dc.selecMiembro.fechaRegistro}" >
+                                                    <f:convertDateTime pattern="MMMM yyyy" locale="es" />
+                                                </h:outputText>
+                                                <br/>
+                                                Sitio: #{dc.selecMiembro.url}
+                                            </span>                                            
+                                        </div>
+                                        <div style="clear: both;" />
+                                    </div>
+
+                                </div>
+                            </h:panelGroup>
+                        </p:outputPanel> 
+                    </div>
+                    <div class="cajaTituloChico" style="width: 339px; margin-left: 0px;">2. Elije un Tema:</div>
+                    <div style="">
+                        <p:tree value="#{vydc.raiz}" style="width:330px; "  var="node" id="tree" selection="#{vydc.selectedTema}" selectionMode="single">
+                            <p:treeNode id="treenode">
+                                #{node.nombre}
+                            </p:treeNode>
+                        </p:tree>
+                    </div>
+                </div>
+                <div style="float: left; margin-top: 90px;">
+                    <span style="font-size: 210px;">}</span>         
+                </div>
+                <div style="float: left; margin-top: 200px;">
+                    <p:commandLink style="font-size:16px; text-decoration: none;" 
+                                   process="@this"  action="#{vydc.agregarTema}" update="delegaciones">
+                        <div class="mopoff" style="  font-weight: normal; cursor: pointer; color: white; margin-left: 4px; text-align: center;">
+                            AGREGAR<br/>
+                            <span style="font-size:32px;">&rarr;</span>
+                        </div>
+                    </p:commandLink>
+                </div>
+                <div style="float: left; margin-left: 15px;">
+                    <p:outputPanel id="delegaciones" autoUpdate="true">
+                        Aquí tus delegaciones:
+                    </p:outputPanel>
+                </div>
+                <div style="clear: both;" />
             </div>
             <div class="cajaTituloChico" style="width: 280px;">¿Qué es?</div>
             <div class="cajaContent" style="width: 265px; padding-top:  5px;">
@@ -63,14 +110,7 @@
 
             </div>
 
-            <div class="cajaTituloChico" style="width: 319px; margin-left: 0px;">Elije un Tema:</div>
-            <div style="">
-                <p:tree value="#{vydc.raiz}" style="width:310px; "  var="node" id="tree" selection="#{vydc.selectedTema}" selectionMode="single">
-                    <p:treeNode id="treenode">
-                        #{node.nombre}
-                    </p:treeNode>
-                </p:tree>
-            </div>
+
 
 
         </h:form>
