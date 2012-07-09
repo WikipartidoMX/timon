@@ -34,62 +34,93 @@ public class VotoYDebateLogic implements Serializable {
 
     @PersistenceContext(unitName = "Timon-ejbPU")
     private EntityManager em;
+
+    public void persist(Object object) {
+        em.persist(object);
+    }
+
+    public Object merge(Object object) {
+        return em.merge(object);
+    }
     
-    
+    public void remove(Object obj) {
+        em.remove(obj);
+    }
+
     public List<Tema> getTemas() {
         return em.createQuery("select t from Tema t").getResultList();
     }
-    
+
     public Tema getTema(long id) {
         return em.find(Tema.class, id);
     }
-    
+
     @PermitAll
     public List<Votacion> getVotaciones(int start, int max) {
         return getVotaciones(start, max, null, null);
     }
-    
+
     public Votacion getVotacion(long id) {
         return em.find(Votacion.class, id);
     }
     
-    public List<Miembro> completarMiembro(String q) {
-        return em.createQuery("select m from Miembro m where "
-                + "(m.nombre like :q or "
-                + "m.apellidoPaterno like :q or "
-                + "m.apellidoMaterno like :q) and "
-                + "m.paso = 2")
-                .setParameter("q", "%"+q+"%").getResultList();
+    public void borrarDelegacion(long id) {
+        em.remove(em.find(Delegacion.class, id));
     }
     
 
-    
+    public List<Miembro> completarMiembro(String query) {
+        String q = "select m from Miembro m where ";
+        String[] palabs = query.split("\\s");
+        int i = 1;
+        for (String p : palabs) {
+            q += "(m.nombre like :p" + i + " or "
+                    + "m.apellidoPaterno like :p" + i + " or "
+                    + "m.apellidoMaterno like :p" + i + ") ";
+            if (i < palabs.length) {
+                q += " and ";
+            }
+            i++;
+        }
+        q += " and m.paso = 2";
+        Query ejq = em.createQuery(q);        
+        i = 1;
+        for (String p : palabs) {
+            ejq.setParameter("p"+Integer.toString(i), "%"+p+"%");
+            i++;
+        }
+        return ejq.getResultList();
+    }
+
+    public List<Delegacion> getDelegacionesPara(Miembro m) {
+        return em.createQuery("select d from Delegacion d where d.miembro = :m").setParameter("m", m).getResultList();
+    }
 
     public List<Votacion> getVotaciones(int start, int max, List<Tema> temas, Estado estado) {
         String ejbql = "select v from Votacion v";
-        /* Falta implementar filtros (si llegamos a tener muchas votaciones)
-        for (Tema t : temas) {
-            
-        }
-        * 
-        */
+        /*
+         * Falta implementar filtros (si llegamos a tener muchas votaciones) for
+         * (Tema t : temas) {
+         *
+         * }
+         *
+         */
         Query query = em.createQuery(ejbql);
         query.setFirstResult(start);
         query.setMaxResults(max);
         return query.getResultList();
     }
-    
+
     public byte[] getImagenVotacion(long vid) {
         try {
-            ImagenVotacion a = (ImagenVotacion)em.createQuery("select i from ImagenVotacion i where i.votacion.id=:vid").setParameter("vid", vid).getSingleResult();
+            ImagenVotacion a = (ImagenVotacion) em.createQuery("select i from ImagenVotacion i where i.votacion.id=:vid").setParameter("vid", vid).getSingleResult();
             return a.getFile();
         } catch (Exception e) {
             //System.out.println(e.getMessage());
             return null;
         }
 
-    }    
-
+    }
 
     public void cuentaConSchulze() {
         System.out.println("Conteo con Schulze...\n\n");
@@ -162,7 +193,7 @@ public class VotoYDebateLogic implements Serializable {
         }
         for (i = 0; i < c; i++) {
             if (winner[i]) {
-                System.out.println("GANO "+opciones.get(i).getNombre());
+                System.out.println("GANO " + opciones.get(i).getNombre());
             }
         }
         // Ver la matriz de preferencia
@@ -176,6 +207,7 @@ public class VotoYDebateLogic implements Serializable {
         }
         System.out.println("Matriz de Preferencia: \n\n" + matriz);
     }
+
     public long cuantosPrefieren(Opcion i, Opcion j) {
         long c = 0;
         System.out.println("La pregunta es cuantos prefieren " + i.getNombre() + " sobre " + j.getNombre());

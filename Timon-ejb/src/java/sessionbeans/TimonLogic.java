@@ -73,10 +73,9 @@ public class TimonLogic implements Serializable {
     
 
     public Miembro getMiembro(long id) {
-        System.out.println("TimonLogic :: getMiembro");
         try {
             Miembro m = em.find(Miembro.class, id);
-            System.out.println("TimonLogic :: getMiembro :: Regresandoa a :"+m.getNombre());
+            //System.out.println("TimonLogic :: getMiembro :: Regresandoa a :"+m.getNombre());
             return m;
         } catch (Exception e) {
             System.out.println("TimonLogic :: getMiembro :: Error ");

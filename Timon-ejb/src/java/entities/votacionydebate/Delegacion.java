@@ -13,7 +13,7 @@ import javax.persistence.*;
  * @author alfonso
  */
 @Entity
-@Table(uniqueConstraints=@UniqueConstraint(columnNames={"MIEMBRO_ID","TEMA_ID","DELEGADO"}))
+@Table(uniqueConstraints=@UniqueConstraint(columnNames={"MIEMBRO_ID","TEMA_ID","DELEGADO_ID"}))
 public class Delegacion implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

@@ -17,10 +17,19 @@
             <div id="headVotaciones">
                 <h1>Delegación del Voto</h1>
             </div>
+            <p:messages id="mensajes" />
             <div>
-                <div style="float: left;">
-                    <div class="cajaTituloChico" style="width: 335px;">1. Busca un Miembro:</div>
-                    <div class="cajaContent" style="width: 320px; padding-top:  12px;">
+                <div style="float: left; margin-left: 15px;">
+                    <div class="cajaTituloChico" style="width: 335px; margin-left: 0px;">1. Elije un Tema:</div>
+                    <div style="">
+                        <p:tree value="#{dc.raiz}" style="width:320px; "  var="temanode" id="treetema" selection="#{dc.selTemaTreeNode}" selectionMode="single">
+                            <p:treeNode id="treetemanode">
+                                #{temanode.nombre}
+                            </p:treeNode>
+                        </p:tree>
+                    </div>
+                    <div class="cajaTituloChico" style="width: 335px;">2. Busca un Miembro:</div>
+                    <div class="cajaContent" style="width: 320px; height: 165px; padding-top:  12px;">
                         <p:autoComplete
                             size="35"
                             value="#{dc.selecMiembro}"
@@ -51,12 +60,16 @@
                                         <div class="avatar" style="float:left; width:80px; height:80px; background-image: url(#{facesContext.externalContext.request.contextPath}/ShowAvatar?mid=#{dc.selecMiembro.id})" />
                                         <div style="float:left; margin-left: 5px;  width: 200px;">
                                             <strong>#{dc.selecMiembro.nombre} #{dc.selecMiembro.apellidoPaterno} #{dc.selecMiembro.apellidoMaterno}</strong><br/>
-                                            <span style="font-size:12px;">Miembro desde 
+
+                                            <span style="font-size:12px;">
+                                                #{dc.selecMiembro.estado.nombre}<br/>
+                                                Miembro desde 
                                                 <h:outputText value="#{dc.selecMiembro.fechaRegistro}" >
                                                     <f:convertDateTime pattern="MMMM yyyy" locale="es" />
                                                 </h:outputText>
                                                 <br/>
-                                                Sitio: #{dc.selecMiembro.url}
+
+                                                <h:panelGroup rendered="#{not empty dc.selecMiembro.url}"><a href='http://#{dc.selecMiembro.url}' target="blank_">Sitio Web</a></h:panelGroup>
                                             </span>                                            
                                         </div>
                                         <div style="clear: both;" />
@@ -65,31 +78,56 @@
                                 </div>
                             </h:panelGroup>
                         </p:outputPanel> 
-                    </div>
-                    <div class="cajaTituloChico" style="width: 339px; margin-left: 0px;">2. Elije un Tema:</div>
-                    <div style="">
-                        <p:tree value="#{vydc.raiz}" style="width:330px; "  var="node" id="tree" selection="#{vydc.selectedTema}" selectionMode="single">
-                            <p:treeNode id="treenode">
-                                #{node.nombre}
-                            </p:treeNode>
-                        </p:tree>
-                    </div>
+                    </div>                    
                 </div>
                 <div style="float: left; margin-top: 90px;">
                     <span style="font-size: 210px;">}</span>         
                 </div>
-                <div style="float: left; margin-top: 200px;">
+                <div style="float: left; margin-top: 195px;">
                     <p:commandLink style="font-size:16px; text-decoration: none;" 
-                                   process="@this"  action="#{vydc.agregarTema}" update="delegaciones">
+                                   process="@this,treetema"  action="#{dc.agregarDelegacion}" update="@form">
                         <div class="mopoff" style="  font-weight: normal; cursor: pointer; color: white; margin-left: 4px; text-align: center;">
-                            AGREGAR<br/>
+                            DELEGAR<br/>
                             <span style="font-size:32px;">&rarr;</span>
                         </div>
                     </p:commandLink>
                 </div>
                 <div style="float: left; margin-left: 15px;">
                     <p:outputPanel id="delegaciones" autoUpdate="true">
-                        Aquí tus delegaciones:
+                        <div class="cajaTituloChico" style="width: 440px;">Votos Delegados</div>
+                        <div class="cajaContent" style="width: 445px; min-height: 410px; padding: 0px;">
+
+
+
+                            <h:panelGroup id="panelDelegaciones">
+                                <div class="tabla" style="width:445px; border:0px;">
+                                    <ui:repeat id="listaTemas" value="#{dc.delegaciones}" var="dele">
+                                        <div class="renglonTabla" style="padding: 4px;"  onmouseover="$('#borraDele#{dele.id}').toggle();" onmouseout="$('#borraDele#{dele.id}').toggle();">
+                                            <div class="avatar" style="float:left; width:40px; height:40px; background-size: 40px 40px; background-image: url(#{facesContext.externalContext.request.contextPath}/ShowAvatar?mid=#{dele.delegado.id})" />
+                                            <div style="float: left;">
+                                                #{dele.delegado.nombre} #{dele.delegado.apellidoPaterno} #{dele.delegado.apellidoMaterno}
+                                            </div>
+                                            <div style="float: left;">
+                                                #{dele.tema.nombre}
+                                            </div>
+                                            <div style="float: right;" >
+                                                <p:commandLink action="#{dc.borrarDelegacion(dele.id)}"
+                                                               process="@this"
+                                                               update=":forma:panelDelegaciones">
+                                                    <img style="display: none; cursor: pointer;" id="borraDele#{dele.id}" src="../../images/borrar.png" />
+                                                </p:commandLink>
+
+                                            </div>
+                                            <div style="clear:both;"/>
+                                        </div>                                    
+                                    </ui:repeat>
+                                </div>
+                            </h:panelGroup>                        
+
+
+
+
+                        </div>
                     </p:outputPanel>
                 </div>
                 <div style="clear: both;" />

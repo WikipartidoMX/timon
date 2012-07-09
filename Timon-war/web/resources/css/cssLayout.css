@@ -82,6 +82,19 @@
     font-family: 'Molengo';
 }
 
+.ui-tree {
+    position: relative;
+    border: 1px solid #e5dfd8;
+    border-radius: 0px 0px 10px 10px;
+    margin: 0px auto;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    font-family: 'Molengo';
+    background: none;
+}
+
 .cajaTitulo {
     margin-top: 15px;
     position: relative;

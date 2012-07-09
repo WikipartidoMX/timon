@@ -184,7 +184,6 @@ public class VotoYDebateController implements Serializable {
         if (raiz == null) {
             Map<Long, TreeNode> mapa = new HashMap<Long, TreeNode>();
             raiz = new DefaultTreeNode(new Tema(), null);
-            System.out.println("Construyendo el treenode");
             List<Tema> temas = vydl.getTemas();
             for (Tema t : temas) {
                 TreeNode tn = new DefaultTreeNode(t, raiz);
@@ -197,15 +196,13 @@ public class VotoYDebateController implements Serializable {
                     }
                 } catch (Exception e) {
                 }
-
-
             }
         }
         return raiz;
     }
 
     public void agregarEstado() {
-        System.out.println("Agregando " + estadoid);
+        //System.out.println("Agregando " + estadoid);
         if (!selecEstados.contains(tl.getEstado(estadoid))) {
             selecEstados.add(tl.getEstado(estadoid));
         }
