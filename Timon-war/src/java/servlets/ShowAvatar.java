@@ -35,16 +35,14 @@ public class ShowAvatar extends HttpServlet {
         } catch (Exception e) {
         }
         byte[] f = null;
-        String filename = "camafeom.png";
+        String filename = "camafeoh.png";
         Miembro m = tl.getMiembro(mid);
         f = tl.getAvatarFile(mid);
         if (f == null) {
             String path = request.getServletContext().getRealPath("/images/" + filename);
             try {
-                String clave = m.getClaveDeElector();
-                String letra = clave.substring(clave.length()-4, clave.length()-3);
-                if (letra.equals("H") || letra.equals("h")) {
-                    filename = "camafeoh.png";
+                if (m.getSexo().equals("M")) {
+                    filename = "camafeom.png";
                     path = request.getServletContext().getRealPath("/images/" + filename);
                 }
             } catch (Exception e) {

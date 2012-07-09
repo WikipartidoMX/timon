@@ -59,13 +59,26 @@ public class DelegacionController implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe estar afiliado para delegar su voto. ", null));
             return;            
         }
+        if (selecMiembro == null) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe seleccionar un miembro para delegar su voto. ", null));
+            return;            
+        }
+        if (selTemaTreeNode == null) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe seleccionar un tema para delegar su voto. ", null));
+            return;            
+        }           
         
         System.out.println("Tema es: "+((Tema)selTemaTreeNode.getData()).getNombre());
         Delegacion del = new Delegacion();
         del.setMiembro(um.getUser());
         del.setDelegado(selecMiembro);
         del.setTema((Tema)selTemaTreeNode.getData());
-        vydl.persist(del);
+        try {
+            vydl.guardarDelegacion(del);
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));
+        }
+        
         selecMiembro = null;
     }
     

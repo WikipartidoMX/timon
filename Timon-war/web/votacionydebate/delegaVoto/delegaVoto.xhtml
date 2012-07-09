@@ -17,6 +17,12 @@
             <div id="headVotaciones">
                 <h1>Delegación del Voto</h1>
             </div>
+            <div class="caja" style="width: 920px; padding-top:  5px;">
+                La delegación del voto es un poderoso mecanismo de representación que te permite 
+                designar a otros miembros del partido para representarte en votaciones de ciertos temas.
+                Elige a tus delegados en función de su capacidad técnica y de debate, puedes cancelar la delegación
+                 en cualquier momento.<br/>
+            </div>            
             <p:messages id="mensajes" />
             <div>
                 <div style="float: left; margin-left: 15px;">
@@ -94,7 +100,7 @@
                 </div>
                 <div style="float: left; margin-left: 15px;">
                     <p:outputPanel id="delegaciones" autoUpdate="true">
-                        <div class="cajaTituloChico" style="width: 440px;">Votos Delegados</div>
+                        <div class="cajaTituloChico" style="width: 440px;">Delegados</div>
                         <div class="cajaContent" style="width: 445px; min-height: 410px; padding: 0px;">
 
 
@@ -104,13 +110,14 @@
                                     <ui:repeat id="listaTemas" value="#{dc.delegaciones}" var="dele">
                                         <div class="renglonTabla" style="padding: 4px;"  onmouseover="$('#borraDele#{dele.id}').toggle();" onmouseout="$('#borraDele#{dele.id}').toggle();">
                                             <div class="avatar" style="float:left; width:40px; height:40px; background-size: 40px 40px; background-image: url(#{facesContext.externalContext.request.contextPath}/ShowAvatar?mid=#{dele.delegado.id})" />
-                                            <div style="float: left;">
-                                                #{dele.delegado.nombre} #{dele.delegado.apellidoPaterno} #{dele.delegado.apellidoMaterno}
-                                            </div>
-                                            <div style="float: left;">
+                                            <div style="float: left; margin-left: 5px;">
+                                                <strong>#{dele.delegado.nombre} #{dele.delegado.apellidoPaterno} #{dele.delegado.apellidoMaterno}</strong><br/>
                                                 #{dele.tema.nombre}
                                             </div>
-                                            <div style="float: right;" >
+                                            
+                                                
+                                            
+                                            <div style="float: right; margin-top: 14px;" >
                                                 <p:commandLink action="#{dc.borrarDelegacion(dele.id)}"
                                                                process="@this"
                                                                update=":forma:panelDelegaciones">
@@ -132,21 +139,8 @@
                 </div>
                 <div style="clear: both;" />
             </div>
-            <div class="cajaTituloChico" style="width: 280px;">¿Qué es?</div>
-            <div class="cajaContent" style="width: 265px; padding-top:  5px;">
-                La delegación del voto es un poderoso mecanismo de representación que te permite 
-                designar a otros miembros del partido para representarte en ciertas votaciones. <br/><br/>
-                De esta forma, ya no tienes que estar pendiente de todas las votaciones que se llevan a cabo 
-                en el partido. Así mismo, incentivas y construyes liderazgos en base a su capacidad técnica y capacidad 
-                para debatir.
-                <br/><br/>
-                Se hace por tema y puede ser cancelada en cualquier momento. Ten en cuenta que no 
-                podrás votar en las votaciones de aquellos temas en los que has hecho la delegación, en estos temas 
-                solamente tu delegado puede votar. Puedes designar o cancelar delegados en cualquier momento, incluso 
-                en el transcurso de una votación (antes de su cierre).<br/><br/>
-                La delegación del voto no aplica en votaciones por personas (candidaturas, puestos del partido, etc.)
 
-            </div>
+
 
 
 

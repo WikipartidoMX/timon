@@ -42,9 +42,29 @@ public class VotoYDebateLogic implements Serializable {
     public Object merge(Object object) {
         return em.merge(object);
     }
-    
+
     public void remove(Object obj) {
         em.remove(obj);
+    }
+
+    public void guardarDelegacion(Delegacion d) throws Exception {
+        Delegacion existe = null;
+        try {
+            existe = (Delegacion) em.createQuery("select d from Delegacion d where "
+                    + "d.miembro = :miembro and "
+                    + "d.tema = :tema").setParameter("miembro", d.getMiembro()).setParameter("tema", d.getTema()).getSingleResult();
+        } catch (Exception e) {
+        }
+        if (existe != null) {
+            String dsex = "delegado";
+            if (existe.getDelegado().getSexo().equals("M")) {
+                dsex = "delegada";
+            }
+            throw new Exception(existe.getDelegado().getNombreCompleto() +
+           " ya es "+ dsex + " para el tema " + d.getTema().getNombre() + ", "
+                    + "elimine la delegacion actual para reasignar.");
+        }
+        persist(d);
     }
 
     public List<Tema> getTemas() {
@@ -63,11 +83,10 @@ public class VotoYDebateLogic implements Serializable {
     public Votacion getVotacion(long id) {
         return em.find(Votacion.class, id);
     }
-    
+
     public void borrarDelegacion(long id) {
         em.remove(em.find(Delegacion.class, id));
     }
-    
 
     public List<Miembro> completarMiembro(String query) {
         String q = "select m from Miembro m where ";
@@ -83,10 +102,10 @@ public class VotoYDebateLogic implements Serializable {
             i++;
         }
         q += " and m.paso = 2";
-        Query ejq = em.createQuery(q);        
+        Query ejq = em.createQuery(q);
         i = 1;
         for (String p : palabs) {
-            ejq.setParameter("p"+Integer.toString(i), "%"+p+"%");
+            ejq.setParameter("p" + Integer.toString(i), "%" + p + "%");
             i++;
         }
         return ejq.getResultList();

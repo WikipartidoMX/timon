@@ -94,6 +94,19 @@ public class Miembro implements Serializable {
     public String toString() {
         return "entidades.Miembro[ id=" + id + " ]";
     }
+    
+    public String getSexo() {
+        String s = "H";
+        String l = claveDeElector.substring(claveDeElector.length()-4, claveDeElector.length()-3);
+        if (l.equals("M") || l.equals("m")) {
+            s = "M";
+        }
+        return s;
+    }
+    
+    public String getNombreCompleto() {
+        return nombre + " " + apellidoPaterno + " " + apellidoMaterno;
+    }
 
     /**
      * @return the email
