@@ -19,14 +19,22 @@ import entities.votacionydebate.ImagenVotacion;
 import entities.votacionydebate.Opcion;
 import entities.votacionydebate.Tema;
 import entities.votacionydebate.Votacion;
-import java.io.Serializable;
+import java.io.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
@@ -44,6 +52,7 @@ public class VotoYDebateController implements Serializable {
 
     private Votacion votacion;
     private long vid;
+    private long vact = 0;
     private List<Opcion> opciones;
     private TreeNode selectedTema;
     private List<SelectItem> estados;
@@ -60,6 +69,7 @@ public class VotoYDebateController implements Serializable {
     VotoYDebateLogic vydl;
     @Inject
     private TimonLogic tl;
+    private String wikiDescVotacion;
 
     public VotoYDebateController() {
         resetVotacion();
@@ -67,6 +77,7 @@ public class VotoYDebateController implements Serializable {
 
     public void resetVotacion() {
         nuevaVotacion = new Votacion();
+
         nuevaVotacion.setEstados(new LinkedList<Estado>());
         nuevaVotacion.setTemas(new LinkedList<Tema>());
         selecEstados = new LinkedList<Estado>();
@@ -81,8 +92,20 @@ public class VotoYDebateController implements Serializable {
     }
 
     public void verVotacion() {
-
+        System.out.println("vact " + vact);
+        System.out.println("vid " + vid);
+        if (vact != vid || vact==0) {
             votacion = vydl.getVotacion(vid);
+
+            try {
+                wikiDescVotacion = getContentFromURL(votacion.getUrl());
+            } catch (IOException ex) {
+                Logger.getLogger(VotoYDebateController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            System.out.println("Desc: "+wikiDescVotacion);
+            vact = vid;
+        }
 
     }
 
@@ -221,6 +244,66 @@ public class VotoYDebateController implements Serializable {
         if (!selecTemas.contains((Tema) selectedTema.getData())) {
             selecTemas.add((Tema) selectedTema.getData());
         }
+    }
+
+    public String getContentFromURL(String url) throws IOException {
+        StringBuilder resp = new StringBuilder();
+        HttpEntity entity = null;
+        HttpClient httpclient = null;
+        HttpGet httpget = null;
+        try {
+            System.out.println("Llamando al wiki " + url);
+            httpclient = new DefaultHttpClient();
+            httpget = new HttpGet(url);
+            HttpResponse response = httpclient.execute(httpget);
+            System.out.println(response.getStatusLine());
+            entity = response.getEntity();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        InputStream instream = null;
+        if (entity != null) {
+
+            try {
+                instream = entity.getContent();
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(instream));
+                // do something useful with the response
+                String buffer;
+                while ((buffer = reader.readLine()) != null) {
+                    
+                    resp.append(buffer);
+                }
+                
+
+            } catch (IOException ex) {
+
+                // In case of an IOException the connection will be released
+                // back to the connection manager automatically
+                throw ex;
+
+            } catch (RuntimeException ex) {
+
+                // In case of an unexpected exception you may want to abort
+                // the HTTP request in order to shut down the underlying
+                // connection and release it back to the connection manager.
+                httpget.abort();
+                throw ex;
+
+            } finally {
+
+                // Closing the input stream will trigger connection release
+                instream.close();
+
+            }
+
+            // When HttpClient instance is no longer needed,
+            // shut down the connection manager to ensure
+            // immediate deallocation of all system resources
+            httpclient.getConnectionManager().shutdown();
+        }
+
+        return resp.toString();
     }
 
     /**
@@ -375,5 +458,33 @@ public class VotoYDebateController implements Serializable {
      */
     public void setVotacion(Votacion votacion) {
         this.votacion = votacion;
+    }
+
+    /**
+     * @return the wikiDescVotacion
+     */
+    public String getWikiDescVotacion() {
+        return wikiDescVotacion;
+    }
+
+    /**
+     * @param wikiDescVotacion the wikiDescVotacion to set
+     */
+    public void setWikiDescVotacion(String wikiDescVotacion) {
+        this.wikiDescVotacion = wikiDescVotacion;
+    }
+
+    /**
+     * @return the vact
+     */
+    public long getVact() {
+        return vact;
+    }
+
+    /**
+     * @param vact the vact to set
+     */
+    public void setVact(long vact) {
+        this.vact = vact;
     }
 }

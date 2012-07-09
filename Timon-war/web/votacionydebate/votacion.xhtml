@@ -14,14 +14,43 @@
         <f:viewParam name="vid" value="#{vydc.vid}" />
         <f:event type="preRenderView" listener="#{vydc.verVotacion}" />
     </f:metadata>
-    
+
     <ui:define name="content">
         <link href="#{facesContext.externalContext.request.contextPath}/resources/css/votacion.css" rel="stylesheet" type="text/css" /> 
 
-        <div id="headVotaciones">
+        <div id="encabezadoSeccion">
             <h1>#{vydc.votacion.nombre}</h1>
         </div>
+        <div class="cajaVot" style="vertical-align: middle; width: 350px; height: 350px; background-size: 350px 350px;
+             background-image: url(#{facesContext.externalContext.request.contextPath}/ImagenDeVotacion?vid=#{vydc.votacion.id});
+             ">
 
+
+
+
+
+            <div class="timerCajaVot">
+                <div class="textoTimerCajaVot">La votación cierra el 
+                    <h:outputText value="#{vydc.votacion.fechaCierre}" >
+                        <f:convertDateTime pattern="dd 'de' MMMM yyyy 'a las' K:mm a" locale="es" />
+                    </h:outputText>
+
+                </div>
+            </div>                
+        </div>
+        <div style=" width: 600px; font-size: 22px; font-style: italic; border-bottom: 2px solid grey;">
+            #{vydc.votacion.descripcion}
+        </div>
+        <div class="avatar" style="width:80px; height:80px; background-image: url(#{facesContext.externalContext.request.contextPath}/ShowAvatar?mid=#{vydc.votacion.miembro.id})" />
+
+        <div>
+            Convocada por <br/> #{vydc.votacion.miembro.nombre} #{vydc.votacion.miembro.apellidoPaterno} #{vydc.votacion.miembro.apellidoMaterno}
+        </div>
+
+        <div>
+            saludos <h:outputText value="#{vydc.wikiDescVotacion}" escape="false" />
+        </div>
+        <div style="clear: both;" />
     </ui:define>
 
 

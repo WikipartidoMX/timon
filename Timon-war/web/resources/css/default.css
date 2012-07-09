@@ -51,3 +51,10 @@ a:link:hover, a:visited:hover  {
     font-size: 10px;
 }
 
+.encabezadoSeccion {
+
+    margin: 15px;
+    text-align: center;
+
+}
+
