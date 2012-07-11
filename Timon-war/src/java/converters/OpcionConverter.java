@@ -14,26 +14,27 @@
  */
 package converters;
 
-import entities.registro.Miembro;
+
+
+import entities.votacionydebate.Opcion;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import sessionbeans.TimonLogic;
+import sessionbeans.VotoYDebateLogic;
 
 /**
  *
- * @author Alfonso Tames
+ * @author Alfonso Tamés
  */
-@FacesConverter(forClass=Miembro.class,value="miembro")
-public class MiembroConverter implements Converter {
+@FacesConverter(forClass=Opcion.class,value="opcion")
+public class OpcionConverter implements Converter {
     
     // Por alguna razon no esta inyectando el session bean!!!    
     //@Inject
-    //TimonLogic tl;
-    
+    //VotoYDebateLogic vl;    
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
@@ -44,9 +45,9 @@ public class MiembroConverter implements Converter {
                 long id = Long.parseLong(value);
                 // A la antigua :(
                 Context ctx = new InitialContext();
-                TimonLogic tl = (TimonLogic) ctx.lookup("java:global/Timon/Timon-ejb/TimonLogic");
-                Miembro m = tl.getMiembro(id);
-                return m;
+                VotoYDebateLogic vl = (VotoYDebateLogic) ctx.lookup("java:global/Timon/Timon-ejb/VotoYDebateLogic");
+                Opcion o = vl.getOpcion(id);
+                return o;
             } catch (Exception e) {
                 System.out.println(e.getMessage());
                 return null;
@@ -59,10 +60,8 @@ public class MiembroConverter implements Converter {
         if (value == null) {
             return "";
         } else {
-            return String.valueOf(((Miembro)value).getId());
+            return String.valueOf(((Opcion)value).getId());
         }
     }
-
-
     
 }

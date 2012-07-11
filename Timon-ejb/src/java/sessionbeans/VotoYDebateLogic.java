@@ -46,6 +46,14 @@ public class VotoYDebateLogic implements Serializable {
     public void remove(Object obj) {
         em.remove(obj);
     }
+    
+    public List<Opcion> getOpcionesParaVotacion(Votacion vot) {
+        return em.createQuery("select o from Opcion o where o.votacion = :votacion").setParameter("votacion", vot).getResultList();
+    }
+    
+    public Opcion getOpcion(long id) {
+        return em.find(Opcion.class, id);
+    }
 
     public void guardarDelegacion(Delegacion d) throws Exception {
         Delegacion existe = null;

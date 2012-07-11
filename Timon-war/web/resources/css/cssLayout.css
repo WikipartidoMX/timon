@@ -118,7 +118,7 @@
     background-color: #e5dfd8;
     font-family: 'Francois One', sans-serif;
     font-weight: bold;
-    font-size:  21px;    
+    font-size:  20px;    
 }
 
 .cajaContent {
@@ -231,4 +231,17 @@
 .textoTimerCajaVot {
     margin-left: 6px;
     margin-top: 6px;
+}
+
+.convocaEnAvatar {
+    height: 35px;
+    width: 100%;
+    background-color: rgba(0,0,0,0.65);
+    border-radius: 0px 0px 5px 5px;
+    font-family: 'Molengo';
+    font-size:  12px;
+
+    color:white;
+    position: absolute;
+    bottom: 0px;    
 }

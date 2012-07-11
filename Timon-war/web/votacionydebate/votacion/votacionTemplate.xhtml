@@ -30,17 +30,18 @@
             </div>
             <div style="clear:both;"  />
             <div id="content">
-                <div class="cajaTitulo" style="width: 935px;">
-                    NUEVA VOTACIÓN
+
+                <div id="encabezadoSeccion" style="margin-bottom: 10px;">
+                    <h1>#{nombreVotacion}</h1>
                 </div>
-                <div class="cajaContent" style="width: 955px; padding: 0px;">
-                    <div id="menuVotacion">                
-                        <ui:insert name="menu"><ui:include src="menuNuevaVotacion.xhtml" /></ui:insert>
-                    </div>
-                    <div style="padding: 10px;">
-                        <ui:insert name="content">Content</ui:insert>
-                    </div>
-                </div>                
+
+                <div id="menuVotacion">                
+                    <ui:insert name="menu"><ui:include src="menuVotacion.xhtml" /></ui:insert>
+                </div>
+                <div style="padding: 10px;">
+                    <ui:insert name="content">Content</ui:insert>
+                </div>
+
             </div>        
 
             <div id="bottom">

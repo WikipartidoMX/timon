@@ -1,12 +1,26 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ *   __    __ _ _     _   ___           _   _     _             __  __
+ *  / / /\ \ (_) | __(_) / _ \__ _ _ __| |_(_) __| | ___   /\/\ \ \/ /
+ *  \ \/  \/ / | |/ /| |/ /_)/ _` | '__| __| |/ _` |/ _ \ /    \ \  / 
+ *   \  /\  /| |   < | / ___/ (_| | |  | |_| | (_| | (_) / /\/\ \/  \ 
+ *    \/  \/ |_|_|\_\|_\/    \__,_|_|   \__|_|\__,_|\___/\/    \/_/\_\
+ *                                              
+ *                                              
+ *  
+ * Wikipartido de Mexico
+ * VER ARCHIVO DE LiCENCIA
+ * 
+ *
  */
 package servlets;
 
 import controladores.UserManager;
 import entities.registro.Miembro;
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,7 +31,7 @@ import sessionbeans.TimonLogic;
 
 /**
  *
- * @author alfonso
+ * @author Alfonso Tames
  */
 @WebServlet(name = "ShowAvatar", urlPatterns = {"/ShowAvatar"})
 public class ShowAvatar extends HttpServlet {
@@ -26,6 +40,9 @@ public class ShowAvatar extends HttpServlet {
     TimonLogic tl;
     @Inject
     UserManager um;
+    byte[] png = new byte[]{(byte) 0x89, (byte) 0x50, (byte) 0x4E, (byte) 0x47, (byte) 0x0D, (byte) 0x0A, (byte) 0x1A, (byte) 0x0A};
+    byte[] jpg = new byte[]{(byte) 0xFF, (byte) 0xD8, (byte) 0xFF};
+    byte[] gif = new byte[]{(byte) 0x47, (byte) 0x49, (byte) 0x46, (byte) 0x38};
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -51,6 +68,20 @@ public class ShowAvatar extends HttpServlet {
             f = org.apache.commons.io.FileUtils.readFileToByteArray(file);
         }
         if (f != null) {
+            
+            String mime = "image/xyz";
+            if (Arrays.equals(Arrays.copyOfRange(f, 0, 8), png)) {
+                mime = "image/png";
+            }
+            if (Arrays.equals(Arrays.copyOfRange(f, 0, 3), jpg)) {
+                mime = "image/jpg";
+            }
+            if (Arrays.equals(Arrays.copyOfRange(f, 0, 3), gif)) {
+                mime = "image/gif";
+            }
+            response.setContentType(mime);
+            response.setContentLength(f.length);
+            
             ByteArrayInputStream input = new ByteArrayInputStream(f);
             BufferedOutputStream output = new BufferedOutputStream(response.getOutputStream());
             try {

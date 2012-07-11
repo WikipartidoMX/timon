@@ -6,54 +6,37 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
-                template="../../unaColumnaTemplate.xhtml">
-
+                template="votacionTemplate.xhtml">
 
     <f:metadata>
         <ui:param name="donde" value="menuvotdeb" />
-        <f:viewParam name="vid" value="#{vydc.vid}" />
-        <f:event type="preRenderView" listener="#{vydc.verVotacion}" />
-    </f:metadata>
+        <f:viewParam name="vid" value="#{votoc.vid}" />
+        <f:event type="preRenderView" listener="#{votoc.verVotacion}" />
+    </f:metadata>    
+
+    <ui:param name="donde" value="menuvotdeb" />
+    <ui:param name="dondevot" value="menuvotPonleTitulo" />
+    <ui:param name="nombreVotacion" value="#{votoc.votacion.nombre}" />
+
 
     <ui:define name="content">
-        <link href="#{facesContext.externalContext.request.contextPath}/resources/css/votacion.css" rel="stylesheet" type="text/css" /> 
+        <h:form id="formaVotacion" enctype="multipart/form-data">
 
-        <div id="encabezadoSeccion" style="margin-bottom: 10px;">
-            <h1>#{vydc.votacion.nombre}</h1>
-        </div>
-        <div style="float: right; margin-right: 0px;width: 360px;">
-            <div class="cajaVot" style=" vertical-align: middle; width: 360px; height: 360px; background-size: 360px 360px; background-image: url(#{facesContext.externalContext.request.contextPath}/ImagenDeVotacion?vid=#{vydc.votacion.id});">
 
+            <div id="descripcion" class="seccion">
+                <ui:include src="votDescripcion.xhtml" />
             </div>
-            <div style="margin-top: 10px;">
-                <div class="cajaTituloChico">
-                    Votación
-                </div>
-                <div class="cajaContent" style="float: right; vertical-align: middle; width: 338px;">
-                    opciones
-                </div> 
+            <div id="votar" style="display: none;" class="seccion">
+                <ui:include src="votVotar.xhtml" />
             </div>
-        </div>
-
-        <div style=" width: 620px; font-size: 22px; font-style: italic; border-bottom: 6px solid #bfb8b2; padding-bottom: 10px; margin-bottom: 15px;">
-            #{vydc.votacion.descripcion}
-        </div>
-
-
-        <div  style="width: 620px;">
-            <div class="cajaTituloChico">Documento del Wiki</div>
-            <div class="cajaContent">
-                <h:outputText value="#{vydc.wikiDescVotacion}" escape="false" />
-            </div>
-        </div>
-        <div class="avatar" style="width:80px; height:80px; background-image: url(#{facesContext.externalContext.request.contextPath}/ShowAvatar?mid=#{vydc.votacion.miembro.id})" />
-
-        <div>
-            Convocada por <br/> #{vydc.votacion.miembro.nombre} #{vydc.votacion.miembro.apellidoPaterno} #{vydc.votacion.miembro.apellidoMaterno}
-        </div>
+            <div id="debate" style="display: none;" class="seccion">
+                <ui:include src="votDebate.xhtml" />
+            </div>             
+            <p:messages id="messages" />
 
 
-        <div style="clear: both;" />
+        </h:form>
+
     </ui:define>
 
 

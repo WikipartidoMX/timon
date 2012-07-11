@@ -6,3 +6,5 @@
 /Timon-ejb/dist/
 /Timon-ejb/build/
 !/Timon-ejb/dist/Timon-ejb.jar
+/Byter/nbproject/private/
+/Byter/build/
