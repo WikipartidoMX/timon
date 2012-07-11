@@ -21,7 +21,7 @@
         </div>
 
         <p:dataGrid value="#{vydc.votaciones}" var="v">
-            <div onclick="location='votacion.xhtml?vid=#{v.id}';" class="cajaVot" style="
+            <div onclick="location='votacion/votacion.xhtml?vid=#{v.id}';" class="cajaVot" style="
                  background-image: url(#{facesContext.externalContext.request.contextPath}/ImagenDeVotacion?vid=#{v.id});
                  ">
                 <div class="headerCajaVot">
