@@ -54,6 +54,21 @@ public class VotoYDebateLogic implements Serializable {
     public Opcion getOpcion(long id) {
         return em.find(Opcion.class, id);
     }
+    
+    public boolean tieneImagenLaOpcion(long id) {
+        try {
+            em.createQuery("select i from ImagenOpcion i where i.opcion.id = :id").setParameter("id", id).getSingleResult();
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+    
+    public byte[] getImagenDeOpcion(long id) {
+        Opcion o = em.find(Opcion.class, id);
+        ImagenOpcion io = (ImagenOpcion) em.createQuery("select i from ImagenOpcion i where i.opcion = :opcion").setParameter("opcion", o).getSingleResult();
+        return io.getFile();
+    }
 
     public void guardarDelegacion(Delegacion d) throws Exception {
         Delegacion existe = null;

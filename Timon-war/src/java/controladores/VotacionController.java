@@ -45,13 +45,13 @@ public class VotacionController implements Serializable {
     UserManager um;
     @Inject
     VotoYDebateLogic vydl;
-    @Inject
-    private TimonLogic tl;
+
     private long vid;
     private long vact = 0;
     private Votacion votacion;
     private String wikiDescVotacion;
     private DualListModel<Opcion> opciones;
+    private String wikiDescOpcion;
 
     public void verVotacion() {
 
@@ -72,8 +72,25 @@ public class VotacionController implements Serializable {
             //System.out.println("Desc: " + getWikiDescVotacion());
             setVact(getVid());
         }
-
-
+    }
+    
+    public void verWikiDescOpcion(long id) {
+        System.out.println("Invocando verWikiDescOpcion...");
+        try {
+            System.out.println("Sacando la opcion con id "+id);
+            Opcion op = vydl.getOpcion(id);
+            wikiDescOpcion = getContentFromURL(op.getUrl());
+            System.out.println("Contiene:");
+            System.out.println(wikiDescOpcion);
+        } catch (Exception ex) {
+            System.out.println("Error !!!!!!!");
+            Logger.getLogger(VotacionController.class.getName()).log(Level.SEVERE, "Error al sacar contenido del wiki", ex);
+        }
+        
+    }
+    
+    public boolean tieneImagenLaOpcion(long id) {
+        return vydl.tieneImagenLaOpcion(id);
     }
 
     public void guardarVotacion() {
@@ -213,5 +230,19 @@ public class VotacionController implements Serializable {
      */
     public void setOpciones(DualListModel<Opcion> opciones) {
         this.opciones = opciones;
+    }
+
+    /**
+     * @return the wikiDescOpcion
+     */
+    public String getWikiDescOpcion() {
+        return wikiDescOpcion;
+    }
+
+    /**
+     * @param wikiDescOpcion the wikiDescOpcion to set
+     */
+    public void setWikiDescOpcion(String wikiDescOpcion) {
+        this.wikiDescOpcion = wikiDescOpcion;
     }
 }
