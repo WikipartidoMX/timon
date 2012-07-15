@@ -90,6 +90,7 @@ public class VotoYDebateLogic implements Serializable {
         persist(d);
     }
 
+    @PermitAll
     public List<Tema> getTemas() {
         return em.createQuery("select t from Tema t").getResultList();
     }

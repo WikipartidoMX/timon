@@ -10,13 +10,13 @@
 
     <f:metadata>
         <ui:param name="donde" value="menuvotdeb" />
-        <f:viewParam name="vid" value="#{votoc.vid}" />
-        <f:event type="preRenderView" listener="#{votoc.verVotacion}" />
+        <f:viewParam name="vid" value="#{vc.vid}" />
+        <f:event type="preRenderView" listener="#{vc.verVotacion}" />
     </f:metadata>    
 
     <ui:param name="donde" value="menuvotdeb" />
     <ui:param name="dondevot" value="menuvotPonleTitulo" />
-    <ui:param name="nombreVotacion" value="#{votoc.votacion.nombre}" />
+    <ui:param name="nombreVotacion" value="#{vc.votacion.nombre}" />
 
 
     <ui:define name="content">

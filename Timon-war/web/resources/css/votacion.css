@@ -72,15 +72,15 @@
 
 
 .ui-picklist-source {
-     width: 350px !important;
-     min-height: 400px;
+    width:440px !important;
+    min-height: 400px;
     font-family: 'Molengo';
     font-size:  16px;     
 
 }
 
 .ui-picklist-target {
-    width:350px !important;
+    width:440px !important;
     min-height: 400px;
     font-family: 'Molengo';
     font-size:  16px;    

@@ -15,14 +15,14 @@
             <div style=" float: left;">
                 <div class="valor">
 
-                    <p:selectOneListbox style="width: 325px; height: 200px;"    id="selectEstado"  value="#{vydc.estadoid}">
-                        <f:selectItems value="#{vydc.estados}" />
+                    <p:selectOneListbox style="width: 325px; height: 200px;"    id="selectEstado"  value="#{nvc.estadoid}">
+                        <f:selectItems value="#{nvc.estados}" />
                     </p:selectOneListbox>
 
                 </div>
             </div>
             <p:commandLink style="font-size:16px; text-decoration: none;" 
-                           process="@this,selectEstado"  action="#{vydc.agregarEstado}" update="panelListaEstados">
+                           process="@this,selectEstado"  action="#{nvc.agregarEstado}" update="panelListaEstados">
                 <div class="mopoff" style="  font-weight: normal; cursor: pointer; color: white; margin-left: 28px; text-align: center;">
                     AGREGAR<br/>
                     <span style="font-size:32px;">&rarr;</span>
@@ -32,13 +32,13 @@
                 <h:panelGroup id="panelListaEstados">
                     <div class="headerTabla">Votación restringida a:</div>
                     <div class="tabla">
-                        <ui:repeat id="listaEstados" value="#{vydc.selecEstados}" var="estado">
+                        <ui:repeat id="listaEstados" value="#{nvc.selecEstados}" var="estado">
                             <div class="renglonTabla" onmouseover="$('#borraEstado#{estado.id}').toggle();" onmouseout="$('#borraEstado#{estado.id}').toggle();">
                                 <div style="float: left;">
                                     #{estado.nombre}
                                 </div>
                                 <div style="float: right;" >
-                                    <p:commandLink action="#{vydc.borrarEstado(estado)}" process="@this" update=":formaNuevaVotacion:panelListaEstados">
+                                    <p:commandLink action="#{nvc.borrarEstado(estado)}" process="@this" update=":formaNuevaVotacion:panelListaEstados">
                                         <img style="display: none; cursor: pointer;" id="borraEstado#{estado.id}" src="../../images/borrar.png" />
                                     </p:commandLink>
 

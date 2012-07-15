@@ -11,29 +11,35 @@
     <h:form id="formaVotacion" enctype="multipart/form-data">
         <div style="margin-top: 10px;">
 
-            <div class="caja" style="vertical-align: middle;">
-                <p:pickList value="#{votoc.opciones}" var="op" itemValue="#{op}" converter="opcion">
+
+                <p:pickList value="#{vc.opciones}" var="op" itemValue="#{op}" converter="opcion" showTargetControls="true">
 
                     <p:column>
-                        <p:graphicImage width="80" height="80" url="/ShowImagenOpcion?oid=#{op.id}" rendered="#{votoc.tieneImagenLaOpcion(op.id)}" />
+                        <p:graphicImage width="80" height="80" url="/ShowImagenOpcion?oid=#{op.id}" rendered="#{vc.tieneImagenLaOpcion(op.id)}" />
                     </p:column>
                     <p:column>
                         <strong>#{op.nombre}</strong><br/>
                         <span style="font-size: 12px;">#{op.descripcion}</span><br/>
-                        <span onclick="$('#mas').load('/Timon-war/ShowContentFromWiki'); $('#mas').toggle();" class="liga" style="font-size: 10px;">Más información</span>
-                        
+                        <span onclick="$('#contenidoWikiDescOpcion').html('Cargando...'); $('#contenidoWikiDescOpcion').load('/Timon-war/ShowOpcionContentFromWiki?oid=#{op.id}'); $('#mas').toggle();" class="liga" style="font-size: 10px;">Más información</span>
+
                     </p:column>
 
                 </p:pickList>
-            </div>        
+       
         </div>
 
-        <div id="mas" class="caja" style="min-height: 400px; display: none; position:absolute; top: 0px; left: 0px; background-color: white;">
-            #{votoc.wikiDescOpcion}
+        <div id="mas" class="caja" style="z-index: 10; border:4px solid #bfb8b2; height: 450px; width: 600px; position:absolute; top:100px; left: 200px; display: none;  background-color: white;">
+            <div style="float: right; cursor: pointer;" onclick="$('#mas').toggle();">
+                X
+            </div>
+            <div style="clear:both;" />
+            <div id="contenidoWikiDescOpcion" style="position: absolute; height: 445px; width: 600px; overflow: auto; ">
+                #{vc.wikiDescOpcion}
+            </div>
         </div>        
-        
-        <p:commandButton value="Votar" action="#{votoc.guardarVotacion}" />
-        
+
+        <p:commandButton value="Votar" action="#{vc.guardarVotacion}" />
+
     </h:form>
 
 </ui:composition>

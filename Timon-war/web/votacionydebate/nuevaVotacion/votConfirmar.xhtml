@@ -19,7 +19,7 @@
                  ">
                 <div class="headerCajaVot">
                     <div class="tituloCajaVot">
-                        #{vydc.nuevaVotacion.nombre}
+                        #{nvc.nuevaVotacion.nombre}
                     </div>
                 </div>
                 <img class="avatarCajaVot" src="#{facesContext.externalContext.request.contextPath}/ShowAvatar?mid=#{um.user.id}"
@@ -30,14 +30,14 @@
 
                 <div class="descripcionCajaVot">
                     <div class="textoDescCajaVot">
-                        #{vydc.nuevaVotacion.descripcion}
+                        #{nvc.nuevaVotacion.descripcion}
                     </div>
                 </div>
             </div>
         </h:panelGroup>
         <br/><br/>
         <center>
-            <p:commandButton value="GUARDAR VOTACIÓN" process="@this" action="#{vydc.guardarVotacion}" update="messages" />
+            <p:commandButton value="GUARDAR VOTACIÓN" process="@this" action="#{nvc.guardarVotacion}" update="messages" />
         </center>
     </div>
 

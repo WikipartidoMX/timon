@@ -14,52 +14,95 @@
  */
 package servlets;
 
-import controladores.votacion.NuevaVotacionController;
-import java.io.*;
+import entities.votacionydebate.Opcion;
+import entities.votacionydebate.Votacion;
+import java.io.IOException;
+import java.io.InputStream;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import sessionbeans.VotoYDebateLogic;
 
 /**
  *
- * @author alfonso
+ * @author Alfonso Tames
  */
-@WebServlet(name = "ImagenDeNuevaVotacion", urlPatterns = {"/ImagenDeNuevaVotacion"})
-public class ImagenDeNuevaVotacion extends HttpServlet {
+@WebServlet(name = "ShowOpcionContentFromWiki", urlPatterns = {"/ShowOpcionContentFromWiki"})
+public class ShowOpcionContentFromWiki extends HttpServlet {
 
     @Inject
-    NuevaVotacionController vydc;
+    VotoYDebateLogic vl;
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        byte[] f = null;
+        long oid = 0;
+        long vid = 0;
+        String url = null;
         try {
-            f = vydc.getImagen().getContents();
+            oid = Integer.parseInt(request.getParameter("oid"));
         } catch (Exception e) {
-            String path = request.getServletContext().getRealPath("/images/fondoVotacion.png");
-            File file = new File(path);
-            f = org.apache.commons.io.FileUtils.readFileToByteArray(file);
         }
-
-        if (f != null) {
-
-            ByteArrayInputStream input = new ByteArrayInputStream(f);
-            BufferedOutputStream output = new BufferedOutputStream(response.getOutputStream());
-
+        try {
+            vid = Integer.parseInt(request.getParameter("vid"));
+        } catch (Exception e) {
+        }        
+        if (vid != 0) {
+            Votacion v = vl.getVotacion(vid);
+            url = v.getUrl();
+        } else
+        if (oid != 0) {
+            Opcion o = vl.getOpcion(oid);
+            url = o.getUrl();
+        }
+        if (url == null) {
+            response.setStatus(500);
+            return;
+        }
+        System.out.println("URL: "+url);
+        response.setContentType("text/html; charset=UTF-8");
+        ServletOutputStream out = response.getOutputStream();
+        HttpEntity entity = null;
+        HttpClient httpclient = null;
+        HttpGet httpget = null;
+        try {
+            httpclient = new DefaultHttpClient();
+            httpget = new HttpGet(url);
+            HttpResponse r = httpclient.execute(httpget);
+            entity = r.getEntity();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        InputStream instream = null;
+        if (entity != null) {
             try {
-
-                int b;
-                byte[] buffer = new byte[10240]; // 10kb buffer
-                while ((b = input.read(buffer, 0, 10240)) != -1) {
-                    output.write(buffer, 0, b);
+                instream = entity.getContent();
+                byte[] buffer = new byte[1024];
+                int read = 0;
+                while ((read = instream.read(buffer)) != -1) {
+                    out.write(buffer, 0, read);
                 }
+            } catch (IOException ex) {
+                throw ex;
+
+            } catch (RuntimeException ex) {
+                httpget.abort();
+                throw ex;
             } finally {
-                output.close();
+
+                instream.close();
+                out.flush();
+                out.close();
             }
+            httpclient.getConnectionManager().shutdown();
         }
 
 

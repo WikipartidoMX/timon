@@ -12,13 +12,11 @@
  * 
  *
  */
-package controladores;
+package controladores.votacion;
 
+import controladores.UserManager;
 import entities.registro.Estado;
-import entities.votacionydebate.ImagenVotacion;
-import entities.votacionydebate.Opcion;
-import entities.votacionydebate.Tema;
-import entities.votacionydebate.Votacion;
+import entities.votacionydebate.*;
 import java.io.Serializable;
 import java.util.*;
 import javax.enterprise.context.SessionScoped;
@@ -34,22 +32,22 @@ import org.primefaces.model.UploadedFile;
 import sessionbeans.TimonLogic;
 import sessionbeans.VotoYDebateLogic;
 
+
 /**
  *
  * @author Alfonso Tames
  */
-@Named(value = "vydc")
+@Named(value = "nvc")
 @SessionScoped
-public class VotoYDebateController implements Serializable {
+public class NuevaVotacionController implements Serializable {
 
-    
-
-    private List<Opcion> opciones;
+    private List<OpcionMasImagen> opimas;
     private TreeNode selectedTema;
     private List<SelectItem> estados;
     private long estadoid;
     private Votacion nuevaVotacion;
     private Opcion nuevaOpcion;
+    private UploadedFile imagenNuevaOpcion;
     private TreeNode raiz = null;
     private List<Estado> selecEstados;
     private List<Tema> selecTemas;
@@ -57,12 +55,11 @@ public class VotoYDebateController implements Serializable {
     @Inject
     UserManager um;
     @Inject
-    VotoYDebateLogic vydl;
+    VotoYDebateLogic vl;
     @Inject
     private TimonLogic tl;
 
-
-    public VotoYDebateController() {
+    public NuevaVotacionController() {
         resetVotacion();
     }
 
@@ -73,16 +70,16 @@ public class VotoYDebateController implements Serializable {
         selecEstados = new LinkedList<Estado>();
         selecTemas = new LinkedList<Tema>();
         nuevaOpcion = new Opcion();
-        opciones = new LinkedList<Opcion>();
+        opimas = new LinkedList<OpcionMasImagen>();
         imagen = null;
-    }
-    
-    public List<Votacion> getVotaciones() {
-        return vydl.getVotaciones(0, 100);
     }
 
     public void handleFileUpload(FileUploadEvent event) {
         imagen = event.getFile();
+    }
+
+    public void handleFileUploadOpcion(FileUploadEvent event) {
+        imagenNuevaOpcion = event.getFile();
     }
 
     public String guardarVotacion() {
@@ -92,7 +89,7 @@ public class VotoYDebateController implements Serializable {
         }
         try {
             System.out.println("Guardando");
-            if (opciones.size() < 2) {
+            if (opimas.size() < 2) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "La votación debe contener al menos dos opciones", null));
                 return "";
             }
@@ -107,9 +104,10 @@ public class VotoYDebateController implements Serializable {
             }
 
             nuevaVotacion.setOpciones(new LinkedList<Opcion>());
-            for (Opcion o : opciones) {
-                o.setVotacion(nuevaVotacion);
-                nuevaVotacion.getOpciones().add(o);
+            for (OpcionMasImagen o : opimas) {
+                o.getOpcion().setVotacion(nuevaVotacion);
+                nuevaVotacion.getOpciones().add(o.getOpcion());
+                
             }
             nuevaVotacion.setEstados(selecEstados);
             nuevaVotacion.setTemas(selecTemas);
@@ -128,6 +126,9 @@ public class VotoYDebateController implements Serializable {
                     iv.setVotacion(nuevaVotacion);
                     tl.persist(iv);
                 }
+                for (OpcionMasImagen omi : opimas) {
+                    vl.persist(omi.getImagen());
+                }
             }
             resetVotacion();
 
@@ -140,18 +141,25 @@ public class VotoYDebateController implements Serializable {
     }
 
     public void agregarOpcion() {
-        opciones.add(nuevaOpcion);
+        ImagenOpcion imo = new ImagenOpcion();
+        imo.setFile(imagenNuevaOpcion.getContents());
+        imo.setOpcion(nuevaOpcion);
+        OpcionMasImagen omi = new OpcionMasImagen();
+        omi.setOpcion(nuevaOpcion);
+        omi.setImagen(imo);        
+        opimas.add(omi);
         System.out.println("Queda asi:");
-        for (Opcion o : opciones) {
-            System.out.println(o.getNombre());
+        for (OpcionMasImagen o : opimas) {
+            System.out.println(o.getOpcion().getNombre());
         }
         nuevaOpcion = new Opcion();
+        imagenNuevaOpcion = null;
     }
 
     public void borrarOpcion(int o) {
         System.out.println("Borrando " + o);
 
-        opciones.remove(o);
+        opimas.remove(o);
     }
 
     /**
@@ -175,7 +183,7 @@ public class VotoYDebateController implements Serializable {
         if (raiz == null) {
             Map<Long, TreeNode> mapa = new HashMap<Long, TreeNode>();
             raiz = new DefaultTreeNode(new Tema(), null);
-            List<Tema> temas = vydl.getTemas();
+            List<Tema> temas = vl.getTemas();
             for (Tema t : temas) {
                 TreeNode tn = new DefaultTreeNode(t, raiz);
                 mapa.put(t.getId(), tn);
@@ -213,8 +221,6 @@ public class VotoYDebateController implements Serializable {
             selecTemas.add((Tema) selectedTema.getData());
         }
     }
-
-
 
     /**
      * @param raiz the raiz to set
@@ -314,19 +320,6 @@ public class VotoYDebateController implements Serializable {
         this.nuevaOpcion = nuevaOpcion;
     }
 
-    /**
-     * @return the opciones
-     */
-    public List<Opcion> getOpciones() {
-        return opciones;
-    }
-
-    /**
-     * @param opciones the opciones to set
-     */
-    public void setOpciones(List<Opcion> opciones) {
-        this.opciones = opciones;
-    }
 
     /**
      * @return the imagen
@@ -342,5 +335,34 @@ public class VotoYDebateController implements Serializable {
         this.imagen = imagen;
     }
 
+    /**
+     * @return the imagenNuevaOpcion
+     */
+    public UploadedFile getImagenNuevaOpcion() {
+        return imagenNuevaOpcion;
+    }
+
+    /**
+     * @param imagenNuevaOpcion the imagenNuevaOpcion to set
+     */
+    public void setImagenNuevaOpcion(UploadedFile imagenNuevaOpcion) {
+        this.imagenNuevaOpcion = imagenNuevaOpcion;
+    }
+
+    /**
+     * @return the opimas
+     */
+    public List<OpcionMasImagen> getOpimas() {
+        return opimas;
+    }
+
+    /**
+     * @param opimas the opimas to set
+     */
+    public void setOpimas(List<OpcionMasImagen> opimas) {
+        this.opimas = opimas;
+    }
+    
+    
 
 }

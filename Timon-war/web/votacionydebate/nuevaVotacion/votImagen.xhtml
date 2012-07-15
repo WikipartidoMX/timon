@@ -12,11 +12,11 @@
             <p:fileUpload allowTypes="/(\.|\/)(gif|jpe?g|png)$/" sizeLimit="500000"
                           auto="true"
                           style="width: 600px;"
-                          fileUploadListener="#{vydc.handleFileUpload}"
+                          fileUploadListener="#{nvc.handleFileUpload}"
                           label="Elige una imagen para la votación"
                           invalidFileMessage="EL formato de la imagen no es correcto" 
                           invalidSizeMessage="No se permiten imagenes mayores a 500kb" 
-                          value="#{vydc.imagen}" update="imagen,vistaFinal"
+                          value="#{nvc.imagen}" update="imagen,vistaFinal"
                             
                           />
         </div>

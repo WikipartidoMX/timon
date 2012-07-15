@@ -14,7 +14,7 @@
         Si no seleccionas ningún tema, ningún delegado podrá representar a sus miembros en la votación.
         <div style="margin-top: 20px;">
             <div style=" float: left;">
-                <p:tree value="#{vydc.raiz}" style="width:310px; "  var="node" id="tree" selection="#{vydc.selectedTema}" selectionMode="single">
+                <p:tree value="#{nvc.raiz}" style="width:310px; "  var="node" id="tree" selection="#{nvc.selectedTema}" selectionMode="single">
                     <p:treeNode id="treenode">
                         #{node.nombre}
                     </p:treeNode>
@@ -22,7 +22,7 @@
             </div>
 
             <p:commandLink style="font-size:16px; text-decoration: none;" 
-                           process="@this,tree"  action="#{vydc.agregarTema}" update="panelListaTemas">
+                           process="@this,tree"  action="#{nvc.agregarTema}" update="panelListaTemas">
                 <div class="mopoff" style="  font-weight: normal; cursor: pointer; color: white; margin-left: 28px; text-align: center;">
                     AGREGAR<br/>
                     <span style="font-size:32px;">&rarr;</span>
@@ -34,13 +34,13 @@
                 <h:panelGroup id="panelListaTemas">
                     <div class="headerTabla">La votación pertenece a estos temas:</div>
                     <div class="tabla">
-                        <ui:repeat id="listaTemas" value="#{vydc.selecTemas}" var="tema">
+                        <ui:repeat id="listaTemas" value="#{nvc.selecTemas}" var="tema">
                             <div class="renglonTabla" onmouseover="$('#borraTema#{tema.id}').toggle();" onmouseout="$('#borraTema#{tema.id}').toggle();">
                                 <div style="float: left;">
                                     #{tema.nombre}
                                 </div>
                                 <div style="float: right;" >
-                                    <p:commandLink action="#{vydc.borrarTema(tema)}"
+                                    <p:commandLink action="#{nvc.borrarTema(tema)}"
                                                    process="@this"
                                                    update=":formaNuevaVotacion:panelListaTemas">
                                         <img style="display: none; cursor: pointer;" id="borraTema#{tema.id}" src="../../images/borrar.png" />

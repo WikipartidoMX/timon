@@ -12,12 +12,15 @@
  * 
  * 
  */
-package controladores;
 
+package controladores.votacion;
+
+import controladores.UserManager;
 import entities.votacionydebate.Opcion;
 import entities.votacionydebate.Votacion;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,21 +33,20 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.primefaces.model.DualListModel;
-import sessionbeans.TimonLogic;
 import sessionbeans.VotoYDebateLogic;
 
 /**
  *
  * @author Alfonso Tamés
  */
-@Named(value = "votoc")
+@Named(value = "vc")
 @SessionScoped
 public class VotacionController implements Serializable {
 
     @Inject
     UserManager um;
     @Inject
-    VotoYDebateLogic vydl;
+    VotoYDebateLogic vl;
 
     private long vid;
     private long vact = 0;
@@ -52,6 +54,11 @@ public class VotacionController implements Serializable {
     private String wikiDescVotacion;
     private DualListModel<Opcion> opciones;
     private String wikiDescOpcion;
+    
+    
+    public List<Votacion> getVotaciones() {
+        return vl.getVotaciones(0, 100);
+    }    
 
     public void verVotacion() {
 
@@ -60,13 +67,13 @@ public class VotacionController implements Serializable {
         System.out.println("vact " + getVact());
         System.out.println("vid " + getVid());
         if (getVact() != getVid() || getVact() == 0) {
-            votacion = vydl.getVotacion(getVid());
+            votacion = vl.getVotacion(getVid());
             try {
                 setWikiDescVotacion(getContentFromURL(votacion.getUrl()));
-                opcionesDisponibles = vydl.getOpcionesParaVotacion(votacion);
+                opcionesDisponibles = vl.getOpcionesParaVotacion(votacion);
                 opciones = new DualListModel<Opcion>(opcionesDisponibles, opcionesVotadas);
             } catch (Exception ex) {
-                Logger.getLogger(VotoYDebateController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(NuevaVotacionController.class.getName()).log(Level.SEVERE, null, ex);
             }
 
             //System.out.println("Desc: " + getWikiDescVotacion());
@@ -78,7 +85,7 @@ public class VotacionController implements Serializable {
         System.out.println("Invocando verWikiDescOpcion...");
         try {
             System.out.println("Sacando la opcion con id "+id);
-            Opcion op = vydl.getOpcion(id);
+            Opcion op = vl.getOpcion(id);
             wikiDescOpcion = getContentFromURL(op.getUrl());
             System.out.println("Contiene:");
             System.out.println(wikiDescOpcion);
@@ -90,7 +97,7 @@ public class VotacionController implements Serializable {
     }
     
     public boolean tieneImagenLaOpcion(long id) {
-        return vydl.tieneImagenLaOpcion(id);
+        return vl.tieneImagenLaOpcion(id);
     }
 
     public void guardarVotacion() {
@@ -122,13 +129,12 @@ public class VotacionController implements Serializable {
 
             try {
                 instream = entity.getContent();
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(instream));
                 // do something useful with the response
-                String buffer;
-                while ((buffer = reader.readLine()) != null) {
-
-                    resp.append(buffer);
+                byte[] buffer = new byte[1024];
+                int read;
+                while ((read = instream.read(buffer)) != -1) {
+                    resp.append(new String(Arrays.copyOfRange(buffer, 0, read),"UTF8"));
+                    
                 }
 
 
@@ -158,7 +164,7 @@ public class VotacionController implements Serializable {
             // immediate deallocation of all system resources
             httpclient.getConnectionManager().shutdown();
         }
-
+        
         return resp.toString();
     }
 

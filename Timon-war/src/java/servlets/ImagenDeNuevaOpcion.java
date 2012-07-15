@@ -1,11 +1,22 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ *   __    __ _ _     _   ___           _   _     _             __  __
+ *  / / /\ \ (_) | __(_) / _ \__ _ _ __| |_(_) __| | ___   /\/\ \ \/ /
+ *  \ \/  \/ / | |/ /| |/ /_)/ _` | '__| __| |/ _` |/ _ \ /    \ \  / 
+ *   \  /\  /| |   < | / ___/ (_| | |  | |_| | (_| | (_) / /\/\ \/  \ 
+ *    \/  \/ |_|_|\_\|_\/    \__,_|_|   \__|_|\__,_|\___/\/    \/_/\_\
+ *                                              
+ *                                              
+ *  
+ * Wikipartido de Mexico
+ * VER ARCHIVO DE LiCENCIA
+ * 
+ *
  */
 package servlets;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import controladores.votacion.NuevaVotacionController;
+import java.io.*;
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -14,41 +25,44 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  *
- * @author alfonso
+ * @author Alfonso Tames
  */
-@WebServlet(name = "ShowContentFromWiki", urlPatterns = {"/ShowContentFromWiki"})
-public class ShowContentFromWiki extends HttpServlet {
+@WebServlet(name = "ImagenDeNuevaOpcion", urlPatterns = {"/ImagenDeNuevaOpcion"})
+public class ImagenDeNuevaOpcion extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP
-     * <code>GET</code> and
-     * <code>POST</code> methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
+    @Inject
+    NuevaVotacionController vydc;
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
+
+        byte[] f = null;
         try {
-            /*
-             * TODO output your page here. You may use following sample code.
-             */
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ShowContentFromWiki</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet ShowContentFromWiki at " + request.getContextPath() + "</h1>");
-            out.println("Saludines");
-            out.println("</body>");
-            out.println("</html>");
-        } finally {            
-            out.close();
+            f = vydc.getImagenNuevaOpcion().getContents();
+        } catch (Exception e) {
+            String path = request.getServletContext().getRealPath("/images/fondoVotacion.png");
+            File file = new File(path);
+            f = org.apache.commons.io.FileUtils.readFileToByteArray(file);
         }
+
+        if (f != null) {
+
+            ByteArrayInputStream input = new ByteArrayInputStream(f);
+            BufferedOutputStream output = new BufferedOutputStream(response.getOutputStream());
+
+            try {
+
+                int b;
+                byte[] buffer = new byte[10240]; // 10kb buffer
+                while ((b = input.read(buffer, 0, 10240)) != -1) {
+                    output.write(buffer, 0, b);
+                }
+            } finally {
+                output.close();
+            }
+        }
+
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

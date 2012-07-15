@@ -17,7 +17,7 @@
                     <div>
                         <div class="campo" style="margin-top:0px;">Título de la Opción</div>
                         <div class="valor">
-                            <p:inputText size="20" id="tituloOpcion" required="false" requiredMessage="Se requiere un título para la opción" style="font-size: 26px; color:grey;" value="#{vydc.nuevaOpcion.nombre}">
+                            <p:inputText size="20" id="tituloOpcion" required="false" requiredMessage="Se requiere un título para la opción" style="font-size: 26px; color:grey;" value="#{nvc.nuevaOpcion.nombre}">
                                 <f:ajax event="blur" render="errortituloopcion"  />
                             </p:inputText><br/>
                             <h:message for="tituloOpcion" id="errortituloopcion" style="color:red"/>
@@ -26,7 +26,7 @@
                     <div>
                         <div class="campo">URL (en caso de haber un documento)</div>
                         <div class="valor">
-                            <p:inputText size="20" id="urlOpcion" required="false" requiredMessage="Se requiere un url para la opción" style="font-size: 26px; color:grey;" value="#{vydc.nuevaOpcion.url}">
+                            <p:inputText size="20" id="urlOpcion" required="false" requiredMessage="Se requiere un url para la opción" style="font-size: 26px; color:grey;" value="#{nvc.nuevaOpcion.url}">
                                 <f:ajax event="blur" render="errorurlopcion"  />
                             </p:inputText><br/>
                             <h:message for="urlOpcion" id="errorurlopcion" style="color:red"/>
@@ -36,17 +36,29 @@
                         <div class="campo">Descripción</div>
 
 
-                        <h:inputTextarea  style="font-size:18px; color: #666666;" cols="32" rows="6" id="editorOpcion" value="#{vydc.nuevaOpcion.descripcion}">
+                        <h:inputTextarea  style="font-size:18px; color: #666666;" cols="32" rows="6" id="editorOpcion" value="#{nvc.nuevaOpcion.descripcion}">
                             <f:ajax event="blur" render=""  />
                         </h:inputTextarea>        
 
                     </div>
+                    
+                    <p:fileUpload allowTypes="/(\.|\/)(gif|jpe?g|png)$/" sizeLimit="500000"
+                                  auto="true"
+                                  style="width: 200px;"
+                                  fileUploadListener="#{nvc.handleFileUploadOpcion}"
+                                  label="Elige una imagen para la opción"
+                                  invalidFileMessage="EL formato de la imagen no es correcto" 
+                                  invalidSizeMessage="No se permiten imagenes mayores a 500kb" 
+                                  value="#{nvc.imagenNuevaOpcion}" update="imagenopcion"
+
+                                  />
+                    <p:graphicImage cache="false" id="imagenopcion" url="/ImagenDeNuevaOpcion" width="80" height="80" />
                 </div>
             </div>
 
             <p:commandLink style="font-size:16px; text-decoration: none;" 
-                           process="@this"  action="#{vydc.agregarOpcion}"
-                           update="panelOpciones,tituloOpcion,editorOpcion,urlOpcion">
+                           process="@this"  action="#{nvc.agregarOpcion}"
+                           update="panelOpciones,tituloOpcion,editorOpcion,urlOpcion,imagenopcion">
                 <div class="mopoff" style="margin-top: 20px; font-weight: normal; cursor: pointer; color: white; margin-left: 20px; text-align: center;">
                     AGREGAR<br/>
                     <span style="font-size:32px;">&rarr;</span>
@@ -57,13 +69,13 @@
                 <h:panelGroup id="panelOpciones">
                     <div class="headerTabla" style="width:276px;">Opciones para la votación:</div>
                     <div class="tabla" style="width:280px;">
-                        <ui:repeat id="listaOpciones" value="#{vydc.opciones}"  var="opcion" varStatus="x">
+                        <ui:repeat id="listaOpciones" value="#{nvc.opimas}"  var="opima" varStatus="x">
                             <div class="renglonTabla" onmouseover="$('#borraOpcion#{x.index}').toggle();" onmouseout="$('#borraOpcion#{x.index}').toggle();">
                                 <div style="float: left;">
-                                    #{opcion.nombre}
+                                    #{opima.opcion.nombre}
                                 </div>
                                 <div style="float: right;" >
-                                    <p:commandLink action="#{vydc.borrarOpcion(x.index)}" process="@this" update=":formaNuevaVotacion:panelOpciones,:formaNuevaVotacion:editorOpcion,:formaNuevaVotacion:tituloOpcion">
+                                    <p:commandLink action="#{nvc.borrarOpcion(x.index)}" process="@this" update=":formaNuevaVotacion:panelOpciones,:formaNuevaVotacion:editorOpcion,:formaNuevaVotacion:tituloOpcion">
                                         <img style="display: none; cursor: pointer;" id="borraOpcion#{x.index}" src="../../images/borrar.png" />
                                     </p:commandLink>
 
