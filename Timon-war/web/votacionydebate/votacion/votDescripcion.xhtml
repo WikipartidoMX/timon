@@ -10,13 +10,17 @@
 
 
 
-    <div >
-        #{vc.votacion.descripcion}
-    </div>
-    
-    <div>
+    <div style="width:500px; float: left;" >
         <h:outputText value="#{vc.wikiDescVotacion}" escape="false" />
     </div>
 
+    <div class="caja" style="width:300px; float: right;" >
+        Resultado de la Votación
+    </div>
 
+    <div class="caja" style="width:300px; float: right;" >
+        Miembros que la respaldan Respaldan
+    </div>
+
+    <div style="clear: both;" />
 </ui:composition>

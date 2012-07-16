@@ -53,7 +53,7 @@ a:link:hover, a:visited:hover  {
 
 .encabezadoSeccion {
 
-    margin: 15px;
+    margin-top: 10px;
     text-align: center;
 
 }
@@ -63,5 +63,15 @@ a:link:hover, a:visited:hover  {
     font-weight : bold;
     text-decoration: none;
     cursor: pointer;
+}
+
+.subencabezado {
+        font-family: 'Molengo', serif;
+    font-size:  18px;
+    margin-top: 0px;
+    font-style: italic;
+    padding-bottom: 5px;
+    color: #555555;
+    border-bottom: 6px solid #bfb8b2;
 }
 

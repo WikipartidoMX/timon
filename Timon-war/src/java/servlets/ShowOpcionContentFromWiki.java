@@ -47,6 +47,7 @@ public class ShowOpcionContentFromWiki extends HttpServlet {
         long oid = 0;
         long vid = 0;
         String url = null;
+        String titulo = null;
         try {
             oid = Integer.parseInt(request.getParameter("oid"));
         } catch (Exception e) {
@@ -58,15 +59,18 @@ public class ShowOpcionContentFromWiki extends HttpServlet {
         if (vid != 0) {
             Votacion v = vl.getVotacion(vid);
             url = v.getUrl();
+            titulo = new String(v.getNombre());
         } else
         if (oid != 0) {
             Opcion o = vl.getOpcion(oid);
             url = o.getUrl();
+            titulo = o.getNombre();
         }
         if (url == null) {
             response.setStatus(500);
             return;
         }
+        titulo = "<h1>"+titulo+"</h1>";
         System.out.println("URL: "+url);
         response.setContentType("text/html; charset=UTF-8");
         ServletOutputStream out = response.getOutputStream();
@@ -83,6 +87,7 @@ public class ShowOpcionContentFromWiki extends HttpServlet {
         }
         InputStream instream = null;
         if (entity != null) {
+            out.write(titulo.getBytes());
             try {
                 instream = entity.getContent();
                 byte[] buffer = new byte[1024];

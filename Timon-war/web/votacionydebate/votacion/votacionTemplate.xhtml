@@ -18,7 +18,7 @@
         <link href="#{facesContext.externalContext.request.contextPath}/resources/css/cssLayout.css" rel="stylesheet" type="text/css" />                   
         <h:outputScript library="primefaces" name="jquery/jquery.js" target="head" /> 
         <link href="#{facesContext.externalContext.request.contextPath}/resources/css/votacion.css" rel="stylesheet" type="text/css" />
-        <title>Wikipartido de México</title>
+        <title>Wikipartido de México :: #{nombreVotacion}</title>
     </h:head>
 
     <h:body>
@@ -34,7 +34,9 @@
                 <div id="encabezadoSeccion" style="margin-bottom: 10px;">
                     <h1>#{nombreVotacion}</h1>
                 </div>
-
+                <div class="subencabezado">
+                    #{vc.votacion.descripcion}
+                </div>
                 <div id="menuVotacion">                
                     <ui:insert name="menu"><ui:include src="menuVotacion.xhtml" /></ui:insert>
                 </div>
