@@ -12,7 +12,6 @@
  * 
  *
  */
-
 package controladores;
 
 import entities.registro.Miembro;
@@ -39,16 +38,15 @@ import sessionbeans.VotoYDebateLogic;
 @Named(value = "dc")
 @SessionScoped
 public class DelegacionController implements Serializable {
-    
+
     @Inject
     UserManager um;
     @Inject
     VotoYDebateLogic vydl;
-    
     private TreeNode raiz = null;
     private Miembro selecMiembro;
     private TreeNode selTemaTreeNode;
-    
+
     public void agregarDelegacion() {
         System.out.println("Agregando Delegación");
         if (um.getUser() == null) {
@@ -57,49 +55,52 @@ public class DelegacionController implements Serializable {
         }
         if (um.getUser().getPaso() < 2) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe estar afiliado para delegar su voto. ", null));
-            return;            
+            return;
         }
         if (selecMiembro == null) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe seleccionar un miembro para delegar su voto. ", null));
-            return;            
+            return;
         }
         if (selTemaTreeNode == null) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe seleccionar un tema para delegar su voto. ", null));
-            return;            
-        }           
-        
-        System.out.println("Tema es: "+((Tema)selTemaTreeNode.getData()).getNombre());
+            return;
+        }
+        if (selecMiembro.equals(um.getUser())) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "¡No es posible que te designes a ti mismo como delegado! ", null));
+            return;
+        }
+        System.out.println("Tema es: " + ((Tema) selTemaTreeNode.getData()).getNombre());
         Delegacion del = new Delegacion();
         del.setMiembro(um.getUser());
         del.setDelegado(selecMiembro);
-        del.setTema((Tema)selTemaTreeNode.getData());
+        del.setTema((Tema) selTemaTreeNode.getData());
         try {
             vydl.guardarDelegacion(del);
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));
         }
-        
+
         selecMiembro = null;
     }
-    
+
     public void borrarDelegacion(long id) {
         vydl.borrarDelegacion(id);
     }
-    
+
     public List<Miembro> completarMiembro(String query) {
         return vydl.completarMiembro(query);
     }
-    
+
     public void asignaMiembro(SelectEvent event) {
         System.out.println("Asignando!!!");
-        Miembro m = (Miembro)event.getObject();
-        System.out.println("asignaMiembro: "+m.getNombre());
+        Miembro m = (Miembro) event.getObject();
+        System.out.println("asignaMiembro: " + m.getNombre());
     }
-    
+
     public List<Delegacion> getDelegaciones() {
         return vydl.getDelegacionesPara(um.getUser());
     }
-    
+
     public TreeNode getRaiz() {
         if (raiz == null) {
             Map<Long, TreeNode> mapa = new HashMap<Long, TreeNode>();
@@ -121,13 +122,13 @@ public class DelegacionController implements Serializable {
         }
         return raiz;
     }
-    
+
     /**
      * @param raiz the raiz to set
      */
     public void setRaiz(TreeNode raiz) {
         this.raiz = raiz;
-    }    
+    }
 
     /**
      * @return the selecMiembro
@@ -155,5 +156,5 @@ public class DelegacionController implements Serializable {
      */
     public void setSelTemaTreeNode(TreeNode selTemaTreeNode) {
         this.selTemaTreeNode = selTemaTreeNode;
-    }        
+    }
 }
