@@ -57,6 +57,7 @@ public class OpcionConverter implements Converter {
 
     @Override
     public String getAsString(FacesContext context, UIComponent component, Object value) {
+        //System.out.println("Convirtiendo");
         if (value == null) {
             return "";
         } else {

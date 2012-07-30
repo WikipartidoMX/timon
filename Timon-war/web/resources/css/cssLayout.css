@@ -55,7 +55,7 @@
 
 #content {
     position: relative;
-    background-color: #f6f2ea;
+    background-color: #cfcfca;
     padding: 5px;
     margin: 0px 0px 0px 0px;
     font-family: 'Molengo';
@@ -73,7 +73,7 @@
 
 .caja {
     position: relative;
-    border: 1px solid #e5dfd8;
+    border: 1px solid #c5bfb8;
     border-radius: 10px 10px 10px 10px;
     margin: 0px auto;
     padding: 15px;
@@ -246,4 +246,20 @@
     color:white;
     position: absolute;
     bottom: 0px;    
+}
+
+
+.ui-editor {
+    width: 300px;
+    height: 100px;
+}
+
+.ui-selectonemenu {
+    font-family: 'Molengo';
+    font-size: 14px;
+}
+
+.ui-selectonemenu-items {
+    font-family: 'Molengo';
+    font-size: 14px;
 }

@@ -6,42 +6,69 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
-                >
+                template="votacionTemplate.xhtml">
 
-    <h:form id="formaVotacion" enctype="multipart/form-data">
-        
-        <div style="margin-top: 10px;">
+    <f:metadata>
+        <ui:param name="donde" value="menuvotdeb" />
+        <f:viewParam name="vid" value="#{vc.vid}" />
+        <f:event type="preRenderView" listener="#{vc.verVotacion}" />
+    </f:metadata>    
+
+    <ui:param name="donde" value="menuvotdeb" />
+    <ui:param name="dondevot" value="votvotar" />
+    <ui:param name="nombreVotacion" value="#{vc.votacion.nombre}" />
 
 
-            <p:pickList value="#{vc.opciones}" var="op" itemValue="#{op}" converter="opcion" showTargetControls="true">
 
-                <p:column>
-                    <p:graphicImage width="80" height="80" url="/ShowImagenOpcion?oid=#{op.id}" rendered="#{vc.tieneImagenLaOpcion(op.id)}" />
-                </p:column>
-                <p:column>
-                    <strong>#{op.nombre}</strong><br/>
-                    <span style="font-size: 12px;">#{op.descripcion}</span><br/>
-                    
-                        <span onclick="$('#contenidoWikiDescOpcion').html('Cargando...'); $('#contenidoWikiDescOpcion').load('/Timon-war/ShowOpcionContentFromWiki?oid=#{op.id}'); $('#mas').toggle();" class="liga" style="font-size: 10px;">Más información</span>
-                    
-                </p:column>
+    <ui:define name="content">
 
-            </p:pickList>
+        <h:form id="formaVotacion" enctype="multipart/form-data">
 
-        </div>
+            <div style="margin-top: 10px;">
 
-        <div id="mas" class="caja" style="z-index: 10; border:4px solid #bfb8b2; height: 450px; width: 600px; position:absolute; top:60px; left: 200px; display: none;  background-color: white;">
-            <div style="float: right; cursor: pointer;" onclick="$('#mas').toggle();">
-                X
+
+                <p:pickList value="#{vc.opciones}" var="op" itemValue="#{op}" converter="opcion" showTargetControls="true">
+
+                    <p:column>
+                        <p:graphicImage width="80" height="80" url="/ShowImagenOpcion?oid=#{op.id}" rendered="#{vc.tieneImagenLaOpcion(op.id)}" />
+                    </p:column>
+                    <p:column>
+                        <strong>#{op.nombre}</strong><br/>
+                        <span style="font-size: 12px;">#{op.descripcion}</span><br/>
+
+
+                        <h:panelGroup rendered="#{not empty op.url}">
+                            <span onclick="$('#contenidoWikiDescOpcion').html('Cargando...'); $('#contenidoWikiDescOpcion').load('/Timon-war/ShowOpcionContentFromWiki?oid=#{op.id}'); $('#mas').toggle();" class="liga" style="font-size: 10px;">Más información</span>
+                        </h:panelGroup>
+
+                    </p:column>
+
+                </p:pickList>
+
             </div>
-            <div style="clear:both;" />
-            <div id="contenidoWikiDescOpcion" style="position: absolute; height: 445px; width: 600px; overflow: auto; ">
-                #{vc.wikiDescOpcion}
+
+            <div id="mas" class="caja" style="z-index: 10; border:4px solid #bfb8b2; height: 450px; width: 600px; position:absolute; top:60px; left: 200px; display: none;  background-color: white;">
+                <div style="float: right; cursor: pointer;" onclick="$('#mas').toggle();">
+                    X
+                </div>
+                <div style="clear:both;" />
+                <div id="contenidoWikiDescOpcion" style="position: absolute; height: 445px; width: 600px; overflow: auto; ">
+                    #{vc.wikiDescOpcion}
+                </div>
             </div>
-        </div>        
 
-        <p:commandButton value="Votar" action="#{vc.guardarVotacion}" />
+            <h:panelGroup rendered="#{vc.numeroAtomico(um.user) gt 0}">
+                <div class="caja" style="width: 600px;">
+                    <strong>Usted representa a #{vc.numeroAtomico(um.user)} miembros en esta votación</strong>. Ingrese una explicación 
+                    para que estos miembros entiendan el sentido de su voto:<br/><br/>
+                    <p:editor value="#{vc.logvot.explicacion}" width="600" />
+                </div>
+                
+            </h:panelGroup>
 
-    </h:form>
+                <p:messages id="mensajes" />
+                <p:commandButton value="Votar" action="#{vc.guardarVotacion}" update="mensajes" />
 
+        </h:form>
+    </ui:define>
 </ui:composition>

@@ -64,7 +64,7 @@ public class ShowImagenOpcion extends HttpServlet {
             if (Arrays.equals(Arrays.copyOfRange(f, 0, 3), gif)) {
                 mime = "image/gif";
             }
-            System.out.println(mime);
+            //System.out.println(mime);
             //response.setContentType(mime);
             //response.setContentLength(f.length);
             

@@ -17,7 +17,12 @@ package sessionbeans;
 import entities.registro.Estado;
 import entities.registro.Miembro;
 import entities.votacionydebate.*;
+import helpers.ResultadoSchulze;
+import helpers.Score;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
@@ -45,6 +50,60 @@ public class VotoYDebateLogic implements Serializable {
 
     public void remove(Object obj) {
         em.remove(obj);
+    }
+    
+    public void guardarVotacion(LogVotacion logvot, List<Opcion> opciones) {
+        System.out.println("Registrando Votos de "+logvot.getMiembro().getNombre());
+        System.out.println("Para Votacion: "+logvot.getVotacion());
+        long i = 1;
+        List<Miembro> delegan = miembrosQueDeleganA(logvot.getMiembro(),logvot.getVotacion());        
+        for (Opcion op : opciones) {
+            // Registro para todas las personas que representa
+            for (Miembro m : delegan) {
+                System.out.println("Registrando voto "+i+" "+op.getNombre()+" para "+m.getNombre());
+                Voto v = new Voto();
+                v.setDelegado(logvot.getMiembro());
+                v.setMiembro(m);
+                v.setOpcion(op);
+                v.setRank(i);
+                persist(v);
+            }
+            // Registro para la persona en cuestion
+            Voto v = new Voto();
+            v.setMiembro(logvot.getMiembro());
+            v.setOpcion(op);
+            v.setRank(i);
+            v.setDelegado(null);
+            persist(v);
+            i++;
+        }
+        persist(logvot);
+    }
+    
+    public List<Miembro> miembrosQueDeleganA(Miembro delegado, Votacion vot) {
+        List<Miembro> r = new LinkedList<Miembro>();
+        for (Tema t : vot.getTemas()) {
+        r.addAll(em.createQuery("select d.miembro from Delegacion d "
+                + "where d.delegado = :delegado and d.tema = :t")
+                .setParameter("delegado", delegado)
+                .setParameter("t",t).getResultList());
+        }
+        return r;
+                
+    }
+    
+    public long numeroAtomico(Votacion vot, Miembro delegado) {
+        long na=0;        
+        for (Tema t : vot.getTemas()) {
+            na += (Long)em.createQuery("select count(d) from Delegacion"
+                    + " d where d.delegado = :delegado and d.tema = :tema").setParameter("delegado", delegado)
+                    .setParameter("tema",t).getSingleResult();
+        }
+        return na;
+    }
+    
+    public List<Argumento> getArgumentosParaVotacion(Votacion vot) {
+        return em.createQuery("select a from Argumento a where a.votacion = :votacion order by a.fecha desc").setParameter("votacion", vot).getResultList();
     }
     
     public List<Opcion> getOpcionesParaVotacion(Votacion vot) {
@@ -90,6 +149,7 @@ public class VotoYDebateLogic implements Serializable {
         persist(d);
     }
 
+    // TODO: Revisar permisos en EJB
     @PermitAll
     public List<Tema> getTemas() {
         return em.createQuery("select t from Tema t").getResultList();
@@ -165,44 +225,58 @@ public class VotoYDebateLogic implements Serializable {
 
     }
 
-    public void cuentaConSchulze() {
-        System.out.println("Conteo con Schulze...\n\n");
+    public ResultadoSchulze cuentaConSchulze(Votacion vot) {
+        long startTime = System.currentTimeMillis();
+        ResultadoSchulze rs = new ResultadoSchulze();
+        System.out.println("Conteo con Schulze para la votacion "+vot.getNombre());
         System.out.println("Opciones en la votacion:");
-        List<Opcion> opciones = em.createQuery("select o from Opcion o where o.votacion.id=1").getResultList();
+        List<Opcion> opciones = em.createQuery("select o from Opcion o "
+                + "where o.votacion = :vot").setParameter("vot", vot).getResultList();
         for (Opcion o : opciones) {
-            System.out.println("Opcion: " + o.getNombre());
+            //System.out.println("Opcion: " + o.getNombre());
         }
-        System.out.println("Son " + opciones.size() + " opciones.");
+        //System.out.println("Son " + opciones.size() + " opciones.");
         // Prueba
 
 
 
         System.out.println("Votaron así:");
-        List<Miembro> miembros = em.createQuery("select v.miembro from Voto v group by v.miembro").getResultList();
+        List<Miembro> miembros = em.createQuery("select v.miembro from Voto v "
+                + "where v.opcion.votacion = :vot group by v.miembro").setParameter("vot", vot).getResultList();
         for (Miembro m : miembros) {
-            System.out.println("Miembro: " + m.getNombre() + " " + m.getApellidoPaterno());
-            List<Voto> votos = em.createQuery("select v from Voto v where v.opcion.votacion.id=1 and v.miembro=:m order by v.rank").setParameter("m", m).getResultList();
+            //System.out.println("Miembro: " + m.getNombre() + " " + m.getApellidoPaterno());
+            List<Voto> votos = em.createQuery("select v from Voto v "
+                    + "where v.opcion.votacion = :vot and v.miembro=:m order by v.rank")
+                    .setParameter("vot", vot)
+                    .setParameter("m", m).getResultList();
             for (Voto v : votos) {
-                System.out.println("|----: " + v.getRank() + " " + v.getOpcion().getNombre());
+                //System.out.println("|----: " + v.getRank() + " " + v.getOpcion().getNombre());
             }
         }
 
         // Implementacion del Metodo Schulze (Thanks http://wiki.electorama.com/wiki/Schulze_method !)
+        List<Score> scores = new ArrayList<Score>();
         int i = 0;
         int j = 0;
         int k = 0;
         int c = opciones.size();
         for (i = 0; i < c; i++) {
-            System.out.println("Opcion " + i + ".- " + opciones.get(i).getNombre());
+            //System.out.println("Opcion " + i + ".- " + opciones.get(i).getNombre());
         }
         boolean[] winner = new boolean[c];
         long[][] p = new long[c][c];
-
+       
+        long[][] prefe = new long[c][c];
+        
         for (i = 0; i < c; i++) {
             for (j = 0; j < c; j++) {
                 if (!opciones.get(i).equals(opciones.get(j))) {
-                    if (cuantosPrefieren(opciones.get(i), opciones.get(j)) > cuantosPrefieren(opciones.get(j), opciones.get(i))) {
-                        p[i][j] = cuantosPrefieren(opciones.get(i), opciones.get(j));
+                    long a = cuantosPrefieren(opciones.get(i), opciones.get(j));
+                    long b = cuantosPrefieren(opciones.get(j), opciones.get(i));
+                    prefe[i][j] = a;
+                    prefe[j][i] = b;
+                    if (a > b) {
+                        p[i][j] = a;                        
                     } else {
                         p[i][j] = 0;
                     }
@@ -225,11 +299,15 @@ public class VotoYDebateLogic implements Serializable {
         for (i = 0; i < c; i++) {
             winner[i] = true;
         }
+        int[] score = new int[c];
         for (i = 0; i < c; i++) {
             for (j = 0; j < c; j++) {
                 if (!opciones.get(i).equals(opciones.get(j))) {
+                    //System.out.println("p[j][i] : p[i][j]"+" "+p[j][i]+ " : "+p[i][j]);
                     if (p[j][i] > p[i][j]) {
                         winner[i] = false;
+                    } else {
+                        score[i]++;
                     }
                 }
             }
@@ -238,8 +316,14 @@ public class VotoYDebateLogic implements Serializable {
             if (winner[i]) {
                 System.out.println("GANO " + opciones.get(i).getNombre());
             }
+            //System.out.println("Score "+opciones.get(i).getNombre()+ " "+score[i]);
+            scores.add(new Score(opciones.get(i),score[i]));            
         }
+        
+        Collections.sort(scores);
+        
         // Ver la matriz de preferencia
+        /*
         String matriz = "";
         for (int x = 0; x < c; x++) {
             matriz += opciones.get(x).getNombre() + " ";
@@ -249,11 +333,18 @@ public class VotoYDebateLogic implements Serializable {
             matriz += "\n";
         }
         System.out.println("Matriz de Preferencia: \n\n" + matriz);
+        * */     
+        rs.setScores(scores);
+        rs.setPref(prefe);
+        rs.setOpciones(opciones);
+        rs.setSp(p);
+        rs.setExetime(System.currentTimeMillis()-startTime);
+        return rs;
     }
 
     public long cuantosPrefieren(Opcion i, Opcion j) {
         long c = 0;
-        System.out.println("La pregunta es cuantos prefieren " + i.getNombre() + " sobre " + j.getNombre());
+        //System.out.println("La pregunta es cuantos prefieren " + i.getNombre() + " sobre " + j.getNombre());
         List<Miembro> miembros = em.createQuery("select v.miembro from Voto v group by v.miembro").getResultList();
         for (Miembro m : miembros) {
             long ri = 0;
@@ -279,7 +370,7 @@ public class VotoYDebateLogic implements Serializable {
                 c++;
             }
         }
-        System.out.println(c + " lo prefieren");
+        //System.out.println(c + " prefieren " + i.getNombre() + " sobre " + j.getNombre());
         return c;
     }
 }

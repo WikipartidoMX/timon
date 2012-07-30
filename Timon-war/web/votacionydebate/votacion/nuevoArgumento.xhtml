@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html" 
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                template="votacionTemplate.xhtml">
+
+    <f:metadata>
+        <ui:param name="donde" value="menuvotdeb" />
+        <f:viewParam name="pater" value="#{deco.newArg.pater}" />
+        <f:viewParam name="vid" value="#{vc.vid}" />
+        <f:event type="preRenderView" listener="#{vc.verVotacion}" />
+        <f:event type="preRenderView" listener="#{deco.responderA(deco.newArg.pater)}" />        
+    </f:metadata>    
+
+    <ui:param name="donde" value="menuvotdeb" />
+    <ui:param name="dondevot" value="votdebate" />
+    <ui:param name="nombreVotacion" value="#{vc.votacion.nombre}" />
+    
+
+    <ui:define name="content">
+
+        <h:form id="formaDebate">
+            <f:view>
+                <div id="nuevoarg" style="margin-top: 10px; display: block;">
+                    <div class="cajaTituloChico" style="width: 835px; margin-left: 0px;">Ingresa un nuevo argumento</div>
+                    <div class="cajaContent" style="width: 820px; margin-left: 0px;">
+                        <h:panelGroup rendered="#{not empty deco.newArg.pater}">
+                            <div>Respondiendo a #{deco.newArg.pater}</div>
+                        </h:panelGroup>
+                        <div class="campo" style="float: left;">A favor de: </div>
+                        <div class="valor" style="float: left; margin-left: 8px;">
+                            <div style="margin-top: 12px; margin-left: 5px;">
+                                <p:selectOneMenu value="#{deco.newArg.opcion}"  converter="opcion" var="op" style="width:300px;" >
+                                    <f:selectItems value="#{deco.opciones}" var="opcion" itemLabel="#{opcion.nombre}" itemValue="#{opcion}" />
+                                    <p:column><p:graphicImage width="40" height="40" url="/ShowImagenOpcion?oid=#{op.id}" rendered="#{vc.tieneImagenLaOpcion(op.id)}" /></p:column>
+                                    <p:column>#{op.nombre}</p:column>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <div style="clear: both;" />
+                        <div class="campo" style="float: left;">Comentario: </div>
+                        <div class="valor" style="float: left; margin-left: 5px; margin-top: 10px;">
+
+                            <p:editor value="#{deco.newArg.discurso}" width="700"/>
+
+                        </div>
+
+                        <div style="clear: both;" />
+                        <div style="margin-left: 94px; margin-top: 10px;">
+                            <p:commandButton value="Ingresar Argumento" update="mensajes" action="#{deco.guardarArgumento}" />
+                        </div>
+                    </div>
+                    <p:messages id="mensajes" />
+                </div>
+            </f:view>
+        </h:form>
+
+    </ui:define>
+</ui:composition>

@@ -6,22 +6,91 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
-                >
+                template="votacionTemplate.xhtml">
 
-    <h:form id="formaDebate">
-        <div class="liga" onclick="$('#nuevoarg').toggle();">Agregar un nuevo argumento</div>
+    <f:metadata>
+        <ui:param name="donde" value="menuvotdeb" />
+        <f:viewParam name="vid" value="#{vc.vid}" />
+        <f:event type="preRenderView" listener="#{vc.verVotacion}" />
+    </f:metadata>    
 
-        <div id="nuevoarg" style="margin-top: 10px; display:none;">
-            <div class="cajaTituloChico">Ingresa un nuevo argumento</div>
-            <div class="cajaContent">
-                
-                <p:selectOneMenu value="#{debc.newArg.opcion}"  converter="opcion" var="op" style="width:200px;">
-                    <f:selectItems value="#{debc.opciones}" var="opcion" itemLabel="#{opcion.nombre}" itemValue="#{opcion}" />
-                    <p:column><p:graphicImage width="80" height="80" url="/ShowImagenOpcion?oid=#{op.id}" rendered="#{vc.tieneImagenLaOpcion(op.id)}" /></p:column>
-                    <p:column>#{op.nombre}</p:column>
-                </p:selectOneMenu>
-            </div>
-        </div>
-        <p:messages id="mensajes" />
-    </h:form>
+    <ui:param name="donde" value="menuvotdeb" />
+    <ui:param name="dondevot" value="votdebate" />
+    <ui:param name="nombreVotacion" value="#{vc.votacion.nombre}" />
+
+
+
+    <ui:define name="content">
+        <style type="text/css">
+            .ui-tree {
+                position: relative;
+                border: 0px;
+                margin: 0px auto;
+                padding-left: 10px;
+                padding-right: 10px;
+                margin-bottom: 15px;
+                padding-bottom: 15px;
+                font-family: 'Molengo';
+                background: none;
+            }
+            .ui-treetable-data {
+                border: 0px;
+            }
+            .ui-treetable-header {
+                border: 0px;
+            }
+            .ui-tt-c {
+                border: 0px;
+            }
+        </style>
+
+        <a href="nuevoArgumento.xhtml?vid=#{vc.vid}&amp;pater=0">Agregar un nuevo argumento</a>
+        <h:form id="formaDebate">
+
+            <p:tree value="#{deco.raiz}" style="width:940px; margin-top: 10px; "  var="node" id="tree">
+                <p:treeNode id="treenode">
+
+                    <div class="caja" style="margin: 0px;">
+                        <div style="float:left; width: 140px;">
+                            <div class="avatar" style="margin-bottom: 5px;width:100px; height:100px; background-size: 100px 100px; background-image: url(#{facesContext.externalContext.request.contextPath}/ShowAvatar?mid=#{node.miembro.id})" />                            
+                            <div style="font-size: 12px;">#{node.miembro.nombre} #{node.miembro.apellidoPaterno} #{node.miembro.apellidoMaterno} <br/>
+                                <h:panelGroup rendered="#{vc.numeroAtomico(node.miembro) gt 0}">
+                                    Delegado x #{vc.numeroAtomico(node.miembro)}<br/>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{not empty node.opcion.nombre}">
+                                    <hr />
+                                    <div style="float: left; width:90px; font-size: 10px;">
+                                        A favor de #{node.opcion.nombre}
+                                    </div>                                    
+                                    <div style="float: left;">
+                                        <p:graphicImage width="40" height="40" url="/ShowImagenOpcion?oid=#{node.opcion.id}" rendered="#{vc.tieneImagenLaOpcion(node.opcion.id)}" />
+                                    </div>
+
+
+                                </h:panelGroup>
+                            </div>
+                        </div>
+                        <div style="float:left;">
+                            <div>#{node.discurso} </div>
+                            <div style="font-size:12px; margin-top: 20px;">
+                                <div>
+
+                                    <h:outputText value="#{node.fecha}" >
+                                        <f:convertDateTime pattern="dd 'de' MMMM yyyy 'a las' K:mm a" locale="es" />
+                                    </h:outputText>
+
+                                </div>
+                                <div>
+                                    <a href="nuevoArgumento.xhtml?vid=#{vc.vid}&amp;pater=#{node.id}">Responder</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="clear: both;" />
+                    </div>
+                </p:treeNode>
+            </p:tree>
+
+        </h:form>
+
+    </ui:define>
 </ui:composition>

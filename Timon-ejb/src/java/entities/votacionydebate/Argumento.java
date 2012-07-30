@@ -28,14 +28,13 @@ public class Argumento implements Serializable {
     
     @ManyToOne
     private Opcion opcion;
-    
+    @Lob
     private String discurso;
-    private long rating;
+    
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date fecha;
     
-    @ManyToOne
-    private Argumento parent;
+    private long pater;
     
     
     
@@ -115,19 +114,6 @@ public class Argumento implements Serializable {
         this.discurso = discurso;
     }
 
-    /**
-     * @return the rating
-     */
-    public long getRating() {
-        return rating;
-    }
-
-    /**
-     * @param rating the rating to set
-     */
-    public void setRating(long rating) {
-        this.rating = rating;
-    }
 
     /**
      * @return the fecha
@@ -143,19 +129,7 @@ public class Argumento implements Serializable {
         this.fecha = fecha;
     }
 
-    /**
-     * @return the parent
-     */
-    public Argumento getParent() {
-        return parent;
-    }
 
-    /**
-     * @param parent the parent to set
-     */
-    public void setParent(Argumento parent) {
-        this.parent = parent;
-    }
 
     /**
      * @return the votacion
@@ -169,6 +143,20 @@ public class Argumento implements Serializable {
      */
     public void setVotacion(Votacion votacion) {
         this.votacion = votacion;
+    }
+
+    /**
+     * @return the pater
+     */
+    public long getPater() {
+        return pater;
+    }
+
+    /**
+     * @param pater the pater to set
+     */
+    public void setPater(long pater) {
+        this.pater = pater;
     }
     
 }

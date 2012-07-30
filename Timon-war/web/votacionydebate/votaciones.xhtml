@@ -21,13 +21,14 @@
         </div>
 
         <p:dataGrid value="#{vc.votaciones}" var="v" >
-            <div onclick="location='votacion/votacion.xhtml?vid=#{v.id}';" class="cajaVot" style="
+            <div onclick="location='votacion/votDescripcion.xhtml?vid=#{v.id}';" class="cajaVot" style="
                  background-image: url(#{facesContext.externalContext.request.contextPath}/ImagenDeVotacion?vid=#{v.id});
                  margin-bottom: 15px;">
                 <div class="headerCajaVot">
                     <div class="tituloCajaVot">
                         #{v.nombre}
                     </div>
+
                 </div>
                 <img class="avatarCajaVot" src="#{facesContext.externalContext.request.contextPath}/ShowAvatar?mid=#{v.miembro.id}"
                      />
@@ -38,6 +39,10 @@
                 <div class="descripcionCajaVot">
                     <div class="textoDescCajaVot">
                         #{v.descripcion}
+                    </div>
+                    <div style="font-style: normal; padding-left: 4px; padding-top: 2px; padding-bottom: 2px;  font-size: 12px; background-color: black;">
+                        Temas:
+                        <ui:repeat value="#{v.temas}" var="t">#{t.nombre}, </ui:repeat>
                     </div>
                 </div>
                 <div class="timerCajaVot">

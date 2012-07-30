@@ -18,7 +18,6 @@ public class Voto implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String explicacion;
     @ManyToOne
     private Miembro miembro;
     @ManyToOne
@@ -61,19 +60,7 @@ public class Voto implements Serializable {
         return "entities.votacionydebate.Voto[ id=" + id + " ]";
     }
 
-    /**
-     * @return the explicacion
-     */
-    public String getExplicacion() {
-        return explicacion;
-    }
 
-    /**
-     * @param explicacion the explicacion to set
-     */
-    public void setExplicacion(String explicacion) {
-        this.explicacion = explicacion;
-    }
 
     /**
      * @return the miembro

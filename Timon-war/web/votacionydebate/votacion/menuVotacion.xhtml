@@ -7,26 +7,20 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:c="http://java.sun.com/jsp/jstl/core">
 
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $('.votmopoff').hover(function () {
-                $(this).toggleClass('votmophover',180);
-            });
-        });        
-        var actual = "";
-        function activa(parte) {
-            actual=parte;
-            $('.seccion').hide();
-            $('.votmopon').removeClass('votmopon').addClass('votmopoff');
-            $('#boton'+actual).removeClass('votmopoff').addClass('votmopon');
-            $('#'+actual).show();
-        }        
-    </script>     
-
-    <div id="opciones">        
-        <div id="botondescripcion" class="votmopon" onclick="activa('descripcion');">Descripción</div>
-        <div id="botonvotar" class="votmopoff" onclick="activa('votar');">Votar</div>
-        <div id="botondebate" class="votmopoff" onclick="activa('debate');">Debate</div>        
+    <c:set var="clase" value="mopoff" />
+    <div id="opciones">
+        <c:if test="#{dondevot eq 'votdesc'}"><c:set var="clase" value="mopon" /></c:if>
+        <div id="botonvotdesc" class="#{clase}" onclick="location='votDescripcion.xhtml?vid=#{vc.vid}';">Descripción</div>
+        <c:if test="#{dondevot eq 'votdesc'}"><c:set var="clase" value="mopoff" /></c:if>        
+        <c:if test="#{dondevot eq 'votdebate'}"><c:set var="clase" value="mopon" /></c:if>
+        <div id="botonvotdebate" class="#{clase}" onclick="location='votDebate.xhtml?vid=#{vc.vid}';">Debate</div>
+        <c:if test="#{dondevot eq 'votdebate'}"><c:set var="clase" value="mopoff" /></c:if>          
+        <c:if test="#{dondevot eq 'votvotar'}"><c:set var="clase" value="mopon" /></c:if>
+        <div id="botonvotvotar" class="#{clase}" onclick="location='votVotar.xhtml?vid=#{vc.vid}';">Votar</div>
+        <c:if test="#{dondevot eq 'votvotar'}"><c:set var="clase" value="mopoff" /></c:if>        
+        <c:if test="#{dondevot eq 'votres'}"><c:set var="clase" value="mopon" /></c:if>
+        <div id="botonvotdesc" class="#{clase}" onclick="location='votResultados.xhtml?vid=#{vc.vid}';">Resultados</div>
+        <c:if test="#{dondevot eq 'votres'}"><c:set var="clase" value="mopoff" /></c:if>
     </div>
 
 </ui:composition>
