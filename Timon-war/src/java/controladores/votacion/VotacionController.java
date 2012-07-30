@@ -130,7 +130,7 @@ public class VotacionController implements Serializable {
         return vl.tieneImagenLaOpcion(id);
     }
 
-    public void guardarVotacion() {
+    public String guardarVotacion() {
         if (um.getUser() == null) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Para votar debe ingresar a la plataforma como miembro.", null));
         }
@@ -140,6 +140,8 @@ public class VotacionController implements Serializable {
         logvot.setMiembro(um.getUser());
         logvot.setFecha(new Date());
         vl.guardarVotacion(logvot, votos);
+        logvot = new LogVotacion();
+        return "votResultados.xhtml?vid="+vid+"&amp;faces-redirect=true";
     }
 
     public String getContentFromURL(String url) throws IOException {

@@ -1,6 +1,16 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ *   __    __ _ _     _   ___           _   _     _             __  __
+ *  / / /\ \ (_) | __(_) / _ \__ _ _ __| |_(_) __| | ___   /\/\ \ \/ /
+ *  \ \/  \/ / | |/ /| |/ /_)/ _` | '__| __| |/ _` |/ _ \ /    \ \  / 
+ *   \  /\  /| |   < | / ___/ (_| | |  | |_| | (_| | (_) / /\/\ \/  \ 
+ *    \/  \/ |_|_|\_\|_\/    \__,_|_|   \__|_|\__,_|\___/\/    \/_/\_\
+ *                                              
+ *                                              
+ *  
+ * Wikipartido de Mexico
+ * VER ARCHIVO DE LiCENCIA
+ * 
+ * 
  */
 package entities.votacionydebate;
 
@@ -10,7 +20,7 @@ import javax.persistence.*;
 
 /**
  *
- * @author alfonso
+ * @author Alfonso Tames
  */
 @Entity
 @Table(uniqueConstraints=@UniqueConstraint(columnNames={"MIEMBRO_ID","TEMA_ID"}))

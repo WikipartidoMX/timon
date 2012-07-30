@@ -32,7 +32,6 @@ import org.primefaces.model.UploadedFile;
 import sessionbeans.TimonLogic;
 import sessionbeans.VotoYDebateLogic;
 
-
 /**
  *
  * @author Alfonso Tames
@@ -72,6 +71,7 @@ public class NuevaVotacionController implements Serializable {
         nuevaOpcion = new Opcion();
         opimas = new LinkedList<OpcionMasImagen>();
         imagen = null;
+        imagenNuevaOpcion = null;
     }
 
     public void handleFileUpload(FileUploadEvent event) {
@@ -107,7 +107,7 @@ public class NuevaVotacionController implements Serializable {
             for (OpcionMasImagen o : opimas) {
                 o.getOpcion().setVotacion(nuevaVotacion);
                 nuevaVotacion.getOpciones().add(o.getOpcion());
-                
+
             }
             nuevaVotacion.setEstados(selecEstados);
             nuevaVotacion.setTemas(selecTemas);
@@ -141,12 +141,16 @@ public class NuevaVotacionController implements Serializable {
     }
 
     public void agregarOpcion() {
-        ImagenOpcion imo = new ImagenOpcion();
-        imo.setFile(imagenNuevaOpcion.getContents());
-        imo.setOpcion(nuevaOpcion);
         OpcionMasImagen omi = new OpcionMasImagen();
+        if (imagenNuevaOpcion != null) {
+            ImagenOpcion imo = new ImagenOpcion();
+            imo.setFile(imagenNuevaOpcion.getContents());
+            imo.setOpcion(nuevaOpcion);
+            omi.setImagen(imo);
+        }
+
         omi.setOpcion(nuevaOpcion);
-        omi.setImagen(imo);        
+
         opimas.add(omi);
         System.out.println("Queda asi:");
         for (OpcionMasImagen o : opimas) {
@@ -320,7 +324,6 @@ public class NuevaVotacionController implements Serializable {
         this.nuevaOpcion = nuevaOpcion;
     }
 
-
     /**
      * @return the imagen
      */
@@ -362,7 +365,4 @@ public class NuevaVotacionController implements Serializable {
     public void setOpimas(List<OpcionMasImagen> opimas) {
         this.opimas = opimas;
     }
-    
-    
-
 }
