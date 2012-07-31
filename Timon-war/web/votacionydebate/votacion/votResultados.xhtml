@@ -6,6 +6,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 template="votacionTemplate.xhtml">
 
     <f:metadata>
@@ -21,58 +22,71 @@
 
 
     <ui:define name="content">
-        <div class="caja" style="width:300px;" >
-            Resultado de la Votación<br/>
-            <ui:repeat value="#{vc.rs.scores}" var="score">
-                #{score.opcion.nombre} : #{score.score}<br/>
-            </ui:repeat>
-        </div>
-
-        <div class="cajaTituloChico" style="width:515px;" >Matriz de Preferencias</div>
-        <div class="cajaContent" style="width:500px;" >
-            <table>
-                <tr>
-                    <td>&nbsp;</td>
-                    <ui:repeat value="#{vc.rs.opciones}" var="op">
-                        <td>#{op.nombre}</td>
+        <h:form id="resultados">
+            <div class="cajaTituloChico" style="width:515px;" >Resultado de la Votacion</div>
+            <div class="cajaContent" style="width:500px;" >
+                
+                <p:progressBar ajax="true" value="#{vc.avance}" rendered="#{vc.avance lt 100}">
+                    <p:ajax event="complete" update="scores" />
+                </p:progressBar> 
+                <h:panelGroup id="scores">
+                    hola * #{vc.avance} * #{vc.rs.exetime} #{vc.rs.fechaConteo} 
+                    <ui:repeat value="#{vc.rs.scores}" var="score">
+                        #{score.opcion.nombre} : #{score.score}<br/>
                     </ui:repeat>
-                </tr>
-                <ui:repeat value="#{vc.rs.opciones}" var="op" varStatus="i">
-                    <tr>
-                        <td align="center"><div class="verti">#{op.nombre}</div></td>
-                        <ui:repeat value="#{vc.rs.opciones}" var="oq" varStatus="j">
-                            <td align="center" style="border: 1px solid grey;}">
-                                <h:outputText value="#{vc.rs.pref[i.index][j.index]}" rendered="#{op ne oq}" />
-                            </td>
-                        </ui:repeat>
-                    </tr>
-                </ui:repeat>
-            </table>
-        </div>
+                </h:panelGroup>
+            </div>
 
-        <div class="cajaTituloChico" style="width:515px;" >Strongest Paths</div>
-        <div class="cajaContent" style="width:500px;" >
-            <table>
-                <tr>
-                    <td>&nbsp;</td>
-                    <ui:repeat value="#{vc.rs.opciones}" var="op">
-                        <td>#{op.nombre}</td>
-                    </ui:repeat>
-                </tr>
-                <ui:repeat value="#{vc.rs.opciones}" var="op" varStatus="i">
-                    <tr>
-                        <td align="center"><div class="verti">#{op.nombre}</div></td>
-                        <ui:repeat value="#{vc.rs.opciones}" var="oq" varStatus="j">
-                            <td align="center" style="border: 1px solid grey;}">
-                                <h:outputText value="#{vc.rs.sp[i.index][j.index]}" rendered="#{op ne oq}" />
-                            </td>
+            <div class="cajaTituloChico" style="width:515px;" >Matriz de Preferencias</div>
+            <div class="cajaContent" style="width:500px;" >
+                <h:panelGroup rendered="#{fn:length(vc.votacion.opciones) lt 10}">
+                    <table>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <ui:repeat value="#{vc.votacion.opciones}" var="op">
+                                <td>#{op.nombre}</td>
+                            </ui:repeat>
+                        </tr>
+                        <ui:repeat value="#{vc.votacion.opciones}" var="op" varStatus="i">
+                            <tr>
+                                <td align="center"><div class="verti">#{op.nombre}</div></td>
+                                <ui:repeat value="#{vc.votacion.opciones}" var="oq" varStatus="j">
+                                    <td align="center" style="border: 1px solid grey;}">
+                                        <h:outputText value="#{vc.rs.pref[i.index][j.index]}" rendered="#{op ne oq}" />
+                                    </td>
+                                </ui:repeat>
+                            </tr>
                         </ui:repeat>
-                    </tr>
-                </ui:repeat>
-            </table>
-        </div>
-        <p:graphicImage url="/DirectedGraph" />
-        <div style="clear: both;" />
-        <center>#{vc.rs.exetime}</center>
+                    </table>
+                </h:panelGroup>
+            </div>
+
+            <div class="cajaTituloChico" style="width:515px;" >Strongest Paths</div>
+            <div class="cajaContent" style="width:500px;" >
+                <h:panelGroup rendered="#{fn:length(vc.votacion.opciones) lt 10}">
+                    <table>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <ui:repeat value="#{vc.votacion.opciones}" var="op">
+                                <td>#{op.nombre}</td>
+                            </ui:repeat>
+                        </tr>
+                        <ui:repeat value="#{vc.votacion.opciones}" var="op" varStatus="i">
+                            <tr>
+                                <td align="center"><div class="verti">#{op.nombre}</div></td>
+                                <ui:repeat value="#{vc.votacion.opciones}" var="oq" varStatus="j">
+                                    <td align="center" style="border: 1px solid grey;}">
+                                        <h:outputText value="#{vc.rs.sp[i.index][j.index]}" rendered="#{op ne oq}" />
+                                    </td>
+                                </ui:repeat>
+                            </tr>
+                        </ui:repeat>
+                    </table>
+                </h:panelGroup>
+            </div>
+            <p:graphicImage url="/DirectedGraph" />
+            <div style="clear: both;" />
+            <center>#{vc.rs.exetime}</center>
+        </h:form>
     </ui:define>
 </ui:composition>

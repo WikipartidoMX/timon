@@ -19,7 +19,6 @@ import entities.registro.Estado;
 import entities.registro.Miembro;
 import java.io.Serializable;
 import java.util.List;
-import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

@@ -12,7 +12,6 @@
  * 
  * 
  */
-
 package controladores.votacion;
 
 import controladores.UserManager;
@@ -20,8 +19,8 @@ import entities.registro.Miembro;
 import entities.votacionydebate.LogVotacion;
 import entities.votacionydebate.Opcion;
 import entities.votacionydebate.Votacion;
-import helpers.ResultadoSchulze;
-import helpers.Score;
+import entities.votacionydebate.ResultadoSchulze;
+import entities.votacionydebate.Score;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,7 +54,6 @@ public class VotacionController implements Serializable {
     UserManager um;
     @Inject
     VotoYDebateLogic vl;
-
     private long vid;
     private long vact = 0;
     private Votacion votacion;
@@ -64,31 +62,31 @@ public class VotacionController implements Serializable {
     private String wikiDescOpcion;
     private LogVotacion logvot = new LogVotacion();
     private ResultadoSchulze rs;
-    
-    
+
     public VotacionController() {
         logvot = new LogVotacion();
         rs = null;
     }
-    
+
     public ResultadoSchulze getRs() {
         if (rs == null) {
-            rs = vl.cuentaConSchulze(votacion);
+            rs = vl.getUltimoResultado(votacion);
+        } else {
+            vl.getResultadoSchulze(rs.getId());
         }
+
         return rs;
     }
-    
-    public void contar() {
-        vl.cuentaConSchulze(votacion);
-    }
+
     public List<Votacion> getVotaciones() {
         return vl.getVotaciones(0, 100);
-    }    
+    }
 
     // Que tan pesado es un delegado para cierta votacion
     public long numeroAtomico(Miembro delegado) {
         return vl.numeroAtomico(votacion, delegado);
     }
+
     public void verVotacion() {
 
         List<Opcion> opcionesDisponibles = new ArrayList<Opcion>();
@@ -97,7 +95,7 @@ public class VotacionController implements Serializable {
         //System.out.println("vid " + getVid());
         if (getVact() != getVid() || getVact() == 0) {
             votacion = vl.getVotacion(getVid());
-            rs = null;
+            rs = vl.getUltimoResultado(votacion);
             try {
                 setWikiDescVotacion(getContentFromURL(votacion.getUrl()));
                 opcionesDisponibles = vl.getOpcionesParaVotacion(votacion);
@@ -110,11 +108,11 @@ public class VotacionController implements Serializable {
             setVact(getVid());
         }
     }
-    
+
     public void verWikiDescOpcion(long id) {
         System.out.println("Invocando verWikiDescOpcion...");
         try {
-            System.out.println("Sacando la opcion con id "+id);
+            System.out.println("Sacando la opcion con id " + id);
             Opcion op = vl.getOpcion(id);
             wikiDescOpcion = getContentFromURL(op.getUrl());
             System.out.println("Contiene:");
@@ -123,9 +121,9 @@ public class VotacionController implements Serializable {
             System.out.println("Error !!!!!!!");
             Logger.getLogger(VotacionController.class.getName()).log(Level.SEVERE, "Error al sacar contenido del wiki", ex);
         }
-        
+
     }
-    
+
     public boolean tieneImagenLaOpcion(long id) {
         return vl.tieneImagenLaOpcion(id);
     }
@@ -134,14 +132,26 @@ public class VotacionController implements Serializable {
         if (um.getUser() == null) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Para votar debe ingresar a la plataforma como miembro.", null));
         }
-            
+
         List<Opcion> votos = opciones.getTarget();
         logvot.setVotacion(votacion);
         logvot.setMiembro(um.getUser());
         logvot.setFecha(new Date());
-        vl.guardarVotacion(logvot, votos);
+        rs = vl.guardarVotacion(logvot, votos);
+        vl.cuentaConSchulze(rs);
         logvot = new LogVotacion();
-        return "votResultados.xhtml?vid="+vid+"&amp;faces-redirect=true";
+        return "votResultados.xhtml?vid=" + vid + "&amp;faces-redirect=true";
+    }
+
+    public Integer getAvance() {
+        
+        if (rs == null) {
+            System.out.println("Aqui el rs es nulo");
+            return 0;
+        } else {
+            System.out.println("Soy getAvance... "+rs.getId()+" "+rs.getAvance());
+            return vl.getAvanceParaRS(rs.getId());
+        }
     }
 
     public String getContentFromURL(String url) throws IOException {
@@ -156,9 +166,9 @@ public class VotacionController implements Serializable {
             httpclient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 15000);
             httpclient.getParams().setParameter(CoreConnectionPNames.STALE_CONNECTION_CHECK, false);
             httpclient.getParams().setParameter(CoreConnectionPNames.TCP_NODELAY, true);
-            
+
             httpget = new HttpGet(url);
-            
+
             HttpResponse response = httpclient.execute(httpget);
             //System.out.println(response.getStatusLine());
             entity = response.getEntity();
@@ -175,8 +185,8 @@ public class VotacionController implements Serializable {
                 byte[] buffer = new byte[1024];
                 int read;
                 while ((read = instream.read(buffer)) != -1) {
-                    resp.append(new String(Arrays.copyOfRange(buffer, 0, read),"UTF8"));
-                    
+                    resp.append(new String(Arrays.copyOfRange(buffer, 0, read), "UTF8"));
+
                 }
 
 
@@ -207,7 +217,7 @@ public class VotacionController implements Serializable {
             // immediate deallocation of all system resources
             httpclient.getConnectionManager().shutdown();
         }
-        
+
         return resp.toString();
     }
 
