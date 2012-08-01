@@ -22,21 +22,51 @@
 
 
     <ui:define name="content">
+        <style tyle="text/css">
+            .animated .ui-progressbar-value { 
+                background-image: url(#{facesContext.externalContext.request.contextPath}/images/pbar-ani.gif); 
+            }
+        </style>
+
+
         <h:form id="resultados">
+                <div id="contenidoWikiDescOpcion" style="position: absolute; height: 445px; width: 600px; overflow: auto; ">
+                    #{vc.wikiDescOpcion}
+                </div>            
             <div class="cajaTituloChico" style="width:515px;" >Resultado de la Votacion</div>
             <div class="cajaContent" style="width:500px;" >
-                
-                <p:progressBar ajax="true" value="#{vc.avance}" rendered="#{vc.avance lt 100}">
-                    <p:ajax event="complete" update="scores" />
-                </p:progressBar> 
+                <div id="barra">
+                    <p:progressBar  widgetVar="pbar" ajax="true" value="#{vc.avance}"  styleClass="animated" labelTemplate="{value}%">
+                        <p:ajax event="complete" update=":resultados:scores" listener="#{vc.onCompleteProgressBar}" oncomplete="$('#barra').toggle();" />
+                    </p:progressBar>
+                </div>
                 <h:panelGroup id="scores">
-                    hola * #{vc.avance} * #{vc.rs.exetime} #{vc.rs.fechaConteo} 
-                    <ui:repeat value="#{vc.rs.scores}" var="score">
-                        #{score.opcion.nombre} : #{score.score}<br/>
-                    </ui:repeat>
+                    <ui:repeat value="#{vc.rs.scores}" var="score" varStatus="s">
+                        <div style="margin-bottom: 10px;">
+                            <div style="font-size: 55px; width: 50px; float: left;">
+                                #{s.index+1}
+                            </div>
+                            <div style="width: 100px; float: left;">
+                                <p:graphicImage width="80" height="80" url="/ShowImagenOpcion?oid=#{score.opcion.id}" rendered="#{vc.tieneImagenLaOpcion(score.opcion.id)}" />
+                            </div>
+                            <div style="width: 350px; float: left;">
+                                <strong>#{score.opcion.nombre} : #{score.score}</strong><br/>
+                                <span style="font-size: 12px;">#{score.opcion.descripcion}</span><br/>
+
+
+                                <h:panelGroup rendered="#{not empty vot.opcion.url}">
+                                    <span onclick="$('#contenidoWikiDescOpcion').html('Cargando...'); $('#contenidoWikiDescOpcion').load('/Timon-war/ShowOpcionContentFromWiki?oid=#{score.opcion.id}'); $('#mas').toggle();" class="liga" style="font-size: 10px;">Más información</span>
+                                </h:panelGroup>
+
+                            </div>
+
+                            <div style="clear: both;" />
+                        </div>
+                    </ui:repeat> 
+
                 </h:panelGroup>
             </div>
-
+            
             <div class="cajaTituloChico" style="width:515px;" >Matriz de Preferencias</div>
             <div class="cajaContent" style="width:500px;" >
                 <h:panelGroup rendered="#{fn:length(vc.votacion.opciones) lt 10}">
@@ -87,6 +117,11 @@
             <p:graphicImage url="/DirectedGraph" />
             <div style="clear: both;" />
             <center>#{vc.rs.exetime}</center>
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    pbar.start();
+                });
+            </script>
         </h:form>
     </ui:define>
 </ui:composition>

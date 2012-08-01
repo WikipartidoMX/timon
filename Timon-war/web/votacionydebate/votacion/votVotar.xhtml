@@ -57,17 +57,47 @@
                 </div>
             </div>
 
-            <h:panelGroup rendered="#{vc.numeroAtomico(um.user) gt 0}">
+            <h:panelGroup rendered="#{vc.numeroAtomico(um.user) gt 0 and empty vc.logVotacion}">
                 <div class="caja" style="width: 600px;">
                     <strong>Usted representa a #{vc.numeroAtomico(um.user)} miembros en esta votación</strong>. Ingrese una explicación 
                     para que estos miembros entiendan el sentido de su voto:<br/><br/>
                     <p:editor value="#{vc.logvot.explicacion}" width="600" />
-                </div>
-                
+                </div>                
             </h:panelGroup>
 
-                <p:messages id="mensajes" />
+            <p:messages id="mensajes" />
+
+            <h:panelGroup rendered="#{empty vc.logVotacion}">
                 <p:commandButton value="Votar" action="#{vc.guardarVotacion}" update="mensajes" />
+            </h:panelGroup>
+            <br/><br/>
+            <h:panelGroup rendered="#{not empty vc.logVotacion}">
+                <div class="cajaTituloChico" style="width: 515px;">Ya registraste tu voto y lo hiciste así:</div>
+                <div class="cajaContent" style="width: 500px;">
+                    <ui:repeat value="#{vc.votos}" var="vot" varStatus="s">
+                        <div style="margin-bottom: 10px;">
+                            <div style="font-size: 55px; width: 50px; float: left;">
+                                #{s.index+1}
+                            </div>
+                            <div style="width: 100px; float: left;">
+                                <p:graphicImage width="80" height="80" url="/ShowImagenOpcion?oid=#{vot.opcion.id}" rendered="#{vc.tieneImagenLaOpcion(vot.opcion.id)}" />
+                            </div>
+                            <div style="width: 350px; float: left;">
+                                <strong>#{vot.opcion.nombre}</strong><br/>
+                                <span style="font-size: 12px;">#{vot.opcion.descripcion}</span><br/>
+
+
+                                <h:panelGroup rendered="#{not empty vot.opcion.url}">
+                                    <span onclick="$('#contenidoWikiDescOpcion').html('Cargando...'); $('#contenidoWikiDescOpcion').load('/Timon-war/ShowOpcionContentFromWiki?oid=#{vot.opcion.id}'); $('#mas').toggle();" class="liga" style="font-size: 10px;">Más información</span>
+                                </h:panelGroup>
+
+                            </div>
+
+                            <div style="clear: both;" />
+                        </div>
+                    </ui:repeat>
+                </div>
+            </h:panelGroup>
 
         </h:form>
     </ui:define>

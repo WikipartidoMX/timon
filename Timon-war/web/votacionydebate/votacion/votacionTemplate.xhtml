@@ -36,9 +36,7 @@
                                 Temas:
             <ui:repeat value="#{vc.votacion.temas}" var="t">#{t.nombre}, </ui:repeat>
                 </div>
-                <div class="subencabezado">
-                    #{vc.votacion.descripcion}
-                </div>
+
                 <div id="menuVotacion">                
                     <ui:insert name="menu"><ui:include src="menuVotacion.xhtml" /></ui:insert>
                 </div>
