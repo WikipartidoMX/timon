@@ -1,18 +1,33 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ *   __    __ _ _     _   ___           _   _     _             __  __
+ *  / / /\ \ (_) | __(_) / _ \__ _ _ __| |_(_) __| | ___   /\/\ \ \/ /
+ *  \ \/  \/ / | |/ /| |/ /_)/ _` | '__| __| |/ _` |/ _ \ /    \ \  / 
+ *   \  /\  /| |   < | / ___/ (_| | |  | |_| | (_| | (_) / /\/\ \/  \ 
+ *    \/  \/ |_|_|\_\|_\/    \__,_|_|   \__|_|\__,_|\___/\/    \/_/\_\
+ *                                              
+ *                                              
+ *  
+ * Wikipartido de Mexico
+ * VER ARCHIVO DE LiCENCIA
+ * 
+ *
  */
 package servlets;
 
 import controladores.votacion.VotacionController;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import entities.votacionydebate.Opcion;
+import entities.votacionydebate.ResultadoSchulze;
+import java.awt.*;
+import java.awt.font.FontRenderContext;
+import java.awt.font.TextLayout;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,7 +37,8 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  *
- * @author Alfonso Tames
+ * @author Alfonso Tames Gracias a Dr. John B. Matthews por la solucion para
+ * calcular las dimensiones
  */
 @WebServlet(name = "DirectedGraph", urlPatterns = {"/DirectedGraph"})
 public class DirectedGraph extends HttpServlet {
@@ -30,52 +46,88 @@ public class DirectedGraph extends HttpServlet {
     @Inject
     VotacionController vc;
 
-    /**
-     * Processes requests for both HTTP
-     * <code>GET</code> and
-     * <code>POST</code> methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int n = 7;
-        BufferedImage img = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = (Graphics2D) img.getGraphics();
+        ResultadoSchulze rs = vc.getRs();
+        List<Opcion> opciones = rs.getVotacion().getOpciones();
+        System.out.println("Creando la Grafica para " + rs.getVotacion().getNombre() + "...");
+        int n = opciones.size();
 
-        g2d.setRenderingHint(
+        // Tamano de la imagen y radios
+        int w = 800;
+        int h = 600;
+        int mw = w / 2;
+        int mh = h / 2;
+        int r = (4 * mh) / 5;
+        int rt = r+50;
+        int r2 = Math.abs((mh - r) / 2);
+
+        Map<Opcion, Point> cords = new HashMap<Opcion, Point>();
+        Map<Opcion, Point> tcords = new HashMap<Opcion, Point>();        
+        int i = 0;
+        for (Opcion op : opciones) {
+            double t = 2 * Math.PI * i / n;
+            int x = (int) Math.round(mw + r * Math.cos(t));
+            int y = (int) Math.round(mh + r * Math.sin(t));
+            int tx = (int) Math.round(mw + rt * Math.cos(t));
+            int ty = (int) Math.round(mh + rt * Math.sin(t));            
+            cords.put(op, new Point(x, y));
+            tcords.put(op, new Point(tx, ty));            
+            System.out.println(x + "," + y);
+            i++;
+        }
+
+        BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = (Graphics2D) img.getGraphics();
+        
+        FontRenderContext frc = g.getFontRenderContext();
+        Font f = new Font("Helvetica",Font.PLAIN,12);
+
+
+        g.setRenderingHint(
                 RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
 
-        g2d.setColor(Color.black);
-        int a = 800 / 2;
-        int b = 600 / 2;
-        int m = Math.min(a, b);
-        int r = 4 * m / 5;
-        int r2 = Math.abs(m - r) / 2;
-
-        g2d.setColor(Color.BLACK);
-
-        g2d.setColor(Color.blue);
-        // Gracias a Dr. John B. Matthews por la formula matematica
-        for (int i = 0;
-                i < n;
-                i++) {
-            double t = 2 * Math.PI * i / n;
-            int x = (int) Math.round(a + r * Math.cos(t));
-            int y = (int) Math.round(b + r * Math.sin(t));
-            g2d.drawOval(x - r2, y - r2, 2 * r2, 2 * r2);
+        for (Opcion opi : opciones) {
+            for (Opcion opj : opciones) {
+                g.setColor(Color.gray);
+                g.drawLine(cords.get(opi).x, cords.get(opi).y, cords.get(opj).x, cords.get(opj).y);
+            }
         }
+        
+        g.setStroke(new BasicStroke(2));
+
+        for (Opcion op : opciones) {
+           
+            
+            g.setPaint(Color.lightGray);
+            Ellipse2D e = new Ellipse2D.Double(cords.get(op).x - r2, cords.get(op).y - r2, 2 * r2, 2 * r2);
+            g.fill(e);
+            g.setColor(Color.black);
+            g.draw(e);
+
+            
+            TextLayout tl = new TextLayout(op.getNombre(),f,frc);
+            Rectangle rect = tl.getBounds().getBounds();
+            rect.setLocation(tcords.get(op).x, tcords.get(op).y-rect.height);
+            Rectangle rectc = new Rectangle(cords.get(op).x - r2, cords.get(op).y - r2, 2 * r2, 2 * r2);
+            int tx = tcords.get(op).x;
+            int ty = tcords.get(op).y;
+            if (rect.intersects(rectc)) {
+                System.out.println("Intersecta con "+op.getNombre());
+                tx = tx - rect.width;
+            }
+            g.setColor(Color.black);
+            tl.draw(g,tx, ty);
+        }
+
         OutputStream output = response.getOutputStream();
         response.setContentType("image/png");
         try {
             javax.imageio.ImageIO.write(img, "png", output);
         } finally {
             output.close();
-            g2d.dispose();
+            g.dispose();
         }
     }
 // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -158,9 +158,9 @@ public class VotacionController implements Serializable {
     public Integer getAvance() {
         if (rs == null) {
             System.out.println("Aqui el rs es nulo");
-            return 0;
+            return 100;
         } else {
-            int a = 0;
+            int a = 100;
             if (mv.getConteos().get(rs.getId()) != null) {
                 a = mv.getConteos().get(rs.getId());
             }

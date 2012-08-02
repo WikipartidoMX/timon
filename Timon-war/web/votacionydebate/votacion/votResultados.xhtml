@@ -35,9 +35,9 @@
                 </div>            
             <div class="cajaTituloChico" style="width:515px;" >Resultado de la Votacion</div>
             <div class="cajaContent" style="width:500px;" >
-                <div id="barra">
-                    <p:progressBar  widgetVar="pbar" ajax="true" value="#{vc.avance}"  styleClass="animated" labelTemplate="{value}%">
-                        <p:ajax event="complete" update=":resultados:scores" listener="#{vc.onCompleteProgressBar}" oncomplete="$('#barra').toggle();" />
+                <div id="barra" style="margin-top:15px;">
+                    <p:progressBar  widgetVar="pbar" ajax="true" value="#{vc.avance}"  styleClass="animated" labelTemplate="Calculando el resultado... {value}%">
+                        <p:ajax event="complete" update=":resultados:scores,:resultados:matpref,:resultados:matps,:resultados:directgraph" listener="#{vc.onCompleteProgressBar}" oncomplete="$('#barra').toggle();" />
                     </p:progressBar>
                 </div>
                 <h:panelGroup id="scores">
@@ -69,7 +69,7 @@
             
             <div class="cajaTituloChico" style="width:515px;" >Matriz de Preferencias</div>
             <div class="cajaContent" style="width:500px;" >
-                <h:panelGroup rendered="#{fn:length(vc.votacion.opciones) lt 10}">
+                <h:panelGroup id="matpref" rendered="#{fn:length(vc.votacion.opciones) lt 10}">
                     <table>
                         <tr>
                             <td>&nbsp;</td>
@@ -93,7 +93,7 @@
 
             <div class="cajaTituloChico" style="width:515px;" >Strongest Paths</div>
             <div class="cajaContent" style="width:500px;" >
-                <h:panelGroup rendered="#{fn:length(vc.votacion.opciones) lt 10}">
+                <h:panelGroup id="matps" rendered="#{fn:length(vc.votacion.opciones) lt 10}">
                     <table>
                         <tr>
                             <td>&nbsp;</td>
@@ -114,7 +114,7 @@
                     </table>
                 </h:panelGroup>
             </div>
-            <p:graphicImage url="/DirectedGraph" />
+            <p:graphicImage id="directgraph" url="/DirectedGraph" />
             <div style="clear: both;" />
             <center>#{vc.rs.exetime}</center>
             <script type="text/javascript">
