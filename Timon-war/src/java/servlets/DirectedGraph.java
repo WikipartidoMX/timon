@@ -22,6 +22,7 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -79,7 +80,7 @@ public class DirectedGraph extends HttpServlet {
 
         Map<Opcion, Point> cords = new HashMap<Opcion, Point>();
         Map<Opcion, Point> tcords = new HashMap<Opcion, Point>();
-        Map<Opcion, Point> acords = new HashMap<Opcion, Point>();        
+        Map<Opcion, Point> acords = new HashMap<Opcion, Point>();
         int i = 0;
         for (Opcion op : opciones) {
             double t = 2 * Math.PI * i / n;
@@ -88,10 +89,10 @@ public class DirectedGraph extends HttpServlet {
             int tx = (int) Math.round(mw + rt * Math.cos(t));
             int ty = (int) Math.round(mh + rt * Math.sin(t));
             int ax = (int) Math.round(mw + ra * Math.cos(t));
-            int ay = (int) Math.round(mh + ra * Math.sin(t));            
+            int ay = (int) Math.round(mh + ra * Math.sin(t));
             cords.put(op, new Point(x, y));
             tcords.put(op, new Point(tx, ty));
-            acords.put(op, new Point(ax, ay));            
+            acords.put(op, new Point(ax, ay));
             System.out.println(x + "," + y);
             i++;
         }
@@ -104,11 +105,27 @@ public class DirectedGraph extends HttpServlet {
                 RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
 
+
+        g.setColor(Color.gray);
+        double t = 40;
         for (Opcion opi : opciones) {
+            double x,y;
+            x = cords.get(opi).x;
+            y = cords.get(opi).y;            
+            Line2D l1 = new Line2D.Double(x-t,y-t,x+t,y-t);
+            Line2D l2 = new Line2D.Double(x+t,y-t,x+t,y+t);
+            Line2D l3 = new Line2D.Double(x+t,y+t,x-t,y+t);
+            Line2D l4 = new Line2D.Double(x-t,y+t,x-t,y-t);
+
+            g.draw(l1);
+            g.draw(l2);
+            g.draw(l3);
+            g.draw(l4);
             for (Opcion opj : opciones) {
-                g.setColor(Color.gray);
+
                 g.drawLine(acords.get(opi).x, acords.get(opi).y, acords.get(opj).x, acords.get(opj).y);
-                drawArrowHead(g,new Point(10,20),new Point(15,25),Color.gray);
+
+
             }
         }
 
@@ -133,6 +150,8 @@ public class DirectedGraph extends HttpServlet {
             Rectangle rect = tl.getBounds().getBounds();
             rect.setLocation(tcords.get(op).x, tcords.get(op).y - rect.height);
             Rectangle rectc = new Rectangle(cords.get(op).x - r2, cords.get(op).y - r2, 2 * r2, 2 * r2);
+
+
             int tx = tcords.get(op).x;
             int ty = tcords.get(op).y;
             if (rect.intersects(rectc)) {
@@ -166,22 +185,30 @@ public class DirectedGraph extends HttpServlet {
         g.dispose();
         return scaledBI;
     }
-
-    // ArrowHead by Craig Wood 
-    private void drawArrowHead(Graphics2D g2, Point tip, Point tail, Color color) {
-        g2.setPaint(color);
-        double dy = tip.y - tail.y;
-        double dx = tip.x - tail.x;
-        double theta = Math.atan2(dy, dx);
-        //System.out.println("theta = " + Math.toDegrees(theta));
-        double x, y, rho = theta + phi;
-        for (int j = 0; j < 2; j++) {
-            x = tip.x - barb * Math.cos(rho);
-            y = tip.y - barb * Math.sin(rho);
-            g2.draw(new Line2D.Double(tip.x, tip.y, x, y));
-            rho = theta - phi;
-        }
-    }
+    
+   public static Point2D getLineLineIntersection(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
+      double det1And2 = det(x1, y1, x2, y2);
+      double det3And4 = det(x3, y3, x4, y4);
+      double x1LessX2 = x1 - x2;
+      double y1LessY2 = y1 - y2;
+      double x3LessX4 = x3 - x4;
+      double y3LessY4 = y3 - y4;
+      double det1Less2And3Less4 = det(x1LessX2, y1LessY2, x3LessX4, y3LessY4);
+      if (det1Less2And3Less4 == 0){
+         // the denominator is zero so the lines are parallel and there's either no solution (or multiple solutions if the lines overlap) so return null.
+         return null;
+      }
+      double x = (det(det1And2, x1LessX2,
+            det3And4, x3LessX4) /
+            det1Less2And3Less4);
+      double y = (det(det1And2, y1LessY2,
+            det3And4, y3LessY4) /
+            det1Less2And3Less4);
+      return new Point2D.Double(x, y);
+   }
+   protected static double det(double a, double b, double c, double d) {
+      return a * d - b * c;
+   }    
 
 // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
