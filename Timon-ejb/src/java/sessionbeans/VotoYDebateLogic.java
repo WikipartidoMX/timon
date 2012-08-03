@@ -247,7 +247,7 @@ public class VotoYDebateLogic implements Serializable {
             return (ResultadoSchulze) em.createQuery("select r from ResultadoSchulze r "
                     + "where r.votacion=:vot order by r.fechaConteo").setParameter("vot", vot).getSingleResult();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("Error al tratar de encontrar el ultimo resultado: "+e.getMessage());
             return null;
         }
     }
