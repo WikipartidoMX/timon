@@ -30,9 +30,9 @@
 
 
         <h:form id="resultados">
-                <div id="contenidoWikiDescOpcion" style="position: absolute; height: 445px; width: 600px; overflow: auto; ">
-                    #{vc.wikiDescOpcion}
-                </div>            
+            <div id="contenidoWikiDescOpcion" style="position: absolute; height: 445px; width: 600px; overflow: auto; ">
+                #{vc.wikiDescOpcion}
+            </div>            
             <div class="cajaTituloChico" style="width:515px;" >Resultado de la Votacion</div>
             <div class="cajaContent" style="width:500px;" >
                 <div id="barra" style="margin-top:15px;">
@@ -66,20 +66,37 @@
 
                 </h:panelGroup>
             </div>
-            
-            <div class="cajaTituloChico" style="width:515px;" >Matriz de Preferencias</div>
-            <div class="cajaContent" style="width:500px;" >
+
+            <div class="cajaTituloChico"  >Matriz de Preferencias</div>
+            <div class="cajaContent" >
                 <h:panelGroup id="matpref" rendered="#{fn:length(vc.votacion.opciones) lt 10}">
                     <table>
                         <tr>
                             <td>&nbsp;</td>
                             <ui:repeat value="#{vc.votacion.opciones}" var="op">
-                                <td>#{op.nombre}</td>
+                                <td>
+                                    #{op.nombre}<br/>
+                                    <p:graphicImage width="40" height="40" url="/ShowImagenOpcion?oid=#{op.id}" rendered="#{vc.tieneImagenLaOpcion(op.id)}" />                                    
+
+                                </td>
                             </ui:repeat>
                         </tr>
                         <ui:repeat value="#{vc.votacion.opciones}" var="op" varStatus="i">
                             <tr>
-                                <td align="center"><div class="verti">#{op.nombre}</div></td>
+                                <td align="center">
+
+                                    <div style="width:200px; ">
+                                        <div style="float: right; width: 40">
+                                            <p:graphicImage  width="40" height="40" url="/ShowImagenOpcion?oid=#{op.id}" rendered="#{vc.tieneImagenLaOpcion(op.id)}" />
+                                        </div>                                            
+                                        <div style="float: right; width: 50">
+                                            #{op.nombre}
+                                        </div>
+
+                                        <div style="clear: both;" />
+                                    </div>
+
+                                </td>
                                 <ui:repeat value="#{vc.votacion.opciones}" var="oq" varStatus="j">
                                     <td align="center" style="border: 1px solid grey;}">
                                         <h:outputText value="#{vc.rs.pref[i.index][j.index]}" rendered="#{op ne oq}" />
@@ -90,15 +107,22 @@
                     </table>
                 </h:panelGroup>
             </div>
+            <div class="cajaTituloChico" >Direct Graph</div>
+            <div class="cajaContent" style="text-align: center;" >
 
-            <div class="cajaTituloChico" style="width:515px;" >Strongest Paths</div>
-            <div class="cajaContent" style="width:500px;" >
+                <p:graphicImage id="directgraph" url="/DirectedGraph" />
+            </div>            
+            <div class="cajaTituloChico">Strongest Paths</div>
+            <div class="cajaContent" >
                 <h:panelGroup id="matps" rendered="#{fn:length(vc.votacion.opciones) lt 10}">
                     <table>
                         <tr>
                             <td>&nbsp;</td>
                             <ui:repeat value="#{vc.votacion.opciones}" var="op">
-                                <td>#{op.nombre}</td>
+                                <td>
+                                    #{op.nombre}<br/>
+                                    <p:graphicImage width="40" height="40" url="/ShowImagenOpcion?oid=#{op.id}" rendered="#{vc.tieneImagenLaOpcion(op.id)}" />
+                                </td>
                             </ui:repeat>
                         </tr>
                         <ui:repeat value="#{vc.votacion.opciones}" var="op" varStatus="i">
@@ -113,8 +137,7 @@
                         </ui:repeat>
                     </table>
                 </h:panelGroup>
-            </div>
-            <p:graphicImage id="directgraph" url="/DirectedGraph" />
+            </div>            
             <div style="clear: both;" />
             <center>#{vc.rs.exetime}</center>
             <script type="text/javascript">

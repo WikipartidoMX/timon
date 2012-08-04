@@ -20,9 +20,7 @@ import entities.votacionydebate.ResultadoSchulze;
 import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
-import java.awt.geom.Point2D;
+import java.awt.geom.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -64,6 +62,7 @@ public class DirectedGraph extends HttpServlet {
         List<Opcion> opciones = rs.getVotacion().getOpciones();
         System.out.println("Creando la Grafica para " + rs.getVotacion().getNombre() + "...");
         int n = opciones.size();
+        long[][] prefs = rs.getPref();
 
         // Tamano de la imagen y radios
         int w = 800;
@@ -108,25 +107,66 @@ public class DirectedGraph extends HttpServlet {
 
         g.setColor(Color.gray);
         double t = 40;
+        int oi = 0;
         for (Opcion opi : opciones) {
-            double x,y;
+            double x, y;
             x = cords.get(opi).x;
-            y = cords.get(opi).y;            
-            Line2D l1 = new Line2D.Double(x-t,y-t,x+t,y-t);
-            Line2D l2 = new Line2D.Double(x+t,y-t,x+t,y+t);
-            Line2D l3 = new Line2D.Double(x+t,y+t,x-t,y+t);
-            Line2D l4 = new Line2D.Double(x-t,y+t,x-t,y-t);
+            y = cords.get(opi).y;
+            Line2D[] lados = {
+                new Line2D.Double(x - t, y - t, x + t, y - t),
+                new Line2D.Double(x + t, y - t, x + t, y + t),
+                new Line2D.Double(x + t, y + t, x - t, y + t),
+                new Line2D.Double(x - t, y + t, x - t, y - t)
+            };
 
-            g.draw(l1);
-            g.draw(l2);
-            g.draw(l3);
-            g.draw(l4);
+            g.setColor(Color.gray);
+            /*
+             * for (Line2D lado : lados) { g.draw(lado); }
+             */
+            int oj = 0;
             for (Opcion opj : opciones) {
 
-                g.drawLine(acords.get(opi).x, acords.get(opi).y, acords.get(opj).x, acords.get(opj).y);
+                Line2D l = new Line2D.Double(acords.get(opi).x, acords.get(opi).y, acords.get(opj).x, acords.get(opj).y);
+                g.setColor(Color.gray);
+                //g.draw(l);
+                for (Line2D lado : lados) {
+                    if (lado.intersectsLine(l)) {
+                        Point2D inter = getLineLineIntersection(lado, l);
+                        if (inter != null) {
 
+                            g.setColor(Color.gray);
+                            if (prefs[oi][oj] < prefs[oj][oi]) {
+                                drawArrow(g, l, inter);
+                                Line2D li = new Line2D.Double(inter.getX(), inter.getY(), cords.get(opj).x, cords.get(opj).y);
+                                g.draw(li);
+                                Point2D mita = new Point2D.Double((inter.getX() + cords.get(opj).x) / 2, (inter.getY() + cords.get(opj).y) / 2);
 
+                                TextLayout tl = new TextLayout(Long.toString(prefs[oj][oi]), f, frc);
+                                Rectangle2D rect = new Rectangle2D.Double(-10,-14,
+                                        tl.getBounds().getWidth()+25,
+                                       tl.getBounds().getHeight()+5
+                                        );
+                                AffineTransform bat = g.getTransform();
+                                AffineTransform at = new AffineTransform();
+                                at.translate(mita.getX(), mita.getY());
+                                double teta = Math.atan2(li.getY2() - li.getY1(), li.getX2() - li.getX1());
+                                at.rotate(teta);
+                                g.setTransform(at);                                
+                                g.setPaint(Color.white);
+                                g.fill(rect);
+                                g.setColor(Color.gray);
+                                g.draw(rect);
+                                tl.draw(g, 0, -2);
+                                g.setTransform(bat);
+                                
+                            }
+                        }
+                    }
+                }
+
+                oj++;
             }
+            oi++;
         }
 
         g.setStroke(new BasicStroke(2));
@@ -185,30 +225,57 @@ public class DirectedGraph extends HttpServlet {
         g.dispose();
         return scaledBI;
     }
-    
-   public static Point2D getLineLineIntersection(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
-      double det1And2 = det(x1, y1, x2, y2);
-      double det3And4 = det(x3, y3, x4, y4);
-      double x1LessX2 = x1 - x2;
-      double y1LessY2 = y1 - y2;
-      double x3LessX4 = x3 - x4;
-      double y3LessY4 = y3 - y4;
-      double det1Less2And3Less4 = det(x1LessX2, y1LessY2, x3LessX4, y3LessY4);
-      if (det1Less2And3Less4 == 0){
-         // the denominator is zero so the lines are parallel and there's either no solution (or multiple solutions if the lines overlap) so return null.
-         return null;
-      }
-      double x = (det(det1And2, x1LessX2,
-            det3And4, x3LessX4) /
-            det1Less2And3Less4);
-      double y = (det(det1And2, y1LessY2,
-            det3And4, y3LessY4) /
-            det1Less2And3Less4);
-      return new Point2D.Double(x, y);
-   }
-   protected static double det(double a, double b, double c, double d) {
-      return a * d - b * c;
-   }    
+
+    // by CommanderKeith
+    public Point2D getLineLineIntersection(Line2D l1, Line2D l2) {
+        double x1 = l1.getX1();
+        double x2 = l1.getX2();
+        double y1 = l1.getY1();
+        double y2 = l1.getY2();
+        double x3 = l2.getX1();
+        double x4 = l2.getX2();
+        double y3 = l2.getY1();
+        double y4 = l2.getY2();
+        double det1And2 = det(x1, y1, x2, y2);
+        double det3And4 = det(x3, y3, x4, y4);
+        double x1LessX2 = x1 - x2;
+        double y1LessY2 = y1 - y2;
+        double x3LessX4 = x3 - x4;
+        double y3LessY4 = y3 - y4;
+        double det1Less2And3Less4 = det(x1LessX2, y1LessY2, x3LessX4, y3LessY4);
+        if (det1Less2And3Less4 == 0) {
+            // the denominator is zero so the lines are parallel and there's either no solution (or multiple solutions if the lines overlap) so return null.
+            return null;
+        }
+        double x = (det(det1And2, x1LessX2,
+                det3And4, x3LessX4)
+                / det1Less2And3Less4);
+        double y = (det(det1And2, y1LessY2,
+                det3And4, y3LessY4)
+                / det1Less2And3Less4);
+        return new Point2D.Double(x, y);
+    }
+
+    public Polygon drawArrow(Graphics2D g, Line2D l, Point2D punta) {
+        AffineTransform otx = g.getTransform();
+        AffineTransform tx = new AffineTransform();
+        Polygon ah = new Polygon();
+        ah.addPoint(0, 7);
+        ah.addPoint(-7, -7);
+        ah.addPoint(7, -7);
+        double teta = Math.atan2(l.getY2() - punta.getY(), l.getX2() - punta.getX());
+        tx.translate(punta.getX(), punta.getY());
+        tx.rotate((teta - 3 * Math.PI / 2d));
+
+        g.setTransform(tx);
+        g.fill(ah);
+        g.setTransform(otx);
+        return ah;
+    }
+
+    protected static double det(double a, double b, double c, double d) {
+        return a * d - b * c;
+    }
 
 // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
