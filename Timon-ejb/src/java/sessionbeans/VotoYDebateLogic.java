@@ -12,7 +12,6 @@
  * 
  * 
  */
-
 package sessionbeans;
 
 import entities.registro.Estado;
@@ -38,10 +37,8 @@ import singletons.MonitorDeVotaciones;
 @Stateless
 public class VotoYDebateLogic implements Serializable {
 
-    
     @PersistenceContext(unitName = "Timon-ejbPU")
     private EntityManager em;
-    
     @Inject
     MonitorDeVotaciones mv;
 
@@ -57,7 +54,10 @@ public class VotoYDebateLogic implements Serializable {
         em.remove(obj);
     }
 
-    public ResultadoSchulze guardarVotacion(LogVotacion logvot, List<Opcion> opciones) {
+    public ResultadoSchulze guardarVotacion(LogVotacion logvot, List<Opcion> opciones) throws Exception {
+        if (logvot.getMiembro().getPaso() < 2) {
+            throw new Exception("No eres miembro con derecho a voto. ¡Afíliate hoy!");
+        }
         System.out.println("Registrando Votos de " + logvot.getMiembro().getNombre());
         System.out.println("Para Votacion: " + logvot.getVotacion());
         long i = 1;
@@ -124,7 +124,7 @@ public class VotoYDebateLogic implements Serializable {
     }
 
     public List<Opcion> getOpcionesParaVotacion(Votacion vot) {
-        return em.createQuery("select o from Opcion o where o.votacion = :votacion").setParameter("votacion", vot).getResultList();
+        return em.createQuery("select o from Opcion o where o.votacion = :votacion order by o.id").setParameter("votacion", vot).getResultList();
     }
 
     public Opcion getOpcion(long id) {
@@ -247,42 +247,40 @@ public class VotoYDebateLogic implements Serializable {
             return (ResultadoSchulze) em.createQuery("select r from ResultadoSchulze r "
                     + "where r.votacion=:vot order by r.fechaConteo").setParameter("vot", vot).getSingleResult();
         } catch (Exception e) {
-            System.out.println("Error al tratar de encontrar el ultimo resultado: "+e.getMessage());
+            System.out.println("Error al tratar de encontrar el ultimo resultado: " + e.getMessage());
             return null;
         }
     }
 
     public LogVotacion getLogVotacion(Miembro m, Votacion vot) {
         try {
-        return (LogVotacion)em.createQuery("select l from LogVotacion l where l.miembro = :m and l.votacion = :vot")
-                .setParameter("m", m)
-                .setParameter("vot",vot)
-                .setMaxResults(1)
-                .getSingleResult();
+            return (LogVotacion) em.createQuery("select l from LogVotacion l where l.miembro = :m and l.votacion = :vot").setParameter("m", m).setParameter("vot", vot).setMaxResults(1).getSingleResult();
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return null;
         }
     }
-    
+
     public List<Voto> getVotosPara(Miembro m, Votacion vot) {
         return em.createQuery("select v from Voto v "
-                    + "where v.opcion.votacion = :vot and v.miembro=:m order by v.rank").setParameter("vot", vot).setParameter("m", m).getResultList();
+                + "where v.opcion.votacion = :vot and v.miembro=:m order by v.rank").setParameter("vot", vot).setParameter("m", m).getResultList();
     }
-
 
     @Asynchronous
     public void cuentaConSchulze(ResultadoSchulze rs) {
         rs = em.merge(rs);
         mv.getConteos().put(rs.getId(), 0);
-        
+
         Votacion vot = rs.getVotacion();
 
         long startTime = System.currentTimeMillis();
         System.out.println("Conteo con Schulze para la votacion " + vot.getNombre());
-        List<Opcion> opciones = em.createQuery("select o from Opcion o "
-                + "where o.votacion = :vot").setParameter("vot", vot).getResultList();
+
         // Implementacion del Metodo Schulze (Thanks http://wiki.electorama.com/wiki/Schulze_method !)
+        List<Opcion> opciones = vot.getOpciones();
+        for (Opcion o : opciones) {
+            System.out.println("Opcion: "+o.getNombre());
+        }
         List<Score> scores = new ArrayList<Score>();
         int i, j, k;
         int c = opciones.size();
@@ -312,12 +310,24 @@ public class VotoYDebateLogic implements Serializable {
                 long t = System.currentTimeMillis() - st;
                 System.out.println("Tomó a la primera iteración: " + t);
             }
-            
+
             mv.getConteos().put(rs.getId(), Integer.valueOf((i * 100) / c));
-            System.out.println("Avance: "+mv.getConteos().get(rs.getId()));
+            System.out.println("Avance: " + mv.getConteos().get(rs.getId()));
         }
+        //Ver la matriz de preferencia
+        /*
+        String matriz = "";
+        for (int x = 0; x < c; x++) {
+            matriz +=
+                    opciones.get(x).getNombre() + " ";
+            for (int y = 0; y < c; y++) {
+                matriz += prefe[x][y] + " ";
+            }
+            matriz += "\n";
+        }
+        System.out.println("Matriz de Preferencia: \n\n" + matriz);
+        */
         // Luego calculamos el strongest path de una preferencia a otra
-        st = System.currentTimeMillis();
         for (i = 0; i < c; i++) {
             for (j = 0; j < c; j++) {
                 if (!opciones.get(i).equals(opciones.get(j))) {
@@ -328,12 +338,10 @@ public class VotoYDebateLogic implements Serializable {
                             }
                         }
                     }
+
                 }
             }
-            if (i == 0) {
-                long t = System.currentTimeMillis() - st;
-                System.out.println("Tomó a la primera iteración SP: " + t);
-            }
+
         }
         for (i = 0; i < c; i++) {
             winner[i] = true;
@@ -361,14 +369,9 @@ public class VotoYDebateLogic implements Serializable {
 
         Collections.sort(scores);
 
-        // Ver la matriz de preferencia
-        /*
-         * String matriz = ""; for (int x = 0; x < c; x++) { matriz +=
-         * opciones.get(x).getNombre() + " "; for (int y = 0; y <
-         * opciones.size(); y++) { matriz += p[x][y] + " "; } matriz += "\n"; }
-         * System.out.println("Matriz de Preferencia: \n\n" + matriz);
-         *
-         */
+
+
+
         rs.setScores(scores);
         rs.setPref(prefe);
         rs.setSp(p);
@@ -406,7 +409,7 @@ public class VotoYDebateLogic implements Serializable {
                 c++;
             }
         }
-        //System.out.println(c + " prefieren " + i.getNombre() + " sobre " + j.getNombre());
+        //System.out.println(c + " prefieren i " + i.getNombre() + " sobre j " + j.getNombre());
         return c;
     }
 }

@@ -149,10 +149,20 @@ public class VotacionController implements Serializable {
         logvot.setVotacion(votacion);
         logvot.setMiembro(um.getUser());
         logvot.setFecha(new Date());
-        rs = vl.guardarVotacion(logvot, votos);
+        try {
+            rs = vl.guardarVotacion(logvot, votos);
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));
+            return "";            
+        }
+        
         vl.cuentaConSchulze(rs); // invocacion asincrona
         logvot = new LogVotacion();
         return "votResultados.xhtml?vid=" + vid + "&amp;faces-redirect=true";
+    }
+    
+    public void forzaConteo() {
+        vl.cuentaConSchulze(rs);
     }
 
     public Integer getAvance() {

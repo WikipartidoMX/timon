@@ -56,11 +56,7 @@ public class DirectedGraph extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         ResultadoSchulze rs = vc.getRs();
-        if (rs == null) {
-            System.out.println("RS es nulo!!!");
-        }
-        List<Opcion> opciones = rs.getVotacion().getOpciones();
-        System.out.println("Creando la Grafica para " + rs.getVotacion().getNombre() + "...");
+        List<Opcion> opciones = rs.getVotacion().getOpciones();        
         int n = opciones.size();
         long[][] prefs = rs.getPref();
 
@@ -73,9 +69,6 @@ public class DirectedGraph extends HttpServlet {
         int rt = r + 50;
         int ra = r;
         int r2 = Math.abs((mh - r) / 2);
-
-        phi = Math.toRadians(40);
-        barb = 20;
 
         Map<Opcion, Point> cords = new HashMap<Opcion, Point>();
         Map<Opcion, Point> tcords = new HashMap<Opcion, Point>();
@@ -92,7 +85,6 @@ public class DirectedGraph extends HttpServlet {
             cords.put(op, new Point(x, y));
             tcords.put(op, new Point(tx, ty));
             acords.put(op, new Point(ax, ay));
-            System.out.println(x + "," + y);
             i++;
         }
         BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
@@ -171,7 +163,9 @@ public class DirectedGraph extends HttpServlet {
 
         g.setStroke(new BasicStroke(2));
 
+        int nu=0;
         for (Opcion op : opciones) {
+            
             if (vl.tieneImagenLaOpcion(op.getId())) {
                 InputStream in = new ByteArrayInputStream(vl.getImagenDeOpcion(op.getId()));
                 BufferedImage ima = ImageIO.read(in);
@@ -200,6 +194,7 @@ public class DirectedGraph extends HttpServlet {
             }
             g.setColor(Color.black);
             tl.draw(g, tx, ty);
+            nu++;
         }
 
         OutputStream output = response.getOutputStream();

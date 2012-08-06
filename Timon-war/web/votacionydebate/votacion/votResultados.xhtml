@@ -65,6 +65,7 @@
                     </ui:repeat> 
 
                 </h:panelGroup>
+                <p:commandButton value="Forzar Conteo" action="#{vc.forzaConteo}" update=":resultados:scores,:resultados:matpref,:resultados:matps,:resultados:directgraph" /> 
             </div>
 
             <div class="cajaTituloChico"  >Matriz de Preferencias</div>
@@ -74,7 +75,7 @@
                         <tr>
                             <td>&nbsp;</td>
                             <ui:repeat value="#{vc.votacion.opciones}" var="op">
-                                <td>
+                                <td style="padding: 5px; text-align: center;" valign="bottom">
                                     #{op.nombre}<br/>
                                     <p:graphicImage width="40" height="40" url="/ShowImagenOpcion?oid=#{op.id}" rendered="#{vc.tieneImagenLaOpcion(op.id)}" />                                    
 
@@ -127,7 +128,19 @@
                         </tr>
                         <ui:repeat value="#{vc.votacion.opciones}" var="op" varStatus="i">
                             <tr>
-                                <td align="center"><div class="verti">#{op.nombre}</div></td>
+                                <td align="center">
+                                                                        <div style="width:200px; ">
+                                        <div style="float: right; width: 40">
+                                            <p:graphicImage  width="40" height="40" url="/ShowImagenOpcion?oid=#{op.id}" rendered="#{vc.tieneImagenLaOpcion(op.id)}" />
+                                        </div>                                            
+                                        <div style="float: right; width: 50">
+                                            #{op.nombre}
+                                        </div>
+
+                                        <div style="clear: both;" />
+                                    </div>
+                                    
+                                </td>
                                 <ui:repeat value="#{vc.votacion.opciones}" var="oq" varStatus="j">
                                     <td align="center" style="border: 1px solid grey;}">
                                         <h:outputText value="#{vc.rs.sp[i.index][j.index]}" rendered="#{op ne oq}" />
