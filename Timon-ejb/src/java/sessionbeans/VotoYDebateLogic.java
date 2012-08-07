@@ -19,7 +19,6 @@ import entities.registro.Miembro;
 import entities.votacionydebate.*;
 import java.io.Serializable;
 import java.util.*;
-import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
@@ -27,7 +26,6 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.transaction.UserTransaction;
 import singletons.MonitorDeVotaciones;
 
 /**
@@ -296,8 +294,8 @@ public class VotoYDebateLogic implements Serializable {
         for (i = 0; i < c; i++) {
             for (j = 0; j < c; j++) {
                 if (!opciones.get(i).equals(opciones.get(j))) {
-                    long a = cuantosPrefieren(opciones.get(i), opciones.get(j));
-                    long b = cuantosPrefieren(opciones.get(j), opciones.get(i));
+                    long a = cuantosPrefierenNativo(opciones.get(i), opciones.get(j));
+                    long b = cuantosPrefierenNativo(opciones.get(j), opciones.get(i));
                     prefe[i][j] = a;
                     prefe[j][i] = b;
                     if (a > b) {
@@ -418,10 +416,9 @@ public class VotoYDebateLogic implements Serializable {
     
     public long cuantosPrefierenNativo(Opcion i, Opcion j) {
         System.out.println("cuantosPrefierenNativo");
-        String q = "select i.id, i.opcion_id, i.rank, j.id, j.opcion_id, "
-                + "j.rank from voto as i, voto as j "
-                + "where i.opcion_id="+i.getId()+" and j.opcion_id="+j.getId()+" "
-                + "and i.rank  < j.rank group by i.miembro_id";
+        String q = "select  v1.id, v1.miembro_id, v1.opcion_id, v1.rank, v2.id, v2.miembro_id, "
+                + "v2.opcion_id, v2.rank from voto as v1, voto as v2 where v1.opcion_id="+i.getId()+" and "
+                + "v2.opcion_id="+j.getId()+" and v1.rank<v2.rank group by v1.id";
         long c;
         try {
             c = em.createNativeQuery(q).getResultList().size();
