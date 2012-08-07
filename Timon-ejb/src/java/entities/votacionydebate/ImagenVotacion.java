@@ -16,8 +16,8 @@ package entities.votacionydebate;
 
 
 import java.io.Serializable;
-import javax.persistence.*;
 import static javax.persistence.FetchType.LAZY;
+import javax.persistence.*;
 
 /**
  *

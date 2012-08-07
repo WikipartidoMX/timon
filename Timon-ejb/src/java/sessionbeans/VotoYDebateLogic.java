@@ -277,50 +277,35 @@ public class VotoYDebateLogic implements Serializable {
         // Implementacion del Metodo Schulze (Thanks http://wiki.electorama.com/wiki/Schulze_method !)
         List<Opcion> opciones = vot.getOpciones();
         for (Opcion o : opciones) {
-            System.out.println("Opcion: "+o.getNombre());
+            System.out.println("Opcion: " + o.getNombre());
         }
         List<Score> scores = new ArrayList<Score>();
         int i, j, k;
         int c = opciones.size();
         boolean[] winner = new boolean[c];
-        long[][] p = new long[c][c];
 
-        long[][] prefe = new long[c][c];
 
         long st;
         // Primero calculamos la matriz de preferencias
         st = System.currentTimeMillis();
         System.out.println("Calculando la matriz de preferencia:");
+        long[][] prefe = getMatrizDePreferenciaParaVotacion(rs);
+        long[][] p = new long[c][c];
         for (i = 0; i < c; i++) {
             for (j = 0; j < c; j++) {
-                if (!opciones.get(i).equals(opciones.get(j))) {
-                    long a = cuantosPrefierenNativo(opciones.get(i), opciones.get(j));
-                    long b = cuantosPrefierenNativo(opciones.get(j), opciones.get(i));
-                    prefe[i][j] = a;
-                    prefe[j][i] = b;
-                    if (a > b) {
-                        p[i][j] = a;
-                    } else {
-                        p[i][j] = 0;
-                    }
-                }
+                p[i][j] = prefe[i][j];
             }
-            mv.getConteos().put(rs.getId(), Integer.valueOf((i * 100) / c));
-            System.out.println("Avance: " + mv.getConteos().get(rs.getId()));
         }
-        //Ver la matriz de preferencia
-        
         String matriz = "";
         for (int x = 0; x < c; x++) {
-            matriz +=
-                    opciones.get(x).getNombre() + " ";
+            matriz += opciones.get(x).getNombre() + " ";
             for (int y = 0; y < c; y++) {
                 matriz += prefe[x][y] + " ";
             }
             matriz += "\n";
         }
         System.out.println("Matriz de Preferencia: \n\n" + matriz);
-        
+
         // Luego calculamos el strongest path de una preferencia a otra
         for (i = 0; i < c; i++) {
             for (j = 0; j < c; j++) {
@@ -364,7 +349,15 @@ public class VotoYDebateLogic implements Serializable {
         Collections.sort(scores);
 
 
-
+        matriz = "";
+        for (int x = 0; x < c; x++) {
+            matriz += opciones.get(x).getNombre() + " ";
+            for (int y = 0; y < c; y++) {
+                matriz += prefe[x][y] + " ";
+            }
+            matriz += "\n";
+        }
+        System.out.println("Matriz de Preferencia: \n\n" + matriz);
 
         rs.setScores(scores);
         rs.setPref(prefe);
@@ -375,19 +368,17 @@ public class VotoYDebateLogic implements Serializable {
         mv.getConteos().put(rs.getId(), 100);
     }
 
-
-    
     public long cuantosPrefierenNativo(Opcion i, Opcion j) {
 
         String q = "select  v1.id, v1.miembro_id, v1.opcion_id, v1.rank, v2.id, v2.miembro_id, "
-                + "v2.opcion_id, v2.rank from voto as v1, voto as v2 where v1.opcion_id="+i.getId()+" and "
-                + "v2.opcion_id="+j.getId()+" and v1.rank<v2.rank and v1.miembro_id=v2.miembro_id";
+                + "v2.opcion_id, v2.rank from voto as v1, voto as v2 where v1.opcion_id=" + i.getId() + " and "
+                + "v2.opcion_id=" + j.getId() + " and v1.rank<v2.rank and v1.miembro_id=v2.miembro_id";
         //System.out.println(q);
         long c;
         try {
             c = em.createNativeQuery(q).getResultList().size();
             if (c == 0) {
-                c = em.createNativeQuery("select id from voto where opcion_id="+i.getId()).getResultList().size();
+                c = em.createNativeQuery("select id from voto where opcion_id=" + i.getId()).getResultList().size();
             }
         } catch (Exception e) {
             System.out.println("Hubo un error!!!");
@@ -396,5 +387,104 @@ public class VotoYDebateLogic implements Serializable {
 
         //System.out.println(c + " prefieren i("+i.getId()+") " + i.getNombre() + " sobre j ("+j.getId() +")" + j.getNombre());
         return c;
-    }    
+    }
+
+    public long[][] getMatrizDePreferenciaParaVotacion(ResultadoSchulze rs) {
+        List<Opcion> opciones = rs.getVotacion().getOpciones();
+        int t = opciones.size();
+        long[][] m = new long[t][t];
+        // Y con ustedes, el query mas largo de mi vida:
+        String q = "select count(*), v1.opcion_id, v2.opcion_id from voto as v1, "
+                + "(select miembro_id, opcion_id, rank from voto where votacion_id="+rs.getVotacion().getId()
+                + " union select v.miembro_id, o.id as opcion_id, null as rank from "
+                + "voto as v, opcion as o where v.votacion_id="+rs.getVotacion().getId()
+                + " and o.votacion_id="+rs.getVotacion().getId()
+                + " and o.id != v.opcion_id and o.id not in (select vt.opcion_id from "
+                + "voto as vt where vt.miembro_id=v.miembro_id and vt.votacion_id="+rs.getVotacion().getId()
+                + ")) "
+                + "as v2 where v1.miembro_id=v2.miembro_id and ((v1.rank < v2.rank) or "
+                + "(v2.rank is null)) and v2.opcion_id != v1.opcion_id and v1.votacion_id="+rs.getVotacion().getId()
+                + " group by v1.opcion_id, v2.opcion_id";
+        System.out.println(q);
+        List<Object> objs = em.createNativeQuery(q).getResultList();
+        Map vals = new HashMap<Preferencia, Long>();
+        Preferencia p = null;
+        for (Object ob : objs) {
+            Object[] oa = (Object[]) ob;
+            long i = (Long) oa[1];
+            long j = (Long) oa[2];
+            long c = (Long) oa[0];
+            p = new Preferencia(i,j);
+            vals.put(p, c);
+            System.out.println(i+" "+j+" "+vals.get(p));
+        }
+        System.out.println("Vals tiene "+vals.size());
+        System.out.println(vals);
+        for (int i = 0; i < t; i++) {
+            for (int j = 0; j < t; j++) {
+                if (!opciones.get(i).equals(opciones.get(j))) {
+                    System.out.println((vals.get(p).toString()));
+                    long a = (Long)vals.get(new Preferencia(opciones.get(i).getId(),opciones.get(j).getId()));
+                    m[i][j] = a;
+                }
+            }
+            mv.getConteos().put(rs.getId(), Integer.valueOf((i * 100) / t));
+            System.out.println("Avance: " + mv.getConteos().get(rs.getId()));
+        }        
+        return m;
+    }
+    
+    
+    class Preferencia {
+        private long i;
+        private long j;
+        public Preferencia(long i, long j) {
+            this.i=i;
+            this.j=j;
+        }
+        @Override
+        public boolean equals(Object o) {
+            if (getClass() == o.getClass()) {
+                if ((((Preferencia)o).getI() == this.i) && (((Preferencia)o).getJ() == this.j)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            return hash;
+        }
+
+        /**
+         * @return the i
+         */
+        public long getI() {
+            return i;
+        }
+
+        /**
+         * @param i the i to set
+         */
+        public void setI(long i) {
+            this.i = i;
+        }
+
+        /**
+         * @return the j
+         */
+        public long getJ() {
+            return j;
+        }
+
+        /**
+         * @param j the j to set
+         */
+        public void setJ(long j) {
+            this.j = j;
+        }
+
+    }
 }

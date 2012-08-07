@@ -25,6 +25,8 @@ public class Voto implements Serializable {
     private long rank;
     @ManyToOne
     private Miembro delegado;
+    @ManyToOne
+    private Votacion votacion;
     
 
     public Long getId() {
@@ -116,6 +118,20 @@ public class Voto implements Serializable {
      */
     public void setDelegado(Miembro delegado) {
         this.delegado = delegado;
+    }
+
+    /**
+     * @return the votacion
+     */
+    public Votacion getVotacion() {
+        return votacion;
+    }
+
+    /**
+     * @param votacion the votacion to set
+     */
+    public void setVotacion(Votacion votacion) {
+        this.votacion = votacion;
     }
 
 
