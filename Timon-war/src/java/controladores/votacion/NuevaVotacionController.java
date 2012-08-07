@@ -127,7 +127,9 @@ public class NuevaVotacionController implements Serializable {
                     tl.persist(iv);
                 }
                 for (OpcionMasImagen omi : opimas) {
-                    vl.persist(omi.getImagen());
+                    if (omi != null) {
+                        vl.persist(omi.getImagen());
+                    }
                 }
             }
             resetVotacion();

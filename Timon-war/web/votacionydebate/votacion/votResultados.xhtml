@@ -27,13 +27,14 @@
                 background-image: url(#{facesContext.externalContext.request.contextPath}/images/pbar-ani.gif); 
             }
         </style>
-
+        <h1>Resultados</h1>
 
         <h:form id="resultados">
             <div id="contenidoWikiDescOpcion" style="position: absolute; height: 445px; width: 600px; overflow: auto; ">
                 #{vc.wikiDescOpcion}
-            </div>            
-            <div class="cajaTituloChico" style="width:515px;" >Resultado de la Votacion</div>
+            </div>
+            
+            <div class="cajaTituloChico" style="width:515px; margin-top: 15px;" >Resultado de la Votacion</div>
             <div class="cajaContent" style="width:500px;" >
                 <div id="barra" style="margin-top:15px;">
                     <p:progressBar  widgetVar="pbar" ajax="true" value="#{vc.avance}"  styleClass="animated" labelTemplate="Calculando el resultado... {value}%">
@@ -67,7 +68,8 @@
                 </h:panelGroup>
                 <p:commandButton value="Forzar Conteo" action="#{vc.forzaConteo}" update=":resultados:scores,:resultados:matpref,:resultados:matps,:resultados:directgraph" /> 
             </div>
-
+                        <h1>Desglose del Conteo Schulze</h1>
+                        <a href="">Explicación del Método</a>
             <div class="cajaTituloChico"  >Matriz de Preferencias</div>
             <div class="cajaContent" >
                 <h:panelGroup id="matpref" rendered="#{fn:length(vc.votacion.opciones) lt 10}">
@@ -108,12 +110,12 @@
                     </table>
                 </h:panelGroup>
             </div>
-            <div class="cajaTituloChico" >Direct Graph</div>
+            <div class="cajaTituloChico" >Gráfica de Direccionalidad</div>
             <div class="cajaContent" style="text-align: center;" >
 
                 <p:graphicImage id="directgraph" url="/DirectedGraph" />
             </div>            
-            <div class="cajaTituloChico">Strongest Paths</div>
+            <div class="cajaTituloChico">Rutas Fuertes</div>
             <div class="cajaContent" >
                 <h:panelGroup id="matps" rendered="#{fn:length(vc.votacion.opciones) lt 10}">
                     <table>

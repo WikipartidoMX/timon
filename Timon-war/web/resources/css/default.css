@@ -1,6 +1,7 @@
 body {
     background-image: url(../../images/fondo.png);
-    background-color: #bfb8b2;
+    background-repeat: repeat-x;
+    background-color: #302a26;
     font-size: 14px;
     font-family: 'Molengo';
     color: #555555;  

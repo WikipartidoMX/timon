@@ -292,6 +292,7 @@ public class VotoYDebateLogic implements Serializable {
         long st;
         // Primero calculamos la matriz de preferencias
         st = System.currentTimeMillis();
+        System.out.println("Calculando la matriz de preferencia:");
         for (i = 0; i < c; i++) {
             for (j = 0; j < c; j++) {
                 if (!opciones.get(i).equals(opciones.get(j))) {
@@ -315,7 +316,7 @@ public class VotoYDebateLogic implements Serializable {
             System.out.println("Avance: " + mv.getConteos().get(rs.getId()));
         }
         //Ver la matriz de preferencia
-        /*
+        
         String matriz = "";
         for (int x = 0; x < c; x++) {
             matriz +=
@@ -326,7 +327,7 @@ public class VotoYDebateLogic implements Serializable {
             matriz += "\n";
         }
         System.out.println("Matriz de Preferencia: \n\n" + matriz);
-        */
+        
         // Luego calculamos el strongest path de una preferencia a otra
         for (i = 0; i < c; i++) {
             for (j = 0; j < c; j++) {
@@ -393,11 +394,13 @@ public class VotoYDebateLogic implements Serializable {
             try {
                 ri = (Long) em.createQuery("select v.rank from Voto v where v.miembro=:m and v.opcion=:i").setParameter("m", m).setParameter("i", i).getSingleResult();
             } catch (Exception e) {
+                ri = 0;
             }
             try {
                 rj = (Long) em.createQuery("select v.rank from Voto v where v.miembro=:m and v.opcion=:j").setParameter("m", m).setParameter("j", j).getSingleResult();
 
             } catch (Exception e) {
+                rj = 0;
             }
 
             if (ri > 0) {
@@ -409,7 +412,24 @@ public class VotoYDebateLogic implements Serializable {
                 c++;
             }
         }
-        //System.out.println(c + " prefieren i " + i.getNombre() + " sobre j " + j.getNombre());
+        System.out.println(c + " prefieren i " + i.getNombre() + " sobre j " + j.getNombre());
         return c;
     }
+    
+    public long cuantosPrefierenNativo(Opcion i, Opcion j) {
+        System.out.println("cuantosPrefierenNativo");
+        String q = "select i.id, i.opcion_id, i.rank, j.id, j.opcion_id, "
+                + "j.rank from voto as i, voto as j "
+                + "where i.opcion_id="+i.getId()+" and j.opcion_id="+j.getId()+" "
+                + "and i.rank  < j.rank group by i.miembro_id";
+        long c;
+        try {
+            c = em.createNativeQuery(q).getResultList().size();
+        } catch (Exception e) {
+            c = 0l;
+        }
+
+        System.out.println(c + " prefieren i " + i.getNombre() + " sobre j " + j.getNombre());
+        return c;
+    }    
 }
