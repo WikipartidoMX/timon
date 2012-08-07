@@ -12,6 +12,8 @@
  * 
  * 
  */
+
+
 package entities.votacionydebate;
 
 import entities.registro.Miembro;

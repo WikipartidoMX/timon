@@ -305,11 +305,6 @@ public class VotoYDebateLogic implements Serializable {
                     }
                 }
             }
-            if (i == 0) {
-                long t = System.currentTimeMillis() - st;
-                System.out.println("Tomó a la primera iteración: " + t);
-            }
-
             mv.getConteos().put(rs.getId(), Integer.valueOf((i * 100) / c));
             System.out.println("Avance: " + mv.getConteos().get(rs.getId()));
         }
@@ -380,53 +375,26 @@ public class VotoYDebateLogic implements Serializable {
         mv.getConteos().put(rs.getId(), 100);
     }
 
-    public long cuantosPrefieren(Opcion i, Opcion j) {
-        long c = 0;
-        //System.out.println("La pregunta es cuantos prefieren " + i.getNombre() + " sobre " + j.getNombre());
-        List<Miembro> miembros = em.createQuery("select v.miembro from Voto v group by v.miembro").getResultList();
-        for (Miembro m : miembros) {
-            long ri = 0;
-            long rj = 0;
 
-            //System.out.println("Probando con " + m.getNombre());
-            try {
-                ri = (Long) em.createQuery("select v.rank from Voto v where v.miembro=:m and v.opcion=:i").setParameter("m", m).setParameter("i", i).getSingleResult();
-            } catch (Exception e) {
-                ri = 0;
-            }
-            try {
-                rj = (Long) em.createQuery("select v.rank from Voto v where v.miembro=:m and v.opcion=:j").setParameter("m", m).setParameter("j", j).getSingleResult();
-
-            } catch (Exception e) {
-                rj = 0;
-            }
-
-            if (ri > 0) {
-                if (ri < rj) {
-                    c++;
-                }
-            }
-            if (ri > 0 && rj < 1) {
-                c++;
-            }
-        }
-        System.out.println(c + " prefieren i " + i.getNombre() + " sobre j " + j.getNombre());
-        return c;
-    }
     
     public long cuantosPrefierenNativo(Opcion i, Opcion j) {
-        System.out.println("cuantosPrefierenNativo");
+
         String q = "select  v1.id, v1.miembro_id, v1.opcion_id, v1.rank, v2.id, v2.miembro_id, "
                 + "v2.opcion_id, v2.rank from voto as v1, voto as v2 where v1.opcion_id="+i.getId()+" and "
-                + "v2.opcion_id="+j.getId()+" and v1.rank<v2.rank group by v1.id";
+                + "v2.opcion_id="+j.getId()+" and v1.rank<v2.rank and v1.miembro_id=v2.miembro_id";
+        //System.out.println(q);
         long c;
         try {
             c = em.createNativeQuery(q).getResultList().size();
+            if (c == 0) {
+                c = em.createNativeQuery("select id from voto where opcion_id="+i.getId()).getResultList().size();
+            }
         } catch (Exception e) {
+            System.out.println("Hubo un error!!!");
             c = 0l;
         }
 
-        System.out.println(c + " prefieren i " + i.getNombre() + " sobre j " + j.getNombre());
+        //System.out.println(c + " prefieren i("+i.getId()+") " + i.getNombre() + " sobre j ("+j.getId() +")" + j.getNombre());
         return c;
     }    
 }
