@@ -277,7 +277,7 @@ public class VotoYDebateLogic implements Serializable {
         // Implementacion del Metodo Schulze (Thanks http://wiki.electorama.com/wiki/Schulze_method !)
         List<Opcion> opciones = vot.getOpciones();
         for (Opcion o : opciones) {
-            System.out.println("Opcion: "+o.getNombre());
+            System.out.println("Opcion: " + o.getNombre());
         }
         List<Score> scores = new ArrayList<Score>();
         int i, j, k;
@@ -314,7 +314,7 @@ public class VotoYDebateLogic implements Serializable {
             System.out.println("Avance: " + mv.getConteos().get(rs.getId()));
         }
         //Ver la matriz de preferencia
-        
+
         String matriz = "";
         for (int x = 0; x < c; x++) {
             matriz +=
@@ -325,7 +325,7 @@ public class VotoYDebateLogic implements Serializable {
             matriz += "\n";
         }
         System.out.println("Matriz de Preferencia: \n\n" + matriz);
-        
+
         // Luego calculamos el strongest path de una preferencia a otra
         for (i = 0; i < c; i++) {
             for (j = 0; j < c; j++) {
@@ -380,45 +380,11 @@ public class VotoYDebateLogic implements Serializable {
         mv.getConteos().put(rs.getId(), 100);
     }
 
-    public long cuantosPrefieren(Opcion i, Opcion j) {
-        long c = 0;
-        //System.out.println("La pregunta es cuantos prefieren " + i.getNombre() + " sobre " + j.getNombre());
-        List<Miembro> miembros = em.createQuery("select v.miembro from Voto v group by v.miembro").getResultList();
-        for (Miembro m : miembros) {
-            long ri = 0;
-            long rj = 0;
-
-            //System.out.println("Probando con " + m.getNombre());
-            try {
-                ri = (Long) em.createQuery("select v.rank from Voto v where v.miembro=:m and v.opcion=:i").setParameter("m", m).setParameter("i", i).getSingleResult();
-            } catch (Exception e) {
-                ri = 0;
-            }
-            try {
-                rj = (Long) em.createQuery("select v.rank from Voto v where v.miembro=:m and v.opcion=:j").setParameter("m", m).setParameter("j", j).getSingleResult();
-
-            } catch (Exception e) {
-                rj = 0;
-            }
-
-            if (ri > 0) {
-                if (ri < rj) {
-                    c++;
-                }
-            }
-            if (ri > 0 && rj < 1) {
-                c++;
-            }
-        }
-        System.out.println(c + " prefieren i " + i.getNombre() + " sobre j " + j.getNombre());
-        return c;
-    }
-    
     public long cuantosPrefierenNativo(Opcion i, Opcion j) {
         System.out.println("cuantosPrefierenNativo");
         String q = "select  v1.id, v1.miembro_id, v1.opcion_id, v1.rank, v2.id, v2.miembro_id, "
-                + "v2.opcion_id, v2.rank from voto as v1, voto as v2 where v1.opcion_id="+i.getId()+" and "
-                + "v2.opcion_id="+j.getId()+" and v1.rank<v2.rank group by v1.id";
+                + "v2.opcion_id, v2.rank from voto as v1, voto as v2 where v1.opcion_id=" + i.getId() + " and "
+                + "v2.opcion_id=" + j.getId() + " and v1.rank<v2.rank group by v1.id";
         long c;
         try {
             c = em.createNativeQuery(q).getResultList().size();
@@ -428,5 +394,24 @@ public class VotoYDebateLogic implements Serializable {
 
         System.out.println(c + " prefieren i " + i.getNombre() + " sobre j " + j.getNombre());
         return c;
-    }    
+    }
+
+    public long[][] getMatrizDePreferenciaParaVotacion(Votacion vot) {
+        int t = vot.getOpciones().size();
+        long[][] m = new long[t][t];
+        List<Object> objs = em.createNativeQuery("select  count(*) as miembros, v1.opcion_id, "
+                + "v2.opcion_id from voto as v1, voto as v2, opcion as o1, "
+                + "opcion as o2 where o1.id=v1.opcion_id and o2.id=v2.opcion_id "
+                + "and o1.votacion_id=" + vot.getId() + " and o2.votacion_id=" + vot.getId() + " and "
+                + "v1.rank<v2.rank and v1.miembro_id=v2.miembro_id "
+                + "group by v1.opcion_id, v2.opcion_id").getResultList();
+        for (Object ob : objs) {
+            Object[] oa = (Object[]) ob;
+            int i = (Integer) oa[1];
+            int j = (Integer) oa[2];
+            long c = (Long) oa[0];
+            m[i][j] = c;
+        }
+        return m;
+    }
 }
