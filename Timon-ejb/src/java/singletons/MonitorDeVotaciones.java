@@ -32,6 +32,7 @@ public class MonitorDeVotaciones {
      * que se estan contando en el momento para poder alimentar las barras de
      * progreso
      *
+     * No estamos borrando los conteos, lo dejarémos para mañana ;)
      *
      */
     private Map<Long, Integer> conteos;
