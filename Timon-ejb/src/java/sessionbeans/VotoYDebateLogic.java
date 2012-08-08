@@ -69,6 +69,7 @@ public class VotoYDebateLogic implements Serializable {
                 v.setMiembro(m);
                 v.setOpcion(op);
                 v.setRank(i);
+                v.setVotacion(logvot.getVotacion());
                 persist(v);
             }
             // Registro para la persona en cuestion
@@ -76,6 +77,7 @@ public class VotoYDebateLogic implements Serializable {
             v.setMiembro(logvot.getMiembro());
             v.setOpcion(op);
             v.setRank(i);
+            v.setVotacion(logvot.getVotacion());
             v.setDelegado(null);
             persist(v);
             i++;
@@ -145,7 +147,11 @@ public class VotoYDebateLogic implements Serializable {
     }
 
     public void guardarDelegacion(Delegacion d) throws Exception {
+        if (d.getMiembro().getPaso() < 2) {
+            throw new Exception("No eres miembro con derecho a voto. ¡Afíliate hoy!");
+        }        
         Delegacion existe = null;
+        
         try {
             existe = (Delegacion) em.createQuery("select d from Delegacion d where "
                     + "d.miembro = :miembro and "
@@ -266,12 +272,11 @@ public class VotoYDebateLogic implements Serializable {
 
     @Asynchronous
     public void cuentaConSchulze(ResultadoSchulze rs) {
+        long st = System.currentTimeMillis();
         rs = em.merge(rs);
         mv.getConteos().put(rs.getId(), 0);
 
         Votacion vot = rs.getVotacion();
-
-        long startTime = System.currentTimeMillis();
         System.out.println("Conteo con Schulze para la votacion " + vot.getNombre());
 
         // Implementacion del Metodo Schulze (Thanks http://wiki.electorama.com/wiki/Schulze_method !)
@@ -285,9 +290,9 @@ public class VotoYDebateLogic implements Serializable {
         boolean[] winner = new boolean[c];
 
 
-        long st;
+        
         // Primero calculamos la matriz de preferencias
-        st = System.currentTimeMillis();
+        
         System.out.println("Calculando la matriz de preferencia:");
         long[][] prefe = getMatrizDePreferenciaParaVotacion(rs);
         long[][] p = new long[c][c];
@@ -362,31 +367,10 @@ public class VotoYDebateLogic implements Serializable {
         rs.setScores(scores);
         rs.setPref(prefe);
         rs.setSp(p);
-        rs.setExetime(System.currentTimeMillis() - startTime);
+        rs.setExetime(System.currentTimeMillis() - st);
         rs.setAvance(100);
         //mv.getConteos().remove(rs.getId());
         mv.getConteos().put(rs.getId(), 100);
-    }
-
-    public long cuantosPrefierenNativo(Opcion i, Opcion j) {
-
-        String q = "select  v1.id, v1.miembro_id, v1.opcion_id, v1.rank, v2.id, v2.miembro_id, "
-                + "v2.opcion_id, v2.rank from voto as v1, voto as v2 where v1.opcion_id=" + i.getId() + " and "
-                + "v2.opcion_id=" + j.getId() + " and v1.rank<v2.rank and v1.miembro_id=v2.miembro_id";
-        //System.out.println(q);
-        long c;
-        try {
-            c = em.createNativeQuery(q).getResultList().size();
-            if (c == 0) {
-                c = em.createNativeQuery("select id from voto where opcion_id=" + i.getId()).getResultList().size();
-            }
-        } catch (Exception e) {
-            System.out.println("Hubo un error!!!");
-            c = 0l;
-        }
-
-        //System.out.println(c + " prefieren i("+i.getId()+") " + i.getNombre() + " sobre j ("+j.getId() +")" + j.getNombre());
-        return c;
     }
 
     public long[][] getMatrizDePreferenciaParaVotacion(ResultadoSchulze rs) {
@@ -395,18 +379,19 @@ public class VotoYDebateLogic implements Serializable {
         long[][] m = new long[t][t];
         // Y con ustedes, el query mas largo de mi vida:
         String q = "select count(*), v1.opcion_id, v2.opcion_id from voto as v1, "
-                + "(select miembro_id, opcion_id, rank from voto where votacion_id="+rs.getVotacion().getId()
+                + "(select miembro_id, opcion_id, rank from voto where votacion_id=" + rs.getVotacion().getId()
                 + " union select v.miembro_id, o.id as opcion_id, null as rank from "
-                + "voto as v, opcion as o where v.votacion_id="+rs.getVotacion().getId()
-                + " and o.votacion_id="+rs.getVotacion().getId()
+                + "voto as v, opcion as o where v.votacion_id=" + rs.getVotacion().getId()
+                + " and o.votacion_id=" + rs.getVotacion().getId()
                 + " and o.id != v.opcion_id and o.id not in (select vt.opcion_id from "
-                + "voto as vt where vt.miembro_id=v.miembro_id and vt.votacion_id="+rs.getVotacion().getId()
+                + "voto as vt where vt.miembro_id=v.miembro_id and vt.votacion_id=" + rs.getVotacion().getId()
                 + ")) "
                 + "as v2 where v1.miembro_id=v2.miembro_id and ((v1.rank < v2.rank) or "
-                + "(v2.rank is null)) and v2.opcion_id != v1.opcion_id and v1.votacion_id="+rs.getVotacion().getId()
+                + "(v2.rank is null)) and v2.opcion_id != v1.opcion_id and v1.votacion_id=" + rs.getVotacion().getId()
                 + " group by v1.opcion_id, v2.opcion_id";
         System.out.println(q);
         List<Object> objs = em.createNativeQuery(q).getResultList();
+        //System.out.println("");
         Map vals = new HashMap<Preferencia, Long>();
         Preferencia p = null;
         for (Object ob : objs) {
@@ -414,38 +399,45 @@ public class VotoYDebateLogic implements Serializable {
             long i = (Long) oa[1];
             long j = (Long) oa[2];
             long c = (Long) oa[0];
-            p = new Preferencia(i,j);
+            p = new Preferencia(i, j);
             vals.put(p, c);
-            System.out.println(i+" "+j+" "+vals.get(p));
+            //System.out.println(i + " " + j + " " + vals.get(p));
         }
-        System.out.println("Vals tiene "+vals.size());
-        System.out.println(vals);
+        //System.out.println("Vals tiene " + vals.size());
+        //System.out.println(vals);
         for (int i = 0; i < t; i++) {
             for (int j = 0; j < t; j++) {
                 if (!opciones.get(i).equals(opciones.get(j))) {
-                    System.out.println((vals.get(p).toString()));
-                    long a = (Long)vals.get(new Preferencia(opciones.get(i).getId(),opciones.get(j).getId()));
+                    p = new Preferencia(opciones.get(i).getId(), opciones.get(j).getId());
+                    long a;
+                    try {
+                        a = (Long) vals.get(new Preferencia(opciones.get(i).getId(), opciones.get(j).getId()));
+                    } catch (Exception e) {
+                        a = 0;
+                    }
                     m[i][j] = a;
                 }
             }
             mv.getConteos().put(rs.getId(), Integer.valueOf((i * 100) / t));
-            System.out.println("Avance: " + mv.getConteos().get(rs.getId()));
-        }        
+            //System.out.println("Avance: " + mv.getConteos().get(rs.getId()));
+        }
         return m;
     }
-    
-    
+
     class Preferencia {
+
         private long i;
         private long j;
+
         public Preferencia(long i, long j) {
-            this.i=i;
-            this.j=j;
+            this.i = i;
+            this.j = j;
         }
+
         @Override
         public boolean equals(Object o) {
             if (getClass() == o.getClass()) {
-                if ((((Preferencia)o).getI() == this.i) && (((Preferencia)o).getJ() == this.j)) {
+                if ((((Preferencia) o).getI() == this.i) && (((Preferencia) o).getJ() == this.j)) {
                     return true;
                 }
             }
@@ -485,6 +477,5 @@ public class VotoYDebateLogic implements Serializable {
         public void setJ(long j) {
             this.j = j;
         }
-
     }
 }
