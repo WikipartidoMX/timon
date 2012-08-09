@@ -56,10 +56,13 @@ public class DirectedGraph extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         ResultadoSchulze rs = vc.getRs();
-        List<Opcion> opciones = rs.getVotacion().getOpciones();        
+        if (rs == null) {
+            // TODO: Regresa una simpatica imagen que diga que estamos esperando el ultimo resultado
+            return;
+        }
+        List<Opcion> opciones = rs.getVotacion().getOpciones();
         int n = opciones.size();
         long[][] prefs = rs.getPref();
-
         // Tamano de la imagen y radios
         int w = 800;
         int h = 600;
@@ -134,23 +137,22 @@ public class DirectedGraph extends HttpServlet {
                                 Point2D mita = new Point2D.Double((inter.getX() + cords.get(opj).x) / 2, (inter.getY() + cords.get(opj).y) / 2);
 
                                 TextLayout tl = new TextLayout(Long.toString(prefs[oj][oi]), f, frc);
-                                Rectangle2D rect = new Rectangle2D.Double(-10,-14,
-                                        tl.getBounds().getWidth()+25,
-                                       tl.getBounds().getHeight()+5
-                                        );
+                                Rectangle2D rect = new Rectangle2D.Double(-10, -14,
+                                        tl.getBounds().getWidth() + 25,
+                                        tl.getBounds().getHeight() + 5);
                                 AffineTransform bat = g.getTransform();
                                 AffineTransform at = new AffineTransform();
                                 at.translate(mita.getX(), mita.getY());
                                 double teta = Math.atan2(li.getY2() - li.getY1(), li.getX2() - li.getX1());
                                 at.rotate(teta);
-                                g.setTransform(at);                                
+                                g.setTransform(at);
                                 g.setPaint(Color.white);
                                 g.fill(rect);
                                 g.setColor(Color.gray);
                                 g.draw(rect);
                                 tl.draw(g, 0, -2);
                                 g.setTransform(bat);
-                                
+
                             }
                         }
                     }
@@ -163,9 +165,9 @@ public class DirectedGraph extends HttpServlet {
 
         g.setStroke(new BasicStroke(2));
 
-        int nu=0;
+        int nu = 0;
         for (Opcion op : opciones) {
-            
+
             if (vl.tieneImagenLaOpcion(op.getId())) {
                 InputStream in = new ByteArrayInputStream(vl.getImagenDeOpcion(op.getId()));
                 BufferedImage ima = ImageIO.read(in);
