@@ -13,11 +13,10 @@
  * 
  */
 
-package entities.votacionydebate;
+package timon.entities.registro;
 
-import entities.registro.Miembro;
 import java.io.Serializable;
-import java.util.Date;
+import static javax.persistence.FetchType.LAZY;
 import javax.persistence.*;
 
 /**
@@ -25,28 +24,17 @@ import javax.persistence.*;
  * @author Alfonso Tames
  */
 @Entity
-public class Argumento implements Serializable {
+public class Avatar implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @ManyToOne
-    private Votacion votacion;
-    
-    @ManyToOne
+    @OneToOne
     private Miembro miembro;
     
-    @ManyToOne
-    private Opcion opcion;
-    @Lob
-    private String discurso;
-    
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date fecha;
-    
-    private long pater;
-    
+    @Lob @Basic(fetch=LAZY)
+    private byte[] file;
     
     
 
@@ -68,10 +56,10 @@ public class Argumento implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Argumento)) {
+        if (!(object instanceof Avatar)) {
             return false;
         }
-        Argumento other = (Argumento) object;
+        Avatar other = (Avatar) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -80,7 +68,7 @@ public class Argumento implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.votacionydebate.Argumento[ id=" + id + " ]";
+        return "entities.Avatar[ id=" + id + " ]";
     }
 
     /**
@@ -98,76 +86,17 @@ public class Argumento implements Serializable {
     }
 
     /**
-     * @return the opcion
+     * @return the file
      */
-    public Opcion getOpcion() {
-        return opcion;
+    public byte[] getFile() {
+        return file;
     }
 
     /**
-     * @param opcion the opcion to set
+     * @param file the file to set
      */
-    public void setOpcion(Opcion opcion) {
-        this.opcion = opcion;
-    }
-
-    /**
-     * @return the discurso
-     */
-    public String getDiscurso() {
-        return discurso;
-    }
-
-    /**
-     * @param discurso the discurso to set
-     */
-    public void setDiscurso(String discurso) {
-        this.discurso = discurso;
-    }
-
-
-    /**
-     * @return the fecha
-     */
-    public Date getFecha() {
-        return fecha;
-    }
-
-    /**
-     * @param fecha the fecha to set
-     */
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
-    }
-
-
-
-    /**
-     * @return the votacion
-     */
-    public Votacion getVotacion() {
-        return votacion;
-    }
-
-    /**
-     * @param votacion the votacion to set
-     */
-    public void setVotacion(Votacion votacion) {
-        this.votacion = votacion;
-    }
-
-    /**
-     * @return the pater
-     */
-    public long getPater() {
-        return pater;
-    }
-
-    /**
-     * @param pater the pater to set
-     */
-    public void setPater(long pater) {
-        this.pater = pater;
+    public void setFile(byte[] file) {
+        this.file = file;
     }
     
 }

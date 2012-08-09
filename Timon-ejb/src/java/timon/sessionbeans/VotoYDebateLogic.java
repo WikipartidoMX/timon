@@ -12,15 +12,13 @@
  * 
  * 
  */
-package sessionbeans;
+package timon.sessionbeans;
 
-import entities.registro.Estado;
-import entities.registro.Miembro;
-import entities.votacionydebate.*;
 import java.io.Serializable;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
@@ -28,7 +26,11 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import singletons.MonitorDeVotaciones;
+import javax.transaction.UserTransaction;
+import timon.entities.registro.Estado;
+import timon.entities.registro.Miembro;
+import timon.entities.votacionydebate.*;
+import timon.singletons.MonitorDeVotaciones;
 
 /**
  *
@@ -37,6 +39,8 @@ import singletons.MonitorDeVotaciones;
 @Stateless
 public class VotoYDebateLogic implements Serializable {
 
+    @Resource
+    private UserTransaction utx;
     @PersistenceContext(unitName = "Timon-ejbPU")
     private EntityManager em;
     @Inject
@@ -69,7 +73,6 @@ public class VotoYDebateLogic implements Serializable {
         if (getLogVotacion(logvot.getMiembro(), logvot.getVotacion()) != null) {
             throw new Exception("¡Ya votaste en la elección <" + logvot.getVotacion().getNombre() + ">!");
         }
-        em.getTransaction().begin();
         long i = 1;
         List<Miembro> delegan = miembrosQueDeleganA(logvot.getMiembro(), logvot.getVotacion());
         Logger.getLogger(this.getClass().getName()).log(Level.FINE, "{0} miembros le han delegado su voto, empezando iteraciones para guardar los votos...", delegan.size());
@@ -131,7 +134,6 @@ public class VotoYDebateLogic implements Serializable {
         } catch (Exception e) {
             throw new Exception("Error: ¡No es posible guardar el resultado de la votación! " + e.getMessage());
         }
-        em.getTransaction().commit();
         return rs;
     }
 
@@ -329,7 +331,7 @@ public class VotoYDebateLogic implements Serializable {
         int i, j, k;
         int c = opciones.size();
         boolean[] winner = new boolean[c];
-        Logger.getLogger(this.getClass().getName()).log(Level.FINE, "Calculando Matriz de Preferencias de tamaño {0}...",Math.pow(c, 2));
+        Logger.getLogger(this.getClass().getName()).log(Level.FINE, "Calculando Matriz de Preferencias de tamaño {0}...", Math.pow(c, 2));
         long[][] prefe = getMatrizDePreferenciaParaVotacion(rs);
         long[][] p = new long[c][c];
         for (i = 0; i < c; i++) {
@@ -345,7 +347,8 @@ public class VotoYDebateLogic implements Serializable {
             }
             matriz.append("\n");
         }
-        Logger.getLogger(this.getClass().getName()).log(Level.FINE, "Claculando Strongest Paths, se iterará {0} veces en total...",Math.pow(c, 3));
+        Logger.getLogger(this.getClass().getName()).log(Level.FINE, "Matriz: \n{0}", matriz.toString());
+        Logger.getLogger(this.getClass().getName()).log(Level.FINE, "Claculando Strongest Paths, se iterará {0} veces en total...", Math.pow(c, 3));
         for (i = 0; i < c; i++) {
             for (j = 0; j < c; j++) {
                 if (!opciones.get(i).equals(opciones.get(j))) {
@@ -368,7 +371,7 @@ public class VotoYDebateLogic implements Serializable {
         int[] score = new int[c];
         for (i = 0; i < c; i++) {
             for (j = 0; j < c; j++) {
-                if (!opciones.get(i).equals(opciones.get(j))) {                    
+                if (!opciones.get(i).equals(opciones.get(j))) {
                     if (p[j][i] > p[i][j]) {
                         winner[i] = false;
                     } else {
@@ -379,7 +382,7 @@ public class VotoYDebateLogic implements Serializable {
         }
         for (i = 0; i < c; i++) {
             if (winner[i]) {
-                System.out.println("GANO " + opciones.get(i).getNombre());
+                Logger.getLogger(this.getClass().getName()).log(Level.FINE, "GANO {0}", opciones.get(i).getNombre());
             }
             Logger.getLogger(this.getClass().getName()).log(Level.FINEST, "La opción {0} se prefiere sobre otras {1} opciones", new Object[]{opciones.get(i).getNombre(), score[i]});
             scores.add(new Score(opciones.get(i), score[i]));
@@ -398,22 +401,12 @@ public class VotoYDebateLogic implements Serializable {
         int t = opciones.size();
         long[][] m = new long[t][t];
         // Y con ustedes, el query mas largo de mi vida.
-        // (seguro que debe haber una forma más eficiente de hacer esto)
-        StringBuilder q = new StringBuilder("select count(*), v1.opcion_id, v2.opcion_id from voto as v1, ")
-                .append("(select miembro_id, opcion_id, rank from voto where votacion_id=").append(rs.getVotacion().getId())
-                .append(" union select v.miembro_id, o.id as opcion_id, null as rank from ")
-                .append("voto as v, opcion as o where v.votacion_id=").append(rs.getVotacion().getId())
-                .append(" and o.votacion_id=").append(rs.getVotacion().getId())
-                .append(" and o.id != v.opcion_id and o.id not in (select vt.opcion_id from ")
-                .append("voto as vt where vt.miembro_id=v.miembro_id and vt.votacion_id=").append(rs.getVotacion().getId())
-                .append(")) ")
-                .append("as v2 where v1.miembro_id=v2.miembro_id and ((v1.rank < v2.rank) or ")
-                .append("(v2.rank is null)) and v2.opcion_id != v1.opcion_id and v1.votacion_id=").append(rs.getVotacion().getId())
-                .append(" group by v1.opcion_id, v2.opcion_id");
-        Logger.getLogger(this.getClass().getName()).log(Level.FINE,q.toString());
+        // (seguro hay una forma más eficiente de hacer esto)
+        StringBuilder q = new StringBuilder("select count(*), v1.opcion_id, v2.opcion_id from voto as v1, ").append("(select miembro_id, opcion_id, rank from voto where votacion_id=").append(rs.getVotacion().getId()).append(" union select v.miembro_id, o.id as opcion_id, null as rank from ").append("voto as v, opcion as o where v.votacion_id=").append(rs.getVotacion().getId()).append(" and o.votacion_id=").append(rs.getVotacion().getId()).append(" and o.id != v.opcion_id and o.id not in (select vt.opcion_id from ").append("voto as vt where vt.miembro_id=v.miembro_id and vt.votacion_id=").append(rs.getVotacion().getId()).append(")) ").append("as v2 where v1.miembro_id=v2.miembro_id and ((v1.rank < v2.rank) or ").append("(v2.rank is null)) and v2.opcion_id != v1.opcion_id and v1.votacion_id=").append(rs.getVotacion().getId()).append(" group by v1.opcion_id, v2.opcion_id");
+        Logger.getLogger(this.getClass().getName()).log(Level.FINE, q.toString());
         List<Object> objs = em.createNativeQuery(q.toString()).getResultList();
         Map vals = new HashMap<Preferencia, Long>();
-        Preferencia p;       
+        Preferencia p;
         for (Object ob : objs) {
             Object[] oa = (Object[]) ob;
             long i = (Long) oa[1];
@@ -423,7 +416,6 @@ public class VotoYDebateLogic implements Serializable {
             vals.put(p, c);
         }
         Logger.getLogger(this.getClass().getName()).log(Level.FINE, "El query regresó con {0} valores...", vals.size());
-        System.out.println();
         for (int i = 0; i < t; i++) {
             for (int j = 0; j < t; j++) {
                 if (!opciones.get(i).equals(opciones.get(j))) {

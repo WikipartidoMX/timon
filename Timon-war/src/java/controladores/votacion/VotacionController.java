@@ -14,9 +14,13 @@
  */
 package controladores.votacion;
 
+import timon.entities.votacionydebate.LogVotacion;
+import timon.entities.votacionydebate.Opcion;
+import timon.entities.votacionydebate.Voto;
+import timon.entities.votacionydebate.ResultadoSchulze;
+import timon.entities.votacionydebate.Votacion;
 import controladores.UserManager;
-import entities.registro.Miembro;
-import entities.votacionydebate.*;
+import timon.entities.registro.Miembro;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -35,8 +39,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreConnectionPNames;
 import org.primefaces.model.DualListModel;
-import sessionbeans.VotoYDebateLogic;
-import singletons.MonitorDeVotaciones;
+import timon.sessionbeans.VotoYDebateLogic;
+import timon.singletons.MonitorDeVotaciones;
 
 /**
  *

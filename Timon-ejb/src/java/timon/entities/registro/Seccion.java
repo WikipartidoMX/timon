@@ -12,7 +12,7 @@
  * 
  * 
  */
-package entities.registro;
+package timon.entities.registro;
 
 import java.io.Serializable;
 import javax.persistence.*;

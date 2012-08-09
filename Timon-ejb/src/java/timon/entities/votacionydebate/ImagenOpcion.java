@@ -14,30 +14,26 @@
  */
 
 
-package entities.votacionydebate;
+package timon.entities.votacionydebate;
 
-import entities.registro.Miembro;
 import java.io.Serializable;
+import static javax.persistence.FetchType.LAZY;
 import javax.persistence.*;
 
 /**
  *
- * @author Alfonso Tames
+ * @author Alfonso Tamés
  */
 @Entity
-@Table(uniqueConstraints=@UniqueConstraint(columnNames={"MIEMBRO_ID","TEMA_ID"}))
-public class Delegacion implements Serializable {
+public class ImagenOpcion implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @ManyToOne
-    private Miembro miembro;
-    @ManyToOne
-    private Tema tema;
-    @ManyToOne
-    private Miembro delegado;
+    @OneToOne
+    private Opcion opcion;
+    @Lob @Basic(fetch=LAZY)
+    private byte[] file;     
 
     public Long getId() {
         return id;
@@ -57,10 +53,10 @@ public class Delegacion implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Delegacion)) {
+        if (!(object instanceof ImagenOpcion)) {
             return false;
         }
-        Delegacion other = (Delegacion) object;
+        ImagenOpcion other = (ImagenOpcion) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -69,49 +65,35 @@ public class Delegacion implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.votacionydebate.Delegacion[ id=" + id + " ]";
+        return "entities.votacionydebate.ImagenOpcion[ id=" + id + " ]";
     }
 
     /**
-     * @return the miembro
+     * @return the opcion
      */
-    public Miembro getMiembro() {
-        return miembro;
+    public Opcion getOpcion() {
+        return opcion;
     }
 
     /**
-     * @param miembro the miembro to set
+     * @param opcion the opcion to set
      */
-    public void setMiembro(Miembro miembro) {
-        this.miembro = miembro;
+    public void setOpcion(Opcion opcion) {
+        this.opcion = opcion;
     }
 
     /**
-     * @return the tema
+     * @return the file
      */
-    public Tema getTema() {
-        return tema;
+    public byte[] getFile() {
+        return file;
     }
 
     /**
-     * @param tema the tema to set
+     * @param file the file to set
      */
-    public void setTema(Tema tema) {
-        this.tema = tema;
-    }
-
-    /**
-     * @return the delegado
-     */
-    public Miembro getDelegado() {
-        return delegado;
-    }
-
-    /**
-     * @param delegado the delegado to set
-     */
-    public void setDelegado(Miembro delegado) {
-        this.delegado = delegado;
+    public void setFile(byte[] file) {
+        this.file = file;
     }
     
 }

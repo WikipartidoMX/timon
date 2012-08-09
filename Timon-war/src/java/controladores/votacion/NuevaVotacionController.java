@@ -14,9 +14,13 @@
  */
 package controladores.votacion;
 
+import timon.entities.votacionydebate.Opcion;
+import timon.entities.votacionydebate.ImagenVotacion;
+import timon.entities.votacionydebate.Votacion;
+import timon.entities.votacionydebate.Tema;
+import timon.entities.votacionydebate.ImagenOpcion;
 import controladores.UserManager;
-import entities.registro.Estado;
-import entities.votacionydebate.*;
+import timon.entities.registro.Estado;
 import java.io.Serializable;
 import java.util.*;
 import javax.enterprise.context.SessionScoped;
@@ -29,8 +33,8 @@ import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.primefaces.model.UploadedFile;
-import sessionbeans.TimonLogic;
-import sessionbeans.VotoYDebateLogic;
+import timon.sessionbeans.TimonLogic;
+import timon.sessionbeans.VotoYDebateLogic;
 
 /**
  *

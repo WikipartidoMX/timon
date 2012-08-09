@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package entities.registro;
+package timon.entities.registro;
 
 import java.io.Serializable;
 import javax.persistence.Entity;

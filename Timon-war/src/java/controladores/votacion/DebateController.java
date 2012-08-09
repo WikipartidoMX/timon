@@ -15,9 +15,9 @@
 package controladores.votacion;
 
 import controladores.UserManager;
-import entities.votacionydebate.Argumento;
-import entities.votacionydebate.Opcion;
-import entities.votacionydebate.Tema;
+import timon.entities.votacionydebate.Argumento;
+import timon.entities.votacionydebate.Opcion;
+import timon.entities.votacionydebate.Tema;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
@@ -30,7 +30,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
-import sessionbeans.VotoYDebateLogic;
+import timon.sessionbeans.VotoYDebateLogic;
 
 /**
  *

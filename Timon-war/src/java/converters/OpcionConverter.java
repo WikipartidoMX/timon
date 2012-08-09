@@ -16,14 +16,14 @@ package converters;
 
 
 
-import entities.votacionydebate.Opcion;
+import timon.entities.votacionydebate.Opcion;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import sessionbeans.VotoYDebateLogic;
+import timon.sessionbeans.VotoYDebateLogic;
 
 /**
  *

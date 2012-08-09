@@ -12,7 +12,7 @@
  * 
  * 
  */
-package singletons;
+package timon.singletons;
 
 import java.util.HashMap;
 import java.util.Map;

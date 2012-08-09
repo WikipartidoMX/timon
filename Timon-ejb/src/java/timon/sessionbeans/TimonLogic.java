@@ -12,11 +12,11 @@
  * 
  * 
  */
-package sessionbeans;
+package timon.sessionbeans;
 
-import entities.registro.Avatar;
-import entities.registro.Estado;
-import entities.registro.Miembro;
+import timon.entities.registro.Avatar;
+import timon.entities.registro.Estado;
+import timon.entities.registro.Miembro;
 import java.io.Serializable;
 import java.util.List;
 import javax.ejb.Stateless;

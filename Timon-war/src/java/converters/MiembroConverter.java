@@ -14,14 +14,14 @@
  */
 package converters;
 
-import entities.registro.Miembro;
+import timon.entities.registro.Miembro;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import sessionbeans.TimonLogic;
+import timon.sessionbeans.TimonLogic;
 
 /**
  *

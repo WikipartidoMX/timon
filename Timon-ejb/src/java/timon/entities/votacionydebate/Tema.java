@@ -12,31 +12,26 @@
  * 
  * 
  */
-
-package entities.registro;
+package timon.entities.votacionydebate;
 
 import java.io.Serializable;
-import static javax.persistence.FetchType.LAZY;
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 /**
  *
- * @author Alfonso Tames
+ * @author alfonso
  */
 @Entity
-public class Avatar implements Serializable {
+public class Tema implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @OneToOne
-    private Miembro miembro;
-    
-    @Lob @Basic(fetch=LAZY)
-    private byte[] file;
-    
-    
+    private String nombre;
+    private Long pater;
 
     public Long getId() {
         return id;
@@ -56,10 +51,10 @@ public class Avatar implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Avatar)) {
+        if (!(object instanceof Tema)) {
             return false;
         }
-        Avatar other = (Avatar) object;
+        Tema other = (Tema) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -68,35 +63,35 @@ public class Avatar implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.Avatar[ id=" + id + " ]";
+        return "votacionydebate.Tema[ id=" + id + " ]";
     }
 
     /**
-     * @return the miembro
+     * @return the nombre
      */
-    public Miembro getMiembro() {
-        return miembro;
+    public String getNombre() {
+        return nombre;
     }
 
     /**
-     * @param miembro the miembro to set
+     * @param nombre the nombre to set
      */
-    public void setMiembro(Miembro miembro) {
-        this.miembro = miembro;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     /**
-     * @return the file
+     * @return the pater
      */
-    public byte[] getFile() {
-        return file;
+    public Long getPater() {
+        return pater;
     }
 
     /**
-     * @param file the file to set
+     * @param pater the pater to set
      */
-    public void setFile(byte[] file) {
-        this.file = file;
+    public void setPater(Long pater) {
+        this.pater = pater;
     }
     
 }

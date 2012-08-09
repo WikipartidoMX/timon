@@ -14,8 +14,8 @@
  */
 package servlets;
 
-import entities.votacionydebate.Opcion;
-import entities.votacionydebate.Votacion;
+import timon.entities.votacionydebate.Opcion;
+import timon.entities.votacionydebate.Votacion;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.inject.Inject;
@@ -30,7 +30,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import sessionbeans.VotoYDebateLogic;
+import timon.sessionbeans.VotoYDebateLogic;
 
 /**
  *

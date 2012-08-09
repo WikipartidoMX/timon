@@ -14,9 +14,9 @@
  */
 package controladores;
 
-import entities.registro.Avatar;
-import entities.registro.Estado;
-import entities.registro.Miembro;
+import timon.entities.registro.Avatar;
+import timon.entities.registro.Estado;
+import timon.entities.registro.Miembro;
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
-import sessionbeans.TimonLogic;
+import timon.sessionbeans.TimonLogic;
 
 /**
  *

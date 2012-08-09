@@ -13,9 +13,9 @@
  * 
  */
 
-package entities.votacionydebate;
+package timon.entities.votacionydebate;
 
-import entities.registro.Miembro;
+import timon.entities.registro.Miembro;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.*;

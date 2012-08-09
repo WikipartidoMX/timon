@@ -15,8 +15,8 @@
 package servlets;
 
 import controladores.votacion.VotacionController;
-import entities.votacionydebate.Opcion;
-import entities.votacionydebate.ResultadoSchulze;
+import timon.entities.votacionydebate.Opcion;
+import timon.entities.votacionydebate.ResultadoSchulze;
 import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
@@ -36,7 +36,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import sessionbeans.VotoYDebateLogic;
+import timon.sessionbeans.VotoYDebateLogic;
 
 /**
  *

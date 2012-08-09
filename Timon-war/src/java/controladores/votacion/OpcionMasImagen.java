@@ -4,8 +4,8 @@
  */
 package controladores.votacion;
 
-import entities.votacionydebate.ImagenOpcion;
-import entities.votacionydebate.Opcion;
+import timon.entities.votacionydebate.ImagenOpcion;
+import timon.entities.votacionydebate.Opcion;
 
 /**
  *

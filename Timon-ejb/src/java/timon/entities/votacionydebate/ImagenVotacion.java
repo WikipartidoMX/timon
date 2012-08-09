@@ -12,9 +12,8 @@
  * 
  * 
  */
+package timon.entities.votacionydebate;
 
-
-package entities.votacionydebate;
 
 import java.io.Serializable;
 import static javax.persistence.FetchType.LAZY;
@@ -22,18 +21,20 @@ import javax.persistence.*;
 
 /**
  *
- * @author Alfonso Tamés
+ * @author alfonso
  */
 @Entity
-public class ImagenOpcion implements Serializable {
+public class ImagenVotacion implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
     @OneToOne
-    private Opcion opcion;
+    private Votacion votacion;
+    
     @Lob @Basic(fetch=LAZY)
-    private byte[] file;     
+    private byte[] file;    
 
     public Long getId() {
         return id;
@@ -53,10 +54,10 @@ public class ImagenOpcion implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof ImagenOpcion)) {
+        if (!(object instanceof ImagenVotacion)) {
             return false;
         }
-        ImagenOpcion other = (ImagenOpcion) object;
+        ImagenVotacion other = (ImagenVotacion) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -65,21 +66,21 @@ public class ImagenOpcion implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.votacionydebate.ImagenOpcion[ id=" + id + " ]";
+        return "entities.votacionydebate.ImagenVotacion[ id=" + id + " ]";
     }
 
     /**
-     * @return the opcion
+     * @return the votacion
      */
-    public Opcion getOpcion() {
-        return opcion;
+    public Votacion getVotacion() {
+        return votacion;
     }
 
     /**
-     * @param opcion the opcion to set
+     * @param votacion the votacion to set
      */
-    public void setOpcion(Opcion opcion) {
-        this.opcion = opcion;
+    public void setVotacion(Votacion votacion) {
+        this.votacion = votacion;
     }
 
     /**

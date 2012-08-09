@@ -12,26 +12,27 @@
  * 
  * 
  */
-package entities.votacionydebate;
+package timon.entities.votacionydebate;
 
 import java.io.Serializable;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  *
- * @author alfonso
+ * @author Alfonso Tames
  */
 @Entity
-public class Tema implements Serializable {
+public class Opcion implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nombre;
-    private Long pater;
+    @ManyToOne
+    private Votacion votacion;
+    private String url;
+    @Lob
+    private String descripcion;
 
     public Long getId() {
         return id;
@@ -51,10 +52,10 @@ public class Tema implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Tema)) {
+        if (!(object instanceof Opcion)) {
             return false;
         }
-        Tema other = (Tema) object;
+        Opcion other = (Opcion) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -63,7 +64,7 @@ public class Tema implements Serializable {
 
     @Override
     public String toString() {
-        return "votacionydebate.Tema[ id=" + id + " ]";
+        return "entities.votacionydebate.Opcion[ id=" + id + " ]";
     }
 
     /**
@@ -81,17 +82,45 @@ public class Tema implements Serializable {
     }
 
     /**
-     * @return the pater
+     * @return the votacion
      */
-    public Long getPater() {
-        return pater;
+    public Votacion getVotacion() {
+        return votacion;
     }
 
     /**
-     * @param pater the pater to set
+     * @param votacion the votacion to set
      */
-    public void setPater(Long pater) {
-        this.pater = pater;
+    public void setVotacion(Votacion votacion) {
+        this.votacion = votacion;
+    }
+
+    /**
+     * @return the url
+     */
+    public String getUrl() {
+        return url;
+    }
+
+    /**
+     * @param url the url to set
+     */
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    /**
+     * @return the descripcion
+     */
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    /**
+     * @param descripcion the descripcion to set
+     */
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
     
 }
