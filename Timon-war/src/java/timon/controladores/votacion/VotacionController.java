@@ -14,13 +14,7 @@
  */
 package controladores.votacion;
 
-import timon.entities.votacionydebate.LogVotacion;
-import timon.entities.votacionydebate.Opcion;
-import timon.entities.votacionydebate.Voto;
-import timon.entities.votacionydebate.ResultadoSchulze;
-import timon.entities.votacionydebate.Votacion;
 import controladores.UserManager;
-import timon.entities.registro.Miembro;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -37,8 +31,13 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.CoreConnectionPNames;
 import org.primefaces.model.DualListModel;
+import timon.entities.registro.Miembro;
+import timon.entities.votacionydebate.LogVotacion;
+import timon.entities.votacionydebate.Opcion;
+import timon.entities.votacionydebate.ResultadoSchulze;
+import timon.entities.votacionydebate.Votacion;
+import timon.entities.votacionydebate.Voto;
 import timon.sessionbeans.VotoYDebateLogic;
 import timon.singletons.MonitorDeVotaciones;
 
@@ -50,6 +49,7 @@ import timon.singletons.MonitorDeVotaciones;
 @SessionScoped
 public class VotacionController implements Serializable {
 
+    private static final Logger mrlog = Logger.getLogger(VotacionController.class.getName());
     @Inject
     UserManager um;
     @Inject
@@ -70,9 +70,32 @@ public class VotacionController implements Serializable {
         rs = null;
     }
 
-    public ResultadoSchulze getRs() {
+    public ResultadoSchulze getRs() throws Exception {
         if (rs == null) {
             rs = vl.getUltimoResultado(votacion);
+
+            if (rs == null) {
+                // Verifica si hay una votacion en proceso
+                Integer avance = mv.getConteos().get(votacion.getId());
+                if (avance == null) {
+                    try {
+                        vl.cuentaConSchulze(votacion);
+                    } catch (Exception ex) {
+                        mrlog.log(Level.SEVERE, "Ocurrió un error al tratar de iniciar el conteo de la votacion {0}", ex.getMessage());
+                        throw new Exception("Ocurrió un error al tratar de iniciar el conteo de la votacion" + ex.getMessage());
+                    }
+                } else {
+                    if (avance == 100) {
+                        try {
+                            vl.cuentaConSchulze(votacion);
+                        } catch (Exception ex) {
+                            mrlog.log(Level.SEVERE, "Ocurrió un error al tratar de iniciar el conteo de la votacion {0}", ex.getMessage());
+                            throw new Exception("Ocurrió un error al tratar de iniciar el conteo de la votacion" + ex.getMessage());
+                        }
+                    }
+                }
+            }
+
             if (rs != null) {
                 Collections.sort(rs.getScores());
             }
@@ -98,7 +121,11 @@ public class VotacionController implements Serializable {
         if (getVact() != getVid() || getVact() == 0) {
             votacion = vl.getVotacion(getVid());
             rs = null;
-            rs = getRs();
+            try {
+                rs = getRs();
+            } catch (Exception e) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocurrio un error al tratar de obtener el resultado de la eleccion.", null));
+            }
             try {
                 setWikiDescVotacion(getContentFromURL(votacion.getUrl()));
                 opcionesDisponibles = vl.getOpcionesParaVotacion(votacion);
@@ -106,8 +133,6 @@ public class VotacionController implements Serializable {
             } catch (Exception ex) {
                 Logger.getLogger(NuevaVotacionController.class.getName()).log(Level.SEVERE, null, ex);
             }
-
-            //System.out.println("Desc: " + getWikiDescVotacion());
             setVact(getVid());
         }
     }
@@ -121,8 +146,7 @@ public class VotacionController implements Serializable {
             System.out.println("Contiene:");
             System.out.println(wikiDescOpcion);
         } catch (Exception ex) {
-            System.out.println("Error !!!!!!!");
-            Logger.getLogger(VotacionController.class.getName()).log(Level.SEVERE, "Error al sacar contenido del wiki", ex);
+            mrlog.log(Level.SEVERE, "Error al sacar contenido del wiki", ex);
         }
 
     }
@@ -148,39 +172,38 @@ public class VotacionController implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Para votar debe ingresar a la plataforma como miembro.", null));
             return "";
         }
-
         List<Opcion> votos = opciones.getTarget();
         logvot.setVotacion(votacion);
         logvot.setMiembro(um.getUser());
         logvot.setFecha(new Date());
         try {
-            rs = vl.guardarVotacion(logvot, votos);
+            vl.guardarVotacion(logvot, votos);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "¡Gracias por Votar! Tus votos se han guardado con éxito", null));
         } catch (Exception e) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));
-            return "";            
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al tratar de guardar la votacion!!!" + e.getMessage(), null));
+            mrlog.log(Level.SEVERE, "Error al tratar de guardar la votacion!!! {0}", e.getMessage());
+            return "";
         }
-        
-        vl.cuentaConSchulze(rs); // invocacion asincrona
+        mrlog.log(Level.FINE, "Acabe de guardar los votos de {0} ahora invoco el conteo de forma asíncrona...", um.getUser());
+        try {
+            mv.getConteos().put(votacion.getId(), 0);
+            vl.cuentaConSchulze(votacion);
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al tratar de invocar la votacion!!!" + e.getMessage(), null));
+            mrlog.log(Level.SEVERE, "Error al tratar de invocar la votacion!!! {0}", e.getMessage());
+        }
         logvot = new LogVotacion();
         return "votResultados.xhtml?vid=" + vid + "&amp;faces-redirect=true";
     }
-    
-    public void forzaConteo() {
-        vl.cuentaConSchulze(rs);
-    }
 
     public Integer getAvance() {
-        if (rs == null) {
-            System.out.println("Aqui el rs es nulo");
+        if (mv.getConteos().get(votacion.getId()) == null) {
             return 100;
-        } else {
-            int a = 100;
-            if (mv.getConteos().get(rs.getId()) != null) {
-                a = mv.getConteos().get(rs.getId());
-            }
-            System.out.println("Soy getAvance... " + rs.getId() + " " + a);
-            return a;
         }
+        int a;
+        a = mv.getConteos().get(votacion.getId());
+        mrlog.log(Level.FINE, "Reportando un avance de... {0} para {1}", new Object[]{a, votacion.getId()});
+        return a;
     }
 
     public String getContentFromURL(String url) throws IOException {

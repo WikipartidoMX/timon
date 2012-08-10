@@ -18,7 +18,6 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
@@ -26,7 +25,6 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.transaction.UserTransaction;
 import timon.entities.registro.Estado;
 import timon.entities.registro.Miembro;
 import timon.entities.votacionydebate.*;
@@ -39,8 +37,7 @@ import timon.singletons.MonitorDeVotaciones;
 @Stateless
 public class VotoYDebateLogic implements Serializable {
 
-    @Resource
-    private UserTransaction utx;
+    private static final Logger mrlog = Logger.getLogger(VotoYDebateLogic.class.getName());
     @PersistenceContext(unitName = "Timon-ejbPU")
     private EntityManager em;
     @Inject
@@ -61,21 +58,20 @@ public class VotoYDebateLogic implements Serializable {
     /*
      * La lógica de guardar la votación y contar los votos está separada
      *
-     *
      */
-    public ResultadoSchulze guardarVotacion(LogVotacion logvot, List<Opcion> opciones) throws Exception {
+    public void guardarVotacion(LogVotacion logvot, List<Opcion> opciones) throws Exception {
         if (logvot.getMiembro().getPaso() < 2) {
             throw new Exception("Aún no eres miembro con derecho a voto :( ¡Afíliate hoy!");
         }
-        Logger.getLogger(this.getClass().getName()).log(Level.FINE, "Registrando Votos de {0} para votacion: {1}",
+        mrlog.log(Level.FINE, "Registrando Votos de {0} para votacion: {1}",
                 new Object[]{logvot.getMiembro().getNombre(), logvot.getVotacion()});
-        Logger.getLogger(this.getClass().getName()).log(Level.FINE, "Verificando si {0} ya votó en esta votación...", logvot.getMiembro().getNombre());
+        mrlog.log(Level.FINE, "Verificando si {0} ya votó en esta votación...", logvot.getMiembro().getNombre());
         if (getLogVotacion(logvot.getMiembro(), logvot.getVotacion()) != null) {
             throw new Exception("¡Ya votaste en la elección <" + logvot.getVotacion().getNombre() + ">!");
         }
         long i = 1;
         List<Miembro> delegan = miembrosQueDeleganA(logvot.getMiembro(), logvot.getVotacion());
-        Logger.getLogger(this.getClass().getName()).log(Level.FINE, "{0} miembros le han delegado su voto, empezando iteraciones para guardar los votos...", delegan.size());
+        mrlog.log(Level.FINE, "{0} miembros le han delegado su voto, empezando iteraciones para guardar los votos...", delegan.size());
         // Antes de empezar a guardar los votos hay que extraer de la lista delegan
         // a los miembros que ya votaron (no falla que votan y luego delegan)
         // Para remover con seguridad se necesita un iterator:
@@ -83,15 +79,15 @@ public class VotoYDebateLogic implements Serializable {
         while (ite.hasNext()) {
             Miembro m = ite.next();
             if (getLogVotacion(m, logvot.getVotacion()) != null) {
-                Logger.getLogger(this.getClass().getName()).log(Level.FINE, "¡El miembro {0} ya voto! se removerá de la lista de delegaciones...", m.getNombreCompleto());
+                mrlog.log(Level.FINE, "¡El miembro {0} ya voto! se removerá de la lista de delegaciones...", m.getNombreCompleto());
                 ite.remove();
             }
         }
-        Logger.getLogger(this.getClass().getName()).log(Level.FINE, "Empezando a iterar para guardar los votos...");
+        mrlog.log(Level.FINE, "Empezando a iterar para guardar los votos...");
         try {
             for (Opcion op : opciones) {
                 for (Miembro m : delegan) {
-                    Logger.getLogger(this.getClass().getName()).log(Level.FINE, "Registrando voto {0} {1} para {2}", new Object[]{i, op.getNombre(), m.getNombre()});
+                    mrlog.log(Level.FINEST, "Registrando voto {0} {1} para {2}", new Object[]{i, op.getNombre(), m.getNombre()});
                     Voto v = new Voto();
                     v.setDelegado(logvot.getMiembro());
                     v.setMiembro(m);
@@ -114,27 +110,6 @@ public class VotoYDebateLogic implements Serializable {
         } catch (Exception e) {
             throw new Exception("Ocurrió un error al tratar de guardar la votación: " + e.getMessage());
         }
-        Logger.getLogger(this.getClass().getName()).log(Level.FINE, "Creando un nuevo ResultadoSchulze que será el definitivo...");
-        ResultadoSchulze rs = new ResultadoSchulze();
-        rs.setFechaConteo(new Date());
-        rs.setVotacion(logvot.getVotacion());
-        try {
-            List<ResultadoSchulze> pasados = em.createQuery("select r from ResultadoSchulze r where "
-                    + "r.fechaConteo < :fc and r.votacion = :vot").setParameter("fc", rs.getFechaConteo()).setParameter("vot", logvot.getVotacion()).getResultList();
-            Logger.getLogger(this.getClass().getName()).log(Level.FINE, "Había otros {0} resultados anteriores a este que serán eliminados...", pasados.size());
-            for (ResultadoSchulze r : pasados) {
-                em.remove(r);
-            }
-        } catch (Exception e) {
-            throw new Exception("Ocurrió un error al tratar de actualizar la votación" + e.getMessage());
-        }
-        Logger.getLogger(this.getClass().getName()).log(Level.FINE, "Persistiendo el ResuladoSchulze...");
-        try {
-            persist(rs);
-        } catch (Exception e) {
-            throw new Exception("Error: ¡No es posible guardar el resultado de la votación! " + e.getMessage());
-        }
-        return rs;
     }
 
     public ResultadoSchulze getResultadoSchulze(long id) {
@@ -293,9 +268,9 @@ public class VotoYDebateLogic implements Serializable {
     public ResultadoSchulze getUltimoResultado(Votacion vot) {
         try {
             return (ResultadoSchulze) em.createQuery("select r from ResultadoSchulze r "
-                    + "where r.votacion=:vot order by r.fechaConteo").setParameter("vot", vot).getSingleResult();
+                    + "where r.votacion=:vot order by r.fechaConteo").setParameter("vot", vot).setMaxResults(1).getSingleResult();
         } catch (Exception e) {
-            System.out.println("Error al tratar de encontrar el ultimo resultado: " + e.getMessage());
+            mrlog.log(Level.FINE, "No hay resultados de conteos previos para esta eleccion: {0}", e.getMessage());
             return null;
         }
     }
@@ -315,24 +290,41 @@ public class VotoYDebateLogic implements Serializable {
     }
 
     @Asynchronous
-    public void cuentaConSchulze(ResultadoSchulze rs) {
-        Logger.getLogger(this.getClass().getName()).log(Level.FINE, "Iniciando el conteo con Schulze...");
+    public void cuentaConSchulze(Votacion vot) throws Exception {
+        mv.getConteos().put(vot.getId(), 0);
+        mrlog.log(Level.FINE, "Iniciando el conteo con Schulze...");
+        ResultadoSchulze rs = new ResultadoSchulze(); // aqui guardaremos los resultados del conteo
+        rs.setFechaConteo(new Date());
+        rs.setVotacion(vot);
+        try {
+            List<ResultadoSchulze> pasados = em.createQuery("select r from ResultadoSchulze r where "
+                    + "r.fechaConteo < :fc and r.votacion = :vot").setParameter("fc", rs.getFechaConteo()).setParameter("vot", vot).getResultList();
+            mrlog.log(Level.FINE, "Había otros {0} resultados anteriores a este que serán eliminados...", pasados.size());
+            for (ResultadoSchulze r : pasados) {
+                em.remove(r);
+            }
+        } catch (Exception e) {
+            throw new Exception("Ocurrió un error al tratar de actualizar la votación" + e.getMessage());
+        }
+        mrlog.log(Level.FINE, "Persistiendo el ResuladoSchulze...");
+        try {
+            persist(rs);
+        } catch (Exception e) {
+            throw new Exception("Error: ¡No es posible guardar el resultado de la votación! " + e.getMessage());
+        }
         long st = System.currentTimeMillis();
-        rs = em.merge(rs);
-        mv.getConteos().put(rs.getId(), 0);
-        Votacion vot = rs.getVotacion();
-        Logger.getLogger(this.getClass().getName()).log(Level.FINE, "Conteo con Schulze para la votacion {0}", vot.getNombre());
+        mrlog.log(Level.FINE, "Conteo con Schulze para la votacion {0}", vot.getNombre());
         // Implementacion del Metodo Schulze (El algoritmo se puede encontrar en el sitio de Markus Schulze)
         List<Opcion> opciones = vot.getOpciones();
         for (Opcion o : opciones) {
-            Logger.getLogger(this.getClass().getName()).log(Level.FINE, "Opcion: {0}", o.getNombre());
+            mrlog.log(Level.FINEST, "Opcion:{0} {1}", new Object[]{o.getId(), o.getNombre()});
         }
         List<Score> scores = new ArrayList<Score>();
         int i, j, k;
         int c = opciones.size();
         boolean[] winner = new boolean[c];
-        Logger.getLogger(this.getClass().getName()).log(Level.FINE, "Calculando Matriz de Preferencias de tamaño {0}...", Math.pow(c, 2));
-        long[][] prefe = getMatrizDePreferenciaParaVotacion(rs);
+        mrlog.log(Level.FINE, "Calculando Matriz de Preferencias de tamaño {0}...", Math.pow(c, 2));
+        long[][] prefe = getMatrizDePreferenciaParaVotacion(vot);
         long[][] p = new long[c][c];
         for (i = 0; i < c; i++) {
             for (j = 0; j < c; j++) {
@@ -347,8 +339,9 @@ public class VotoYDebateLogic implements Serializable {
             }
             matriz.append("\n");
         }
-        Logger.getLogger(this.getClass().getName()).log(Level.FINE, "Matriz: \n{0}", matriz.toString());
-        Logger.getLogger(this.getClass().getName()).log(Level.FINE, "Claculando Strongest Paths, se iterará {0} veces en total...", Math.pow(c, 3));
+        mrlog.log(Level.FINE, "Matriz: \n{0}", matriz.toString());
+        mv.getConteos().put(vot.getId(), 50);
+        mrlog.log(Level.FINE, "Claculando Strongest Paths, se iterará {0} veces en total...", Math.pow(c, 3));
         for (i = 0; i < c; i++) {
             for (j = 0; j < c; j++) {
                 if (!opciones.get(i).equals(opciones.get(j))) {
@@ -364,7 +357,7 @@ public class VotoYDebateLogic implements Serializable {
             }
 
         }
-        Logger.getLogger(this.getClass().getName()).log(Level.FINE, "Definiendo al/los ganadores...");
+        mrlog.log(Level.FINE, "Definiendo al/los ganadores...");
         for (i = 0; i < c; i++) {
             winner[i] = true;
         }
@@ -382,9 +375,9 @@ public class VotoYDebateLogic implements Serializable {
         }
         for (i = 0; i < c; i++) {
             if (winner[i]) {
-                Logger.getLogger(this.getClass().getName()).log(Level.FINE, "GANO {0}", opciones.get(i).getNombre());
+                mrlog.log(Level.FINE, "GANO {0}", opciones.get(i).getNombre());
             }
-            Logger.getLogger(this.getClass().getName()).log(Level.FINEST, "La opción {0} se prefiere sobre otras {1} opciones", new Object[]{opciones.get(i).getNombre(), score[i]});
+            mrlog.log(Level.FINEST, "La opción {0} se prefiere sobre otras {1} opciones", new Object[]{opciones.get(i).getNombre(), score[i]});
             scores.add(new Score(opciones.get(i), score[i]));
         }
         Collections.sort(scores);
@@ -393,17 +386,17 @@ public class VotoYDebateLogic implements Serializable {
         rs.setSp(p);
         rs.setExetime(System.currentTimeMillis() - st);
         rs.setAvance(100);
-        mv.getConteos().put(rs.getId(), 100);
+        mv.getConteos().put(vot.getId(), 100);
     }
 
-    public long[][] getMatrizDePreferenciaParaVotacion(ResultadoSchulze rs) {
-        List<Opcion> opciones = rs.getVotacion().getOpciones();
+    public long[][] getMatrizDePreferenciaParaVotacion(Votacion vot) {
+        List<Opcion> opciones = vot.getOpciones();
         int t = opciones.size();
         long[][] m = new long[t][t];
         // Y con ustedes, el query mas largo de mi vida.
         // (seguro hay una forma más eficiente de hacer esto)
-        StringBuilder q = new StringBuilder("select count(*), v1.opcion_id, v2.opcion_id from voto as v1, ").append("(select miembro_id, opcion_id, rank from voto where votacion_id=").append(rs.getVotacion().getId()).append(" union select v.miembro_id, o.id as opcion_id, null as rank from ").append("voto as v, opcion as o where v.votacion_id=").append(rs.getVotacion().getId()).append(" and o.votacion_id=").append(rs.getVotacion().getId()).append(" and o.id != v.opcion_id and o.id not in (select vt.opcion_id from ").append("voto as vt where vt.miembro_id=v.miembro_id and vt.votacion_id=").append(rs.getVotacion().getId()).append(")) ").append("as v2 where v1.miembro_id=v2.miembro_id and ((v1.rank < v2.rank) or ").append("(v2.rank is null)) and v2.opcion_id != v1.opcion_id and v1.votacion_id=").append(rs.getVotacion().getId()).append(" group by v1.opcion_id, v2.opcion_id");
-        Logger.getLogger(this.getClass().getName()).log(Level.FINE, q.toString());
+        StringBuilder q = new StringBuilder("select count(*), v1.opcion_id, v2.opcion_id from voto as v1, ").append("(select miembro_id, opcion_id, rank from voto where votacion_id=").append(vot.getId()).append(" union select v.miembro_id, o.id as opcion_id, null as rank from ").append("voto as v, opcion as o where v.votacion_id=").append(vot.getId()).append(" and o.votacion_id=").append(vot.getId()).append(" and o.id != v.opcion_id and o.id not in (select vt.opcion_id from ").append("voto as vt where vt.miembro_id=v.miembro_id and vt.votacion_id=").append(vot.getId()).append(")) ").append("as v2 where v1.miembro_id=v2.miembro_id and ((v1.rank < v2.rank) or ").append("(v2.rank is null)) and v2.opcion_id != v1.opcion_id and v1.votacion_id=").append(vot.getId()).append(" group by v1.opcion_id, v2.opcion_id");
+        mrlog.log(Level.FINE, q.toString());
         List<Object> objs = em.createNativeQuery(q.toString()).getResultList();
         Map vals = new HashMap<Preferencia, Long>();
         Preferencia p;
@@ -415,7 +408,7 @@ public class VotoYDebateLogic implements Serializable {
             p = new Preferencia(i, j);
             vals.put(p, c);
         }
-        Logger.getLogger(this.getClass().getName()).log(Level.FINE, "El query regresó con {0} valores...", vals.size());
+        mrlog.log(Level.FINE, "El query regresó con {0} valores...", vals.size());
         for (int i = 0; i < t; i++) {
             for (int j = 0; j < t; j++) {
                 if (!opciones.get(i).equals(opciones.get(j))) {
@@ -428,7 +421,7 @@ public class VotoYDebateLogic implements Serializable {
                     m[i][j] = a;
                 }
             }
-            mv.getConteos().put(rs.getId(), Integer.valueOf((i * 100) / t));
+            mv.getConteos().put(vot.getId(), Integer.valueOf((i * 100) / t));
         }
         return m;
     }
