@@ -34,6 +34,15 @@ import timon.singletons.MonitorDeVotaciones;
  *
  * @author Alfonso Tames
  */
+
+/*
+ * TODO: Más adelante necesitaremos programar los conteos con JMS y definir un ancho
+ * de banda limitado para que sólo puedan ser computadas al mismo tiempo cierta cantidad 
+ * de votaciones.
+ * 
+ * Por supuesto la cantidad de votaciones procesadas puede aumentar con más nodos de glassfish
+ * 
+ */
 @Stateless
 public class VotoYDebateLogic implements Serializable {
 
@@ -60,6 +69,7 @@ public class VotoYDebateLogic implements Serializable {
      *
      */
     public void guardarVotacion(LogVotacion logvot, List<Opcion> opciones) throws Exception {
+        // TODO: Verificar que el delegado/miembro sea del estado o estados        
         if (logvot.getMiembro().getPaso() < 2) {
             throw new Exception("Aún no eres miembro con derecho a voto :( ¡Afíliate hoy!");
         }
@@ -286,7 +296,7 @@ public class VotoYDebateLogic implements Serializable {
 
     public List<Voto> getVotosPara(Miembro m, Votacion vot) {
         return em.createQuery("select v from Voto v "
-                + "where v.opcion.votacion = :vot and v.miembro=:m order by v.rank").setParameter("vot", vot).setParameter("m", m).getResultList();
+                + "where v.votacion = :vot and v.miembro=:m order by v.rank").setParameter("vot", vot).setParameter("m", m).getResultList();
     }
 
     @Asynchronous
@@ -324,7 +334,7 @@ public class VotoYDebateLogic implements Serializable {
         int c = opciones.size();
         boolean[] winner = new boolean[c];
         mrlog.log(Level.FINE, "Calculando Matriz de Preferencias de tamaño {0}...", Math.pow(c, 2));
-        long[][] prefe = getMatrizDePreferenciaParaVotacion(vot);
+        long[][] prefe = getMatrizDePreferenciaLento(vot);
         long[][] p = new long[c][c];
         for (i = 0; i < c; i++) {
             for (j = 0; j < c; j++) {
@@ -340,7 +350,6 @@ public class VotoYDebateLogic implements Serializable {
             matriz.append("\n");
         }
         mrlog.log(Level.FINE, "Matriz: \n{0}", matriz.toString());
-        mv.getConteos().put(vot.getId(), 50);
         mrlog.log(Level.FINE, "Claculando Strongest Paths, se iterará {0} veces en total...", Math.pow(c, 3));
         for (i = 0; i < c; i++) {
             for (j = 0; j < c; j++) {
@@ -415,6 +424,40 @@ public class VotoYDebateLogic implements Serializable {
                     long a;
                     try {
                         a = (Long) vals.get(new Preferencia(opciones.get(i).getId(), opciones.get(j).getId()));
+                    } catch (Exception e) {
+                        a = 0;
+                    }
+                    m[i][j] = a;
+                }
+            }
+            mv.getConteos().put(vot.getId(), Integer.valueOf((i * 100) / t));
+        }
+        return m;
+    }
+
+    public long[][] getMatrizDePreferenciaLento(Votacion vot) {
+        // Método más lento pero que reporta avance a la barra de progreso...
+        List<Opcion> ops = vot.getOpciones();
+        int t = ops.size();
+        long[][] m = new long[t][t];
+        for (int i = 0; i < t; i++) {
+            for (int j = 0; j < t; j++) {
+                if (!ops.get(i).equals(ops.get(j))) {
+                    long a;
+                    try {
+                        StringBuilder q = new StringBuilder("select count(*) from voto as v1, ");
+                        q.append("(select miembro_id, opcion_id, rank from voto where votacion_id=").append(vot.getId())
+                                .append(" and opcion_id=").append(ops.get(j).getId())
+                                .append(" union select v.miembro_id, o.id as opcion_id, null as rank from voto as v, opcion as o where v.votacion_id=").append(vot.getId())
+                                .append(" and o.votacion_id=").append(vot.getId())
+                                .append(" and o.id=").append(ops.get(j).getId())
+                                .append(" and o.id not in (select vt.opcion_id from voto as vt where vt.opcion_id=").append(ops.get(j).getId())
+                                .append(" and vt.miembro_id=v.miembro_id and vt.votacion_id=").append(vot.getId())
+                                .append(")) as v2 where v1.miembro_id=v2.miembro_id and ((v1.rank < v2.rank) or (v2.rank is null)) and v1.opcion_id=").append(ops.get(i).getId())
+                                .append(" and v1.votacion_id=").append(vot.getId())
+                                .append(" group by v1.opcion_id, v2.opcion_id");
+                        mrlog.log(Level.FINEST, q.toString());
+                        a = (Long)em.createNativeQuery(q.toString()).getSingleResult();
                     } catch (Exception e) {
                         a = 0;
                     }

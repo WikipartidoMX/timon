@@ -12,7 +12,7 @@
  * 
  *
  */
-package controladores;
+package timon.controladores;
 
 import timon.entities.registro.Miembro;
 import timon.entities.votacionydebate.Delegacion;

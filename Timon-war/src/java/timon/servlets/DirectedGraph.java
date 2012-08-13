@@ -12,11 +12,8 @@
  * 
  *
  */
-package servlets;
+package timon.servlets;
 
-import controladores.votacion.VotacionController;
-import timon.entities.votacionydebate.Opcion;
-import timon.entities.votacionydebate.ResultadoSchulze;
 import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
@@ -29,6 +26,8 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -36,16 +35,20 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import timon.controladores.votacion.VotacionController;
+import timon.entities.votacionydebate.Opcion;
+import timon.entities.votacionydebate.ResultadoSchulze;
 import timon.sessionbeans.VotoYDebateLogic;
 
 /**
  *
- * @author Alfonso Tames Gracias a Dr. John B. Matthews por la solucion para
+ * @author Alfonso Tames. Gracias a Dr. John B. Matthews por la solucion para
  * calcular las dimensiones
  */
 @WebServlet(name = "DirectedGraph", urlPatterns = {"/DirectedGraph"})
 public class DirectedGraph extends HttpServlet {
 
+    private static final Logger mrlog = Logger.getLogger(DirectedGraph.class.getName());
     @Inject
     VotacionController vc;
     @Inject
@@ -55,7 +58,14 @@ public class DirectedGraph extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        ResultadoSchulze rs = vc.getRs();
+        response.setContentType("image/png");
+        ResultadoSchulze rs = null;
+        try {
+            rs = vc.getRs();
+        } catch (Exception e) {
+            mrlog.log(Level.FINE, "Error al recuperar el RS '{'0'}'{0}", e.getMessage());
+        }
+
         if (rs == null) {
             // TODO: Regresa una simpatica imagen que diga que estamos esperando el ultimo resultado
             return;
@@ -72,7 +82,22 @@ public class DirectedGraph extends HttpServlet {
         int rt = r + 50;
         int ra = r;
         int r2 = Math.abs((mh - r) / 2);
-
+        BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = (Graphics2D) img.getGraphics();
+        g.setComposite(AlphaComposite.Src);
+        FontRenderContext frc = g.getFontRenderContext();
+        Font f = new Font("Helvetica", Font.PLAIN, 12);
+        g.setRenderingHint(
+                RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+        if (opciones.size() > 20) {
+            Font fail = new Font("Helvetica", Font.PLAIN, 20);
+            TextLayout tl = new TextLayout("¡No es posible hacer una gráfica con tantas opciones!", fail, frc);
+            g.setColor(Color.black);
+            tl.draw(g, 200, 300);
+            escupeBytes(img, g, response);
+            return;
+        }
         Map<Opcion, Point> cords = new HashMap<Opcion, Point>();
         Map<Opcion, Point> tcords = new HashMap<Opcion, Point>();
         Map<Opcion, Point> acords = new HashMap<Opcion, Point>();
@@ -90,14 +115,6 @@ public class DirectedGraph extends HttpServlet {
             acords.put(op, new Point(ax, ay));
             i++;
         }
-        BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = (Graphics2D) img.getGraphics();
-        g.setComposite(AlphaComposite.Src);
-        FontRenderContext frc = g.getFontRenderContext();
-        Font f = new Font("Helvetica", Font.PLAIN, 12);
-        g.setRenderingHint(
-                RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
 
 
         g.setColor(Color.gray);
@@ -199,14 +216,7 @@ public class DirectedGraph extends HttpServlet {
             nu++;
         }
 
-        OutputStream output = response.getOutputStream();
-        response.setContentType("image/png");
-        try {
-            javax.imageio.ImageIO.write(img, "png", output);
-        } finally {
-            output.close();
-            g.dispose();
-        }
+        escupeBytes(img, g, response);
     }
 
     BufferedImage createResizedCopy(Image originalImage,
@@ -272,6 +282,24 @@ public class DirectedGraph extends HttpServlet {
 
     protected static double det(double a, double b, double c, double d) {
         return a * d - b * c;
+    }
+
+    public void escupeBytes(BufferedImage img, Graphics2D g, HttpServletResponse response) {
+        OutputStream output = null;
+        try {
+            output = response.getOutputStream();
+            response.setContentType("image/png");
+            javax.imageio.ImageIO.write(img, "png", output);
+        } catch (Exception e) {
+            mrlog.log(Level.SEVERE, "No es posible escupir los bytes");
+        } finally {
+            try {
+            output.close();
+            g.dispose();
+            } catch (Exception e) {
+                mrlog.log(Level.SEVERE, "No es posible cerrar el output");
+            }
+        }
     }
 
 // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

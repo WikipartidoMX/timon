@@ -12,7 +12,7 @@
  * 
  *
  */
-package servlets;
+package timon.servlets;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;

@@ -12,9 +12,9 @@
  * 
  *
  */
-package servlets;
+package timon.servlets;
 
-import controladores.UserManager;
+import timon.controladores.UserManager;
 import timon.entities.registro.Miembro;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;

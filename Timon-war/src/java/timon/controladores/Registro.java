@@ -12,7 +12,7 @@
  * 
  * 
  */
-package controladores;
+package timon.controladores;
 
 import timon.entities.registro.Avatar;
 import timon.entities.registro.Estado;

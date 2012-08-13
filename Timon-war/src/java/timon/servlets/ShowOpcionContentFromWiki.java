@@ -12,7 +12,7 @@
  * 
  *
  */
-package servlets;
+package timon.servlets;
 
 import timon.entities.votacionydebate.Opcion;
 import timon.entities.votacionydebate.Votacion;

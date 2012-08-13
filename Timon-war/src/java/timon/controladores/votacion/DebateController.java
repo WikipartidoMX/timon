@@ -12,9 +12,9 @@
  * 
  * 
  */
-package controladores.votacion;
+package timon.controladores.votacion;
 
-import controladores.UserManager;
+import timon.controladores.UserManager;
 import timon.entities.votacionydebate.Argumento;
 import timon.entities.votacionydebate.Opcion;
 import timon.entities.votacionydebate.Tema;

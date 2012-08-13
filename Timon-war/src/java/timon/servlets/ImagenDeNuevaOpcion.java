@@ -12,9 +12,9 @@
  * 
  *
  */
-package servlets;
+package timon.servlets;
 
-import controladores.votacion.NuevaVotacionController;
+import timon.controladores.votacion.NuevaVotacionController;
 import java.io.*;
 import javax.inject.Inject;
 import javax.servlet.ServletException;

@@ -12,14 +12,14 @@
  * 
  *
  */
-package controladores.votacion;
+package timon.controladores.votacion;
 
 import timon.entities.votacionydebate.Opcion;
 import timon.entities.votacionydebate.ImagenVotacion;
 import timon.entities.votacionydebate.Votacion;
 import timon.entities.votacionydebate.Tema;
 import timon.entities.votacionydebate.ImagenOpcion;
-import controladores.UserManager;
+import timon.controladores.UserManager;
 import timon.entities.registro.Estado;
 import java.io.Serializable;
 import java.util.*;
@@ -147,6 +147,14 @@ public class NuevaVotacionController implements Serializable {
     }
 
     public void agregarOpcion() {
+        if (nuevaOpcion.getNombre() == null) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "La opción debe tener un título.", null));
+            return;
+        }
+        if (!nuevaOpcion.getNombre().matches(".*\\w.*")) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "La opción no tiene un título válido.", null));
+            return;            
+        }
         OpcionMasImagen omi = new OpcionMasImagen();
         if (imagenNuevaOpcion != null) {
             ImagenOpcion imo = new ImagenOpcion();
@@ -154,6 +162,7 @@ public class NuevaVotacionController implements Serializable {
             imo.setOpcion(nuevaOpcion);
             omi.setImagen(imo);
         }
+
 
         omi.setOpcion(nuevaOpcion);
 

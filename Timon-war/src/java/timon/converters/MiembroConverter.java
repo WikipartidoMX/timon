@@ -12,7 +12,7 @@
  * 
  * 
  */
-package converters;
+package timon.converters;
 
 import timon.entities.registro.Miembro;
 import javax.faces.component.UIComponent;
