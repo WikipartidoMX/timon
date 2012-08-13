@@ -80,6 +80,7 @@ public class VotacionController implements Serializable {
                 if (avance == null) {
                     try {
                         vl.cuentaConSchulze(votacion);
+                        
                     } catch (Exception ex) {
                         mrlog.log(Level.SEVERE, "Ocurrió un error al tratar de iniciar el conteo de la votacion {0}", ex.getMessage());
                         throw new Exception("Ocurrió un error al tratar de iniciar el conteo de la votacion" + ex.getMessage());

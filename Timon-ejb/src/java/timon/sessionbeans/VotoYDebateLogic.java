@@ -334,7 +334,7 @@ public class VotoYDebateLogic implements Serializable {
         int c = opciones.size();
         boolean[] winner = new boolean[c];
         mrlog.log(Level.FINE, "Calculando Matriz de Preferencias de tamaño {0}...", Math.pow(c, 2));
-        long[][] prefe = getMatrizDePreferenciaLento(vot);
+        long[][] prefe = getMatrizDePreferenciaRapido(vot);
         long[][] p = new long[c][c];
         for (i = 0; i < c; i++) {
             for (j = 0; j < c; j++) {
@@ -398,12 +398,23 @@ public class VotoYDebateLogic implements Serializable {
         mv.getConteos().put(vot.getId(), 100);
     }
 
-    public long[][] getMatrizDePreferenciaParaVotacion(Votacion vot) {
+    /**
+     * Generación de la matriz de preferencia de esta elección.
+     * Este es el método rápido y no reporta el progreso de la operación porque
+     * la base de datos hace en un solo paso la generación de la matriz.
+     * 
+     * MariaDB tiene contemplado reportar el progreso de los queries así que 
+     * esperaremos a su implementación.
+     * 
+     * ¡MariaDB es hasta 10 veces más rápida en este query que MySQL!
+     * 
+     * @param vot La votación que se va a resolver.
+     * @return La matriz de preferencia completa de esta votacion
+     */
+    private long[][] getMatrizDePreferenciaRapido(Votacion vot) {
         List<Opcion> opciones = vot.getOpciones();
         int t = opciones.size();
         long[][] m = new long[t][t];
-        // Y con ustedes, el query mas largo de mi vida.
-        // (seguro hay una forma más eficiente de hacer esto)
         StringBuilder q = new StringBuilder("select count(*), v1.opcion_id, v2.opcion_id from voto as v1, ").append("(select miembro_id, opcion_id, rank from voto where votacion_id=").append(vot.getId()).append(" union select v.miembro_id, o.id as opcion_id, null as rank from ").append("voto as v, opcion as o where v.votacion_id=").append(vot.getId()).append(" and o.votacion_id=").append(vot.getId()).append(" and o.id != v.opcion_id and o.id not in (select vt.opcion_id from ").append("voto as vt where vt.miembro_id=v.miembro_id and vt.votacion_id=").append(vot.getId()).append(")) ").append("as v2 where v1.miembro_id=v2.miembro_id and ((v1.rank < v2.rank) or ").append("(v2.rank is null)) and v2.opcion_id != v1.opcion_id and v1.votacion_id=").append(vot.getId()).append(" group by v1.opcion_id, v2.opcion_id");
         mrlog.log(Level.FINE, q.toString());
         List<Object> objs = em.createNativeQuery(q.toString()).getResultList();
@@ -434,8 +445,15 @@ public class VotoYDebateLogic implements Serializable {
         }
         return m;
     }
-
-    public long[][] getMatrizDePreferenciaLento(Votacion vot) {
+    
+/**
+ * Método lento para la generación de la matriz de preferencias de la votación.
+ * No estamos usando este método porque es muy lento aunque sí reporta el avance del conteo.
+ * La idea es tener un método que reporte el avance del conteo.
+ * @param vot La votación en cuestión
+ * @return La matriz de preferencia.
+ */
+    private long[][] getMatrizDePreferenciaLento(Votacion vot) {
         // Método más lento pero que reporta avance a la barra de progreso...
         List<Opcion> ops = vot.getOpciones();
         int t = ops.size();
