@@ -440,12 +440,14 @@ public class VotoYDebateLogic implements Serializable {
         List<Opcion> ops = vot.getOpciones();
         int t = ops.size();
         long[][] m = new long[t][t];
+        StringBuilder q = new StringBuilder();
         for (int i = 0; i < t; i++) {
             for (int j = 0; j < t; j++) {
                 if (!ops.get(i).equals(ops.get(j))) {
                     long a;
                     try {
-                        StringBuilder q = new StringBuilder("select count(*) from voto as v1, ");
+                        q.setLength(0);
+                        q.append("select count(*) from voto as v1, ");
                         q.append("(select miembro_id, opcion_id, rank from voto where votacion_id=").append(vot.getId())
                                 .append(" and opcion_id=").append(ops.get(j).getId())
                                 .append(" union select v.miembro_id, o.id as opcion_id, null as rank from voto as v, opcion as o where v.votacion_id=").append(vot.getId())
@@ -456,8 +458,8 @@ public class VotoYDebateLogic implements Serializable {
                                 .append(")) as v2 where v1.miembro_id=v2.miembro_id and ((v1.rank < v2.rank) or (v2.rank is null)) and v1.opcion_id=").append(ops.get(i).getId())
                                 .append(" and v1.votacion_id=").append(vot.getId())
                                 .append(" group by v1.opcion_id, v2.opcion_id");
-                        mrlog.log(Level.FINEST, q.toString());
-                        a = (Long)em.createNativeQuery(q.toString()).getSingleResult();
+                        //mrlog.log(Level.FINEST, q.toString());
+                        a = (Long) em.createNativeQuery(q.toString()).getSingleResult();
                     } catch (Exception e) {
                         a = 0;
                     }
@@ -466,6 +468,7 @@ public class VotoYDebateLogic implements Serializable {
             }
             mv.getConteos().put(vot.getId(), Integer.valueOf((i * 100) / t));
         }
+        mrlog.log(Level.FINE, q.toString());
         return m;
     }
 
