@@ -1,90 +1,80 @@
-int numBalls = 12;
-float spring = 0.05;
-float gravity = 0.03;
-float friction = -0.9;
-Ball[] balls = new Ball[numBalls];
 
-void setup() 
-{
-  size(640, 200);
-  noStroke();
+PFont helvetica12;
+
+Voter v;
+
+void setup() {
+  size(970, 300);
+  v = new Voter();
+  background(190, 190, 190, 50);
+  helvetica12 = createFont("Helvetica", 12);
+  textFont(helvetica12);
   smooth();
-  for (int i = 0; i < numBalls; i++) {
-    balls[i] = new Ball(random(width), random(height), random(20, 40), i, balls);
-  }
+  stroke(0);
 }
 
-void draw() 
-{
-    background(0, 0, 0, 0);
-  for (int i = 0; i < numBalls; i++) {
-    balls[i].collide();
-    balls[i].move();
-    balls[i].display();  
-  }
+void draw() {
+  background(200);
+  pushMatrix();
+  translate(width/2, height/2);  
+  v.display();
+  rotate(v.rot);  
+  popMatrix();
+  text("rot="+v.rot,10,20);
+  
 }
 
-class Ball {
-  float x, y;
-  float diameter;
-  float vx = 0;
-  float vy = 0;
-  int id;
-  Ball[] others;
- 
-  Ball(float xin, float yin, float din, int idin, Ball[] oin) {
-    x = xin;
-    y = yin;
-    diameter = din;
-    id = idin;
-    others = oin;
-  } 
-  
-  void collide() {
-    for (int i = id + 1; i < numBalls; i++) {
-      float dx = others[i].x - x;
-      float dy = others[i].y - y;
-      float distance = sqrt(dx*dx + dy*dy);
-      float minDist = others[i].diameter/2 + diameter/2;
-      if (distance < minDist) { 
-        float angle = atan2(dy, dx);
-        float targetX = x + cos(angle) * minDist;
-        float targetY = y + sin(angle) * minDist;
-        float ax = (targetX - others[i].x) * spring;
-        float ay = (targetY - others[i].y) * spring;
-        vx -= ax;
-        vy -= ay;
-        others[i].vx += ax;
-        others[i].vy += ay;
-      }
-    }   
-  }
-  
-  void move() {
-    vy += gravity;
-    x += vx;
-    y += vy;
-    if (x + diameter/2 > width) {
-      x = width - diameter/2;
-      vx *= friction; 
-    }
-    else if (x - diameter/2 < 0) {
-      x = diameter/2;
-      vx *= friction;
-    }
-    if (y + diameter/2 > height) {
-      y = height - diameter/2;
-      vy *= friction; 
-    } 
-    else if (y - diameter/2 < 0) {
-      y = diameter/2;
-      vy *= friction;
+
+class Voter {
+  int n;
+  float r;
+  Punto[] p;
+  int rot=0;
+  Voter() {
+    n = int(random(5, 20));
+    r = 80;
+    p = new Punto[n];
+    float th=0;
+    for (int i=0; i<n; i++) {    
+      float x = (r * cos(th));
+      float y = (r * sin(th));
+      th += (TWO_PI)/n;
+      p[i] = new Punto(x, y);
     }
   }
-  
   void display() {
-    fill(255, 204);
-    ellipse(x, y, diameter, diameter);
+
+    pushMatrix();
+    for (int i=0; i<n; i++) {
+      for (int j=0; j<n; j++) {
+        stroke(0);
+        line(p[i].x, p[i].y, p[j].x, p[j].y);
+      }
+    }
+    stroke(0);
+    fill(255); 
+    for (int i=0; i<n; i++) {   
+      ellipse(p[i].x, p[i].y, 20, 20);
+    }
+    rotate(rot);
+    popMatrix();
+    
+    rot++;
   }
 }
 
+
+class Punto {
+  float x;
+  float y;
+  Punto(float x, float y) {
+    this.x = x;
+    this.y = y;
+  }
+}
+
+
+void mouseClicked() {
+  setup();
+
+}
