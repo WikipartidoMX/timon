@@ -40,7 +40,7 @@ import timon.singletons.MonitorDeVotaciones;
  * de banda limitado para que sólo puedan ser computadas al mismo tiempo cierta cantidad 
  * de votaciones.
  * 
- * Por supuesto la cantidad de votaciones procesadas puede aumentar con más nodos de glassfish
+ * Por supuesto la cantidad de votaciones procesadas puede aumentar con más nodos
  * 
  */
 @Stateless
@@ -442,7 +442,7 @@ public class VotoYDebateLogic implements Serializable {
                 }
             }
             mv.getConteos().put(vot.getId(), Integer.valueOf((i * 100) / t));
-        }
+        }        
         return m;
     }
     
