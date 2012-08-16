@@ -22,10 +22,10 @@
 
 
     <ui:define name="content">
-        
+
         <script src="#{facesContext.externalContext.request.contextPath}/resources/js/processing-1.4.1.min.js" />
-        
-        
+
+
         <style tyle="text/css">
             .animated .ui-progressbar-value { 
                 background-image: url(#{facesContext.externalContext.request.contextPath}/images/pbar-ani.gif); 
@@ -37,12 +37,14 @@
             <div id="contenidoWikiDescOpcion" style="position: absolute; height: 445px; width: 600px; overflow: auto; ">
                 #{vc.wikiDescOpcion}
             </div>
-            <canvas data-processing-sources="#{facesContext.externalContext.request.contextPath}/resources/loaders/test2/test2.pde"></canvas>
+            
+            <canvas class="trabajando" id="trabajando" data-processing-sources="#{facesContext.externalContext.request.contextPath}/resources/loaders/test2/test2.pde"></canvas>
+
             <div class="cajaTituloChico" style="width:515px; margin-top: 15px;" >Resultado de la Votacion</div>
             <div class="cajaContent" style="width:500px;" >
-                <div id="barra" style="margin-top:15px;">
+                <div id="barra" style="margin-top:15px; display:none;">
                     <p:progressBar  widgetVar="pbar" ajax="true" value="#{vc.avance}"  styleClass="animated" labelTemplate="Calculando el resultado... {value}%">
-                        <p:ajax event="complete" update=":resultados:scores,:resultados:matpref,:resultados:matps,:resultados:directgraph" listener="#{vc.onCompleteProgressBar}" oncomplete="$('#barra').toggle();" />
+                        <p:ajax event="complete" update=":resultados:scores,:resultados:matpref,:resultados:matps,:resultados:directgraph" listener="#{vc.onCompleteProgressBar}" oncomplete="Processing.getInstanceById('trabajando').noLoop(); $('.trabajando').fadeOut(); " />
                     </p:progressBar>
                 </div>
                 <h:panelGroup id="scores">
@@ -70,10 +72,10 @@
                     </ui:repeat> 
 
                 </h:panelGroup>
-                
-            </div>
-                        <h1>Desglose del Conteo Schulze</h1>
-                        <a href="">Explicación del Método</a>
+
+            </div>                        
+            <h1>Desglose del Conteo Schulze</h1>
+            <a href="">Explicación del Método</a>
             <div class="cajaTituloChico"  >Matriz de Preferencias</div>
             <div class="cajaContent" >
                 <h:panelGroup id="matpref" rendered="#{fn:length(vc.votacion.opciones) lt 10}">
@@ -135,7 +137,7 @@
                         <ui:repeat value="#{vc.votacion.opciones}" var="op" varStatus="i">
                             <tr>
                                 <td align="center">
-                                                                        <div style="width:200px; ">
+                                    <div style="width:200px; ">
                                         <div style="float: right; width: 40">
                                             <p:graphicImage  width="40" height="40" url="/ShowImagenOpcion?oid=#{op.id}" rendered="#{vc.tieneImagenLaOpcion(op.id)}" />
                                         </div>                                            
@@ -145,7 +147,7 @@
 
                                         <div style="clear: both;" />
                                     </div>
-                                    
+
                                 </td>
                                 <ui:repeat value="#{vc.votacion.opciones}" var="oq" varStatus="j">
                                     <td align="center" style="border: 1px solid grey;}">
