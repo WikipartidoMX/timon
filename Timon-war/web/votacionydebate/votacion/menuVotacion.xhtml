@@ -10,11 +10,8 @@
     <c:set var="clase" value="mopoff" />
     <div id="opciones">
         <c:if test="#{dondevot eq 'votdesc'}"><c:set var="clase" value="mopon" /></c:if>
-        <div id="botonvotdesc" class="#{clase}" onclick="location='votDescripcion.xhtml?vid=#{vc.vid}';"><div class="textopcion">Descripción de la Votación</div></div>
-        <c:if test="#{dondevot eq 'votdesc'}"><c:set var="clase" value="mopoff" /></c:if>    
-        <c:if test="#{dondevot eq 'votverops'}"><c:set var="clase" value="mopon" /></c:if>
-        <div id="botonvotdesc" class="#{clase}" onclick="location='votVerOpciones.xhtml?vid=#{vc.vid}';"><div class="textopcion">Opciones a Elegir</div></div>
-        <c:if test="#{dondevot eq 'votverops'}"><c:set var="clase" value="mopoff" /></c:if>         
+        <div id="botonvotdesc" class="#{clase}" onclick="location='votDescripcion.xhtml?vid=#{vc.vid}';"><div class="textopcion">Descripción</div></div>
+        <c:if test="#{dondevot eq 'votdesc'}"><c:set var="clase" value="mopoff" /></c:if>        
         <c:if test="#{dondevot eq 'votdebate'}"><c:set var="clase" value="mopon" /></c:if>
         <div id="botonvotdebate" class="#{clase}" onclick="location='votDebate.xhtml?vid=#{vc.vid}';"><div class="textopcion">Debate</div></div>
         <c:if test="#{dondevot eq 'votdebate'}"><c:set var="clase" value="mopoff" /></c:if>          
