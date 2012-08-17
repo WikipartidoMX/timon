@@ -60,7 +60,7 @@ public class VotacionController implements Serializable {
     private long vact = 0;
     private Votacion votacion;
     private String wikiDescVotacion;
-    private DualListModel<Opcion> opciones;
+    private DualListModel<Opcion> opcionesParaVotar;
     private String wikiDescOpcion;
     private LogVotacion logvot = new LogVotacion();
     private ResultadoSchulze rs;
@@ -130,7 +130,7 @@ public class VotacionController implements Serializable {
             try {
                 setWikiDescVotacion(getContentFromURL(votacion.getUrl()));
                 opcionesDisponibles = vl.getOpcionesParaVotacion(votacion);
-                opciones = new DualListModel<Opcion>(opcionesDisponibles, opcionesVotadas);
+                opcionesParaVotar = new DualListModel<Opcion>(opcionesDisponibles, opcionesVotadas);
             } catch (Exception ex) {
                 Logger.getLogger(NuevaVotacionController.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -173,7 +173,7 @@ public class VotacionController implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Para votar debe ingresar a la plataforma como miembro.", null));
             return "";
         }
-        List<Opcion> votos = opciones.getTarget();
+        List<Opcion> votos = opcionesParaVotar.getTarget();
         logvot.setVotacion(votacion);
         logvot.setMiembro(um.getUser());
         logvot.setFecha(new Date());
@@ -331,17 +331,19 @@ public class VotacionController implements Serializable {
     }
 
     /**
-     * @return the opciones
+     * @return the opcionesParaVotar
      */
-    public DualListModel<Opcion> getOpciones() {
-        return opciones;
+    public DualListModel<Opcion> getOpcionesParaVotar() {
+        return opcionesParaVotar;
     }
+    
+
 
     /**
-     * @param opciones the opciones to set
+     * @param opcionesParaVotar the opcionesParaVotar to set
      */
     public void setOpciones(DualListModel<Opcion> opciones) {
-        this.opciones = opciones;
+        this.opcionesParaVotar = opciones;
     }
 
     /**

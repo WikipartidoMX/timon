@@ -27,7 +27,7 @@
             <div style="margin-top: 10px;">
 
 
-                <p:pickList value="#{vc.opciones}" var="op" itemValue="#{op}" converter="opcion" showTargetControls="true">
+                <p:pickList value="#{vc.opcionesParaVotar}" var="op" itemValue="#{op}" converter="opcion" showTargetControls="true">
 
                     <p:column>
                         <p:graphicImage width="80" height="80" url="/ShowImagenOpcion?oid=#{op.id}" rendered="#{vc.tieneImagenLaOpcion(op.id)}" />
