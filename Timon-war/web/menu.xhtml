@@ -17,36 +17,36 @@
     <c:set var="clase" value="mopoff"/>
     <div id="opciones">
         <c:if test="#{donde eq 'menuinicio'}"><c:set var="clase" value="mopon" /></c:if>
-        <div id="menuinicio" class="#{clase}" onclick="location='#{facesContext.externalContext.request.contextPath}/';">Inicio</div>
+        <div id="menuinicio" class="#{clase}" onclick="location='#{facesContext.externalContext.request.contextPath}/';"><div class="textopcion">Inicio</div></div>
         <c:if test="#{donde eq 'menuinicio'}"><c:set var="clase" value="mopoff" /></c:if>
 
         <c:if test="#{donde eq 'menuque_es'}"><c:set var="clase" value="mopon" /></c:if>
-        <div id="menuque_es" class="#{clase}">¿Qué es?</div>
+        <div id="menuque_es" class="#{clase}"><div class="textopcion">¿Qué es?</div></div>
         <c:if test="#{donde eq 'menuque_es'}"><c:set var="clase" value="mopoff" /></c:if>        
 
         <div id="menuinicio" class="#{clase}" onclick="window.open('http://wiki.wikipartido.mx',
             'open_window',
-            'menubar, toolbar, location, directories, status, scrollbars, resizable, dependent, width=900, height=480, left=0, top=0');">Wiki!</div>
+            'menubar, toolbar, location, directories, status, scrollbars, resizable, dependent, width=900, height=480, left=0, top=0');"><div class="textopcion">Wiki!</div></div>
 
 
 
         <c:if test="#{donde eq 'menucal'}"><c:set var="clase" value="mopon" /></c:if>
-        <div id="menucal" class="#{clase}">Calendario de Actividades</div>
+        <div id="menucal" class="#{clase}"><div class="textopcion">Calendario de Actividades</div></div>
         <c:if test="#{donde eq 'menucal'}"><c:set var="clase" value="mopoff" /></c:if>          
 
         <c:if test="#{donde eq 'menuvotdeb'}"><c:set var="clase" value="mopon" /></c:if>
-        <div id="menuvotdeb" class="#{clase}" onclick="location='#{facesContext.externalContext.request.contextPath}/faces/votacionydebate/votaciones.xhtml';">Votaciones y Debate</div>
+        <div id="menuvotdeb" class="#{clase}" onclick="location='#{facesContext.externalContext.request.contextPath}/faces/votacionydebate/votaciones.xhtml';"><div class="textopcion">Votaciones y Debate</div></div>
         <c:if test="#{donde eq 'menuvotdeb'}"><c:set var="clase" value="mopoff" /></c:if>
         <c:if test="#{donde eq 'menudelvot'}"><c:set var="clase" value="mopon" /></c:if>
-        <div id="menuvotdeb" class="#{clase}" onclick="location='#{facesContext.externalContext.request.contextPath}/faces/votacionydebate/delegaVoto/delegaVoto.xhtml';">Delegación del Voto</div>
+        <div id="menuvotdeb" class="#{clase}" onclick="location='#{facesContext.externalContext.request.contextPath}/faces/votacionydebate/delegaVoto/delegaVoto.xhtml';"><div class="textopcion">Delegación del Voto</div></div>
         <c:if test="#{donde eq 'menudelvot'}"><c:set var="clase" value="mopoff" /></c:if>        
 
         <c:if test="#{donde eq 'menuregist'}"><c:set var="clase" value="mopon" /></c:if>
-        <div id="menuregist" class="#{clase}" onclick="location='#{facesContext.externalContext.request.contextPath}/faces/registro/registro.xhtml';">Registro y Afiliación</div>
+        <div id="menuregist" class="#{clase}" onclick="location='#{facesContext.externalContext.request.contextPath}/faces/registro/registro.xhtml';"><div class="textopcion">Registro y Afiliación</div></div>
         <c:if test="#{donde eq 'menuregist'}"><c:set var="clase" value="mopoff" /></c:if>
         <h:form>
             <h:panelGroup rendered="#{!empty um.user}">
-                <div id="menusalir" class="#{clase}" style="float:right;border-left: 1px solid grey;" ><p:commandLink style="font-weight: normal; color:white;" value="Salir" action="#{um.logout}" /></div>                
+                <div id="menusalir" class="#{clase}" style="float:right;border-left: 1px solid grey;" ><div class="textopcion"><p:commandLink style="font-weight: normal; color:white;" value="Salir" action="#{um.logout}" /></div></div>                
             </h:panelGroup>
         </h:form>
     </div>

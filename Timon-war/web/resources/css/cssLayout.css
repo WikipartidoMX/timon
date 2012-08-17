@@ -36,21 +36,30 @@
 #opciones {
     cursor: pointer;
 }
+
+.textopcion {
+    padding-top: 6px;
+    padding-left: 8px;
+    padding-right: 8px;
+}
 .mopon {
     float:left;
     background-color: #651759;
-    padding: 8px;
+    height:29px;
+    border-right: 1px solid grey;
+
 }
 .mopoff {
     float:left;
     background-color: #403d3b;
-    padding: 8px;
+    height:29px;
     border-right: 1px solid grey;
 }
 .mophover {
     float:left;
     background-color:darkmagenta;    
-    padding: 8px;
+    height:29px;
+    border-right: 1px solid grey;    
 }
 
 #content {
