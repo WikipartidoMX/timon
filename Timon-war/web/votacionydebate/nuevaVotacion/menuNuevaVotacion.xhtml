@@ -7,6 +7,8 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:c="http://java.sun.com/jsp/jstl/core">
 
+    <!-- TODO: Hay que cambiar este submenu para que funcione con paginas independientes, así como el de votación-->
+
     <script type="text/javascript">
         $(document).ready(function(){
             $('.votmopoff').hover(function () {
@@ -24,12 +26,12 @@
     </script>     
 
     <div id="opciones">        
-        <div id="botondefinicion" class="votmopon" onclick="activa('definicion');">1. Definición &rarr;</div>
-        <div id="botontemas" class="votmopoff" onclick="activa('temas');">2. Temas &rarr;</div>
-        <div id="botonestados" class="votmopoff" onclick="activa('estados');">3. Estados &rarr;</div>
-        <div id="botonimagen" class="votmopoff" onclick="activa('imagen');">4. Imagen &rarr;</div>
-        <div id="botonops" class="votmopoff" onclick="activa('ops');">5. Opciones &rarr;</div>
-        <div id="botonconfirmar" class="votmopoff" onclick="activa('confirmar');">CONFIRMAR</div>         
+        <div id="botondefinicion" class="votmopon" onclick="activa('definicion');"><div class="textopcionFlechas">1. Definición &rarr;</div></div>
+        <div id="botontemas" class="votmopoff" onclick="activa('temas');"><div class="textopcionFlechas">2. Temas &rarr;</div></div>
+        <div id="botonestados" class="votmopoff" onclick="activa('estados');"><div class="textopcionFlechas">3. Estados &rarr;</div></div>
+        <div id="botonimagen" class="votmopoff" onclick="activa('imagen');"><div class="textopcionFlechas">4. Imagen &rarr;</div></div>
+        <div id="botonops" class="votmopoff" onclick="activa('ops');"><div class="textopcionFlechas">5. Opciones &rarr;</div></div>
+        <div id="botonconfirmar" class="votmopoff" onclick="activa('confirmar');"><div class="textopcion">CONFIRMAR</div></div>      
     </div>
 
 </ui:composition>

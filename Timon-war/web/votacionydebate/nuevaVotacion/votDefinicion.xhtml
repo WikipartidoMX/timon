@@ -8,7 +8,11 @@
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
                 >
 
-
+    <script type="text/javascript">
+        function verClaveWiki() {
+            alert('Hola!');
+        }
+    </script>
 
     <div class="caja" style="width: 800px;">
         <div class="caja" style="float: left;">
@@ -22,9 +26,9 @@
                 </div>
             </div>
             <div style=" margin-top: 15px;">
-                <div class="campo">URL (en caso de que exista un documento)</div>
+                <div class="campo">Clave de Documento en el Wiki <img style="cursor: pointer;" onclick="$('#clavewiki').dialog" src="../../images/i.png" /><br/><span style="font-size: 12px;">(en caso de que exista un documento)</span></div>
                 <div class="valor">
-                    <p:inputText size="30" id="url" required="false"  requiredMessage="Se requiere un URL para la votación" style="font-size: 24px; color:grey;" value="#{nvc.nuevaVotacion.url}">
+                    <p:inputText size="30" id="url" required="false"  requiredMessage="Se requiere un URL para la votación" style="font-size: 24px; color:grey; margin-top: 5px;" value="#{nvc.nuevaVotacion.url}">
                         <f:ajax event="blur" render="errorurl"  />
                     </p:inputText><br/>
                     <h:message for="url" id="errorurl" style="color:red"/>
@@ -43,25 +47,50 @@
         </div>
         <div class="caja" style="float: left; margin-left: 15px;">
             <div style=" margin-top: 15px;">
-                <div class="campo">Cierre de la Votación</div>
-                <div class="valor">
-                    <p:calendar id="cierre"
-                                required="true"
-                                requiredMessage="Se requiere una fecha de cierre"
-                                selectOtherMonths="true"
-                                pattern="MM/dd/yyyy hh:mm a"
-                                locale="de"
-                                value="#{nvc.nuevaVotacion.fechaCierre}"
-                                 
-                                >
-                        <f:ajax event="blur" render="errocierre"  />
-                    </p:calendar><br/>
-                    <h:message for="cierre" id="errocierre" style="color:red"/>
+                <div>
+                    <div class="campo">Cierre de la Discusión</div>
+                    <div class="valor">
+                        <p:calendar id="cierredebate"
+                                    required="true"
+                                    requiredMessage="Se requiere una fecha de cierre de discusión"
+                                    selectOtherMonths="true"
+
+                                    locale="de"
+                                    value="#{nvc.nuevaVotacion.fechaCierreDebate}"
+                                    mindate="#{nvc.hoy}"
+                                    
+                                    pattern="MM/dd/yyyy HH:mm a"
+                                    
+                                    >
+                            <f:ajax event="blur" render="errocierredebate"  />
+                        </p:calendar><br/>                    
+                        <h:message for="cierredebate" id="errocierredebate" style="color:red"/>
+                    </div>
                 </div>
+                <div>
+                    <div class="campo">Cierre de la Votación</div>
+                    <div class="valor">
+                        <p:calendar id="cierre"
+                                    required="true"
+                                    requiredMessage="Se requiere una fecha de cierre de votación"
+                                    selectOtherMonths="true"
+                                    pattern="MM/dd/yyyy hh:mm a"
+                                    locale="de"
+                                    value="#{nvc.nuevaVotacion.fechaCierre}"
+                                    mindate="#{nvc.hoy}"
+                                    
+                                    >
+                            <f:ajax event="blur" render="errocierre"  />
+                        </p:calendar><br/>                    
+                        <h:message for="cierre" id="errocierre" style="color:red"/>
+                    </div>
+                </div>                
             </div>            
         </div>
         <div style="clear: both;" />
     </div>
-
+        <div id="clavewiki">
+            <img src="../../images/clavewiki.png" />
+        </div>
 
 </ui:composition>

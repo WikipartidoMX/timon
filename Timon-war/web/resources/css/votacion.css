@@ -56,18 +56,21 @@
 .votmopon {
     float:left;
     background-color: #651759;
-    padding: 8px;
+    height:29px;
+    border-right: 1px solid grey;
 }
 .votmopoff {
     float:left;
     background-color: #403d3b;
-    padding: 8px;
+    height:29px;
     border-right: 1px solid grey;
+
 }
 .votmophover {
     float:left;
     background-color:darkmagenta;    
-    padding: 8px;
+    height:29px;
+    border-right: 1px solid grey;
 }
 
 

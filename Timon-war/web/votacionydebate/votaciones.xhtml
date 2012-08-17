@@ -13,14 +13,18 @@
     <ui:define name="content">
         <link href="#{facesContext.externalContext.request.contextPath}/resources/css/votacion.css" rel="stylesheet" type="text/css" /> 
 
-        <div class="encabezadoSeccion">
-            <h1>VOTACIONES</h1>
+        <div style="position: absolute; float:right;">
+            <a href="nuevaVotacion/nv.xhtml">Crear Nueva Votación</a>
         </div>
-        <div id="menuVotaciones">
-            <a href="nuevaVotacion/nv.xhtml">+Nueva</a>
+        <div class="encabezadoSeccion">
+            <h1 style="border: none;">VOTACIONES</h1>
+        </div>
+        <div style="border-bottom: 6px solid #bfb8b2; border-top: 6px solid #bfb8b2; width: 930px; margin: auto; ">
+            Tema <select ></select> Incluir votaciones cerradas: <input type="checkbox" name="test" checked="true" />   
+            
         </div>
 
-        <p:dataGrid value="#{vc.votaciones}" var="v" >
+        <p:dataGrid value="#{vc.votaciones}" var="v">
             <div onclick="location='votacion/votDescripcion.xhtml?vid=#{v.id}';" class="cajaVot" style="
                  background-image: url(#{facesContext.externalContext.request.contextPath}/ImagenDeVotacion?vid=#{v.id});
                  margin-bottom: 15px;">

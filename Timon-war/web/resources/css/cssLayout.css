@@ -38,7 +38,13 @@
 }
 
 .textopcion {
-    padding-top: 6px;
+    padding-top: 8px;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+/* ¬¬ Por alguna razón, al usar flechas (&rarr;) el texto baja como 3 puntos */
+.textopcionFlechas {
+    padding-top: 5px;
     padding-left: 8px;
     padding-right: 8px;
 }

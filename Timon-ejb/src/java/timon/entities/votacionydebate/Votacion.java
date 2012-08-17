@@ -43,12 +43,15 @@ public class Votacion implements Serializable {
     private Date fechaCreacion;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date fechaCierre;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date fechaCierreDebate;    
     private String url;
     @Lob
     private String descripcion;
     @OneToMany(mappedBy="votacion", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
     @OrderBy("id")
     private List<Opcion> opciones;
+    
 
     public Long getId() {
         return id;
@@ -209,6 +212,20 @@ public class Votacion implements Serializable {
      */
     public void setEstados(List<Estado> estados) {
         this.estados = estados;
+    }
+
+    /**
+     * @return the fechaCierreDebate
+     */
+    public Date getFechaCierreDebate() {
+        return fechaCierreDebate;
+    }
+
+    /**
+     * @param fechaCierreDebate the fechaCierreDebate to set
+     */
+    public void setFechaCierreDebate(Date fechaCierreDebate) {
+        this.fechaCierreDebate = fechaCierreDebate;
     }
     
 }

@@ -85,6 +85,17 @@ public class NuevaVotacionController implements Serializable {
     public void handleFileUploadOpcion(FileUploadEvent event) {
         imagenNuevaOpcion = event.getFile();
     }
+    
+    public Date getHoy() {
+        return new Date();
+    }
+    
+    public int getHora() {
+        Date date = new Date();
+        Calendar calendar = GregorianCalendar.getInstance();
+        calendar.setTime(date);
+        return calendar.get(Calendar.HOUR_OF_DAY);
+    }
 
     public String guardarVotacion() {
         if (um.getUser() == null) {
