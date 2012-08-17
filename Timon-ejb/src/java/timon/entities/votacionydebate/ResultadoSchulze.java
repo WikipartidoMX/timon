@@ -1,7 +1,18 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ *   __    __ _ _     _   ___           _   _     _             __  __
+ *  / / /\ \ (_) | __(_) / _ \__ _ _ __| |_(_) __| | ___   /\/\ \ \/ /
+ *  \ \/  \/ / | |/ /| |/ /_)/ _` | '__| __| |/ _` |/ _ \ /    \ \  / 
+ *   \  /\  /| |   < | / ___/ (_| | |  | |_| | (_| | (_) / /\/\ \/  \ 
+ *    \/  \/ |_|_|\_\|_\/    \__,_|_|   \__|_|\__,_|\___/\/    \/_/\_\
+ *                                              
+ *                                              
+ *  
+ * Wikipartido de Mexico
+ * VER ARCHIVO DE LiCENCIA
+ * 
+ * 
  */
+
 package timon.entities.votacionydebate;
 
 import java.io.Serializable;
@@ -12,12 +23,13 @@ import javax.persistence.*;
 /**
  *
  * @author Alfonso Tames
+ * 
  */
 @Entity
 public class ResultadoSchulze implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     
@@ -31,6 +43,8 @@ public class ResultadoSchulze implements Serializable {
     private int avance=0;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date fechaConteo;
+    private int miembros;
+    private float quorum;
 
 
     public Long getId() {
@@ -166,6 +180,34 @@ public class ResultadoSchulze implements Serializable {
      */
     public void setAvance(int avance) {
         this.avance = avance;
+    }
+
+    /**
+     * @return the miembros
+     */
+    public int getMiembros() {
+        return miembros;
+    }
+
+    /**
+     * @param miembros the miembros to set
+     */
+    public void setMiembros(int miembros) {
+        this.miembros = miembros;
+    }
+
+    /**
+     * @return the quorum
+     */
+    public float getQuorum() {
+        return quorum;
+    }
+
+    /**
+     * @param quorum the quorum to set
+     */
+    public void setQuorum(float quorum) {
+        this.quorum = quorum;
     }
     
 }

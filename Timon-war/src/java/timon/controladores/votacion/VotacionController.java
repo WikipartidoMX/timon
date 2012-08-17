@@ -14,7 +14,6 @@
  */
 package timon.controladores.votacion;
 
-import timon.controladores.UserManager;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -32,6 +31,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.primefaces.model.DualListModel;
+import timon.controladores.UserManager;
 import timon.entities.registro.Miembro;
 import timon.entities.votacionydebate.LogVotacion;
 import timon.entities.votacionydebate.Opcion;
