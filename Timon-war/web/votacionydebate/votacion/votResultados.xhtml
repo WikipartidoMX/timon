@@ -35,34 +35,50 @@
                 #{vc.wikiDescOpcion}
             </div>
 
-            <div class="cajaTituloChico" style="width:515px; margin-top: 15px;" >Último Resultado de la Votacion</div>
-            <div class="cajaContent" style="width:500px;" >
+            <div class="cajaTituloChico" style="width:535px; margin-top: 15px;" >Último Resultado de la Votacion</div>
+            <div class="cajaContent" style="width:540px; padding: 0px;" >
                 <div id="barra" style="margin-top:15px; display: none;">
                     <p:progressBar  widgetVar="pbar" ajax="true" value="#{vc.avance}"  styleClass="animated" labelTemplate="Calculando el resultado... {value}%">
                         <p:ajax event="complete" update=":resultados:scores,:resultados:matpref,:resultados:matps,:resultados:directgraph" listener="#{vc.onCompleteProgressBar}" oncomplete="Processing.getInstanceById('trabajando').noLoop(); $('.trabajando').fadeOut(); " />                    </p:progressBar>
                 </div>
                 <h:panelGroup id="scores">
                     <ui:repeat value="#{vc.rs.scores}" var="score" varStatus="s">
-                        <div style="margin-bottom: 10px;">
-                            <div style="font-size: 55px; width: 50px; float: left;">
-                                #{s.index+1}
+                        <h:panelGroup rendered="#{s.even}">
+                            <div class="rengloneven" style="margin-bottom: 0px; padding: 15px;">
+                                <div style="font-size: 55px; width: 50px; float: left;">
+                                    #{s.index+1}
+                                </div>
+                                <div style="width: 100px; float: left;">
+                                    <p:graphicImage width="80" height="80" url="/ShowImagenOpcion?oid=#{score.opcion.id}" rendered="#{vc.tieneImagenLaOpcion(score.opcion.id)}" />
+                                </div>
+                                <div style="width: 350px; float: left;">
+                                    <strong>#{score.opcion.nombre} : #{score.score}</strong><br/>
+                                    <span style="font-size: 12px;">#{score.opcion.descripcion}</span><br/>
+                                    <h:panelGroup rendered="#{not empty vot.opcion.url}">
+                                        <span onclick="$('#contenidoWikiDescOpcion').html('Cargando...'); $('#contenidoWikiDescOpcion').load('/Timon-war/ShowOpcionContentFromWiki?oid=#{score.opcion.id}'); $('#mas').toggle();" class="liga" style="font-size: 10px;">Más información</span>
+                                    </h:panelGroup>
+                                </div>
+                                <div style="clear: both;" />
                             </div>
-                            <div style="width: 100px; float: left;">
-                                <p:graphicImage width="80" height="80" url="/ShowImagenOpcion?oid=#{score.opcion.id}" rendered="#{vc.tieneImagenLaOpcion(score.opcion.id)}" />
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{s.odd}">
+                            <div class="renglonodd" style="margin-bottom: 0px; padding: 15px;">
+                                <div style="font-size: 55px; width: 50px; float: left;">
+                                    #{s.index+1}
+                                </div>
+                                <div style="width: 100px; float: left;">
+                                    <p:graphicImage width="80" height="80" url="/ShowImagenOpcion?oid=#{score.opcion.id}" rendered="#{vc.tieneImagenLaOpcion(score.opcion.id)}" />
+                                </div>
+                                <div style="width: 350px; float: left;">
+                                    <strong>#{score.opcion.nombre} : #{score.score}</strong><br/>
+                                    <span style="font-size: 12px;">#{score.opcion.descripcion}</span><br/>
+                                    <h:panelGroup rendered="#{not empty vot.opcion.url}">
+                                        <span onclick="$('#contenidoWikiDescOpcion').html('Cargando...'); $('#contenidoWikiDescOpcion').load('/Timon-war/ShowOpcionContentFromWiki?oid=#{score.opcion.id}'); $('#mas').toggle();" class="liga" style="font-size: 10px;">Más información</span>
+                                    </h:panelGroup>
+                                </div>
+                                <div style="clear: both;" />
                             </div>
-                            <div style="width: 350px; float: left;">
-                                <strong>#{score.opcion.nombre} : #{score.score}</strong><br/>
-                                <span style="font-size: 12px;">#{score.opcion.descripcion}</span><br/>
-
-
-                                <h:panelGroup rendered="#{not empty vot.opcion.url}">
-                                    <span onclick="$('#contenidoWikiDescOpcion').html('Cargando...'); $('#contenidoWikiDescOpcion').load('/Timon-war/ShowOpcionContentFromWiki?oid=#{score.opcion.id}'); $('#mas').toggle();" class="liga" style="font-size: 10px;">Más información</span>
-                                </h:panelGroup>
-
-                            </div>
-
-                            <div style="clear: both;" />
-                        </div>
+                        </h:panelGroup>                        
                     </ui:repeat> 
 
                 </h:panelGroup>
@@ -87,7 +103,6 @@
                         <ui:repeat value="#{vc.votacion.opciones}" var="op" varStatus="i">
                             <tr>
                                 <td align="center">
-
                                     <div style="width:200px; ">
                                         <div style="float: right; width: 40">
                                             <p:graphicImage  width="40" height="40" url="/ShowImagenOpcion?oid=#{op.id}" rendered="#{vc.tieneImagenLaOpcion(op.id)}" />
@@ -95,15 +110,25 @@
                                         <div style="float: right; width: 50">
                                             #{op.nombre}
                                         </div>
-
                                         <div style="clear: both;" />
                                     </div>
-
                                 </td>
                                 <ui:repeat value="#{vc.votacion.opciones}" var="oq" varStatus="j">
-                                    <td align="center" style="border: 1px solid grey;}">
-                                        <h:outputText value="#{vc.rs.pref[i.index][j.index]}" rendered="#{op ne oq}" />
-                                    </td>
+                                    <h:panelGroup rendered="#{(vc.rs.pref[i.index][j.index] gt vc.rs.pref[j.index][i.index]) and (op ne oq)}">
+                                        <td align="center" style="border: 1px solid grey; background-color: #e0f1cf;">                                        
+                                            <h:outputText value="#{vc.rs.pref[i.index][j.index]}" rendered="#{op ne oq}" />
+                                        </td>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{(vc.rs.pref[i.index][j.index] le vc.rs.pref[j.index][i.index]) and (op ne oq)}">
+                                        <td align="center" style="border: 1px solid grey; background-color: #fdd6d6;">                                        
+                                            <h:outputText value="#{vc.rs.pref[i.index][j.index]}" rendered="#{op ne oq}" />
+                                        </td>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{op eq oq}">
+                                        <td align="center" style="border: 1px solid grey;">                                        
+                                            &nbsp;
+                                        </td>
+                                    </h:panelGroup>
                                 </ui:repeat>
                             </tr>
                         </ui:repeat>
@@ -144,9 +169,21 @@
 
                                 </td>
                                 <ui:repeat value="#{vc.votacion.opciones}" var="oq" varStatus="j">
-                                    <td align="center" style="border: 1px solid grey;}">
-                                        <h:outputText value="#{vc.rs.sp[i.index][j.index]}" rendered="#{op ne oq}" />
-                                    </td>
+                                    <h:panelGroup rendered="#{(vc.rs.sp[i.index][j.index] gt vc.rs.sp[j.index][i.index]) and (op ne oq)}">
+                                        <td align="center" style="border: 1px solid grey; background-color: #e0f1cf;">                                        
+                                            <h:outputText value="#{vc.rs.sp[i.index][j.index]}" rendered="#{op ne oq}" />
+                                        </td>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{(vc.rs.sp[i.index][j.index] le vc.rs.sp[j.index][i.index]) and (op ne oq)}">
+                                        <td align="center" style="border: 1px solid grey; background-color: #fdd6d6;">                                        
+                                            <h:outputText value="#{vc.rs.sp[i.index][j.index]}" rendered="#{op ne oq}" />
+                                        </td>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{op eq oq}">
+                                        <td align="center" style="border: 1px solid grey;">                                        
+                                            &nbsp;
+                                        </td>
+                                    </h:panelGroup>
                                 </ui:repeat>
                             </tr>
                         </ui:repeat>
