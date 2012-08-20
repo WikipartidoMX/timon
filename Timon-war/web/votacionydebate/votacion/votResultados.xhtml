@@ -87,7 +87,7 @@
 
             <div class="cajaTituloChico"  >Matriz de Preferencias</div>
             <div class="cajaContent" >
-                <h:panelGroup id="matpref" rendered="#{fn:length(vc.votacion.opciones) lt 15}">
+                <h:panelGroup id="matpref" rendered="#{fn:length(vc.votacion.opciones) lt 12}">
                     <table>
                         <tr>
                             <td>&nbsp;</td>
@@ -134,14 +134,16 @@
                     </table>
                 </h:panelGroup>
             </div>
-            <div class="cajaTituloChico" >Gráfica de Direccionalidad</div>
-            <div class="cajaContent" style="text-align: center;" >
+            <h:panelGroup id="grafica" rendered="#{fn:length(vc.votacion.opciones) lt 12}">
+                <div class="cajaTituloChico" >Gráfica de Direccionalidad</div>
+                <div class="cajaContent" style="text-align: center;" >
 
-                <p:graphicImage id="directgraph" url="/DirectedGraph" />
-            </div>            
+                    <p:graphicImage id="directgraph" url="/DirectedGraph" />
+                </div>    
+            </h:panelGroup>
             <div class="cajaTituloChico">Rutas Fuertes</div>
             <div class="cajaContent" >
-                <h:panelGroup id="matps" rendered="#{fn:length(vc.votacion.opciones) lt 15}">
+                <h:panelGroup id="matps" rendered="#{fn:length(vc.votacion.opciones) lt 12}">
                     <table>
                         <tr>
                             <td>&nbsp;</td>

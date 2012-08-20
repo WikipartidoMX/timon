@@ -50,6 +50,7 @@ public class ShowAvatar extends HttpServlet {
         try {
             mid = Integer.parseInt(request.getParameter("mid"));
         } catch (Exception e) {
+            throw new ServletException("No es posible identificar al usuario.");
         }
         byte[] f = null;
         String filename = "camafeoh.png";
@@ -63,6 +64,7 @@ public class ShowAvatar extends HttpServlet {
                     path = request.getServletContext().getRealPath("/images/" + filename);
                 }
             } catch (Exception e) {
+                throw new ServletException("No es posible abrir el camafeo.");
             }
             File file = new File(path);
             f = org.apache.commons.io.FileUtils.readFileToByteArray(file);
