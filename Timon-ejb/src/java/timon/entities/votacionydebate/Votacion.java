@@ -49,9 +49,18 @@ public class Votacion implements Serializable {
     @Lob
     private String descripcion;
     @OneToMany(mappedBy="votacion", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-    @OrderBy("id")
+    @OrderBy("orden")
     private List<Opcion> opciones;
     
+    public String getDescripcionCorta() {
+        if (descripcion == null) {
+            return null;
+        } else if (descripcion.length() > 200) {
+            return descripcion.substring(0, 200)+"...";
+        }
+        return descripcion;
+    }
+
 
     public Long getId() {
         return id;

@@ -15,6 +15,7 @@
 package timon.entities.votacionydebate;
 
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.*;
 
 /**
@@ -22,7 +23,7 @@ import javax.persistence.*;
  * @author Alfonso Tames
  */
 @Entity
-public class Opcion implements Serializable {
+public class Opcion implements Serializable, Comparable<Opcion> {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +34,9 @@ public class Opcion implements Serializable {
     private String url;
     @Lob
     private String descripcion;
-
+    // Este campo nos ayudará a guardar el orden de la lista guardando los milis del sistema
+    private long orden;
+    
     public Long getId() {
         return id;
     }
@@ -122,5 +125,26 @@ public class Opcion implements Serializable {
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
+
+    /**
+     * @return the orden
+     */
+    public long getOrden() {
+        return orden;
+    }
+
+    /**
+     * @param orden the orden to set
+     */
+    public void setOrden(long orden) {
+        this.orden = orden;
+    }
+
+    @Override
+    public int compareTo(Opcion o) {
+        return orden > o.getOrden() ? -1 : orden < o.getOrden() ? 1 : 0;
+    }
+
+
     
 }

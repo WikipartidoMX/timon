@@ -115,8 +115,8 @@ public class VotacionController implements Serializable {
 
     public void verVotacion() {
 
-        List<Opcion> opcionesDisponibles = new ArrayList<Opcion>();
-        List<Opcion> opcionesVotadas = new ArrayList<Opcion>();
+        List<Opcion> opcionesDisponibles = new LinkedList<Opcion>();
+        List<Opcion> opcionesVotadas = new LinkedList<Opcion>();
         //System.out.println("vact " + getVact());
         //System.out.println("vid " + getVid());
         if (getVact() != getVid() || getVact() == 0) {

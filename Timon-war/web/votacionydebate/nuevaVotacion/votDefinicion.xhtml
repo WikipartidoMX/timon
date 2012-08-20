@@ -13,22 +13,24 @@
             alert('Hola!');
         }
     </script>
+    <div id="clavewiki" onclick="$('#clavewiki').fadeOut();" style="position: absolute; cursor: pointer; display: none; top: 100px; left: 100px; z-index: 10; border: 2px solid black;">
+            <img src="../../images/clavewiki.png" />
+        </div>
 
-    <div class="caja" style="width: 800px;">
-        <div class="caja" style="float: left;">
+        <div class="caja" style="float: left; width: 600px;">
             <div style=" margin-top: 15px;">
                 <div class="campo">Título para la Votación</div>
                 <div class="valor">
-                    <p:inputText size="30" id="nombre" required="true"  requiredMessage="Se requiere un título para la votación" style="font-size: 24px; color:grey;" value="#{nvc.nuevaVotacion.nombre}">
+                    <p:inputText size="40" id="nombre" required="true"  requiredMessage="Se requiere un título para la votación" style="font-size: 24px; color:grey;" value="#{nvc.nuevaVotacion.nombre}">
                         <f:ajax event="blur" render="errornombre"  />
                     </p:inputText><br/>
                     <h:message for="nombre" id="errornombre" style="color:red"/>
                 </div>
             </div>
             <div style=" margin-top: 15px;">
-                <div class="campo">Clave de Documento en el Wiki <img style="cursor: pointer;" onclick="$('#clavewiki').dialog" src="../../images/i.png" /><br/><span style="font-size: 12px;">(en caso de que exista un documento)</span></div>
+                <div class="campo">Clave de Documento en el Wiki <img style="cursor: pointer;" onclick="$('#clavewiki').fadeIn();" src="../../images/i.png" /><br/><span style="font-size: 12px;">(en caso de que exista un documento)</span></div>
                 <div class="valor">
-                    <p:inputText size="30" id="url" required="false"  requiredMessage="Se requiere un URL para la votación" style="font-size: 24px; color:grey; margin-top: 5px;" value="#{nvc.nuevaVotacion.url}">
+                    <p:inputText size="40" id="url" required="false"  requiredMessage="Se requiere un URL para la votación" style="font-size: 24px; color:grey; margin-top: 5px;" value="#{nvc.nuevaVotacion.url}">
                         <f:ajax event="blur" render="errorurl"  />
                     </p:inputText><br/>
                     <h:message for="url" id="errorurl" style="color:red"/>
@@ -36,7 +38,7 @@
             </div>        
             <div style=" margin-top: 15px;">
                 <div class="campo">Descripción</div>
-                <h:inputTextarea style="font-size:18px; color: #666666;" cols="45" rows="6" id="editorDescripcion" value="#{nvc.nuevaVotacion.descripcion}">
+                <h:inputTextarea style="font-size:18px; color: #666666;" cols="55" rows="6" id="editorDescripcion" value="#{nvc.nuevaVotacion.descripcion}">
                     <f:ajax event="blur" render=""  />
                 </h:inputTextarea>
 
@@ -45,7 +47,7 @@
 
             </div>
         </div>
-        <div class="caja" style="float: left; margin-left: 15px;">
+        <div class="caja" style="float: left; margin-left: 15px; width: 250px;">
             <div style=" margin-top: 15px;">
                 <div>
                     <div class="campo">Cierre de la Discusión</div>
@@ -88,9 +90,7 @@
             </div>            
         </div>
         <div style="clear: both;" />
-    </div>
-        <div id="clavewiki">
-            <img src="../../images/clavewiki.png" />
-        </div>
+
+
 
 </ui:composition>

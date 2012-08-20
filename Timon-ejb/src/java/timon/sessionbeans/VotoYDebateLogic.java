@@ -151,7 +151,7 @@ public class VotoYDebateLogic implements Serializable {
     }
 
     public List<Opcion> getOpcionesParaVotacion(Votacion vot) {
-        return em.createQuery("select o from Opcion o where o.votacion = :votacion order by o.id").setParameter("votacion", vot).getResultList();
+        return em.createQuery("select o from Opcion o where o.votacion = :votacion order by o.orden").setParameter("votacion", vot).getResultList();
     }
 
     public Opcion getOpcion(long id) {

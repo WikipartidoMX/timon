@@ -40,7 +40,7 @@ void draw() {
     rot=0;
     vuelta++;
   }
-  tick = tick+ 0.02;
+  tick = tick+ 0.2;
 }
 
 

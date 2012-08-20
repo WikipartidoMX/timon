@@ -85,11 +85,11 @@ public class NuevaVotacionController implements Serializable {
     public void handleFileUploadOpcion(FileUploadEvent event) {
         imagenNuevaOpcion = event.getFile();
     }
-    
+
     public Date getHoy() {
         return new Date();
     }
-    
+
     public int getHora() {
         Date date = new Date();
         Calendar calendar = GregorianCalendar.getInstance();
@@ -164,8 +164,10 @@ public class NuevaVotacionController implements Serializable {
         }
         if (!nuevaOpcion.getNombre().matches(".*\\w.*")) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "La opción no tiene un título válido.", null));
-            return;            
+            return;
         }
+        long orden = System.currentTimeMillis();
+        nuevaOpcion.setOrden(orden);
         OpcionMasImagen omi = new OpcionMasImagen();
         if (imagenNuevaOpcion != null) {
             ImagenOpcion imo = new ImagenOpcion();
