@@ -133,6 +133,7 @@
                         </ui:repeat>
                     </table>
                 </h:panelGroup>
+
             </div>
             <h:panelGroup id="grafica" rendered="#{fn:length(vc.votacion.opciones) lt 12}">
                 <div class="cajaTituloChico" >Gráfica de Direccionalidad</div>
@@ -190,7 +191,18 @@
                         </ui:repeat>
                     </table>
                 </h:panelGroup>
-            </div>            
+            </div>
+            <div class="cajaTituloChico"  >Descarga los Resultados Detallados</div>
+            <div class="cajaContent" >
+                <div style="margin-top:20px;">                    
+                    <div style="margin-top: 10px;">
+                        <div style="float: left;"><p:graphicImage url="/images/excel.png" /></div><div style="float:left; margin-top: 4px; margin-left: 4px;"><a href="#{facesContext.externalContext.request.contextPath}/GeneraTabla?rsid=#{vc.rs.id}&amp;cual=pref&amp;tipo=xlsx">Formato Excel Completo</a></div>
+                        <div style="float: left;"><p:graphicImage url="/images/csv.png" /></div><div style="float:left; margin-top: 4px; margin-left: 4px;"><a href="#{facesContext.externalContext.request.contextPath}/GeneraTabla?rsid=#{vc.rs.id}&amp;cual=pref&amp;tipo=csv">CSV (Texto) Matrix de Preferencias</a></div>                        
+<div style="float: left;"><p:graphicImage url="/images/csv.png" /></div><div style="float:left; margin-top: 4px; margin-left: 4px;"><a href="#{facesContext.externalContext.request.contextPath}/GeneraTabla?rsid=#{vc.rs.id}&amp;cual=sp&amp;tipo=csv">CSV (Texto) Matrix de Rutas más Fuertes</a></div>                        
+                        <div style="clear:both;" />
+                    </div>
+                </div>
+            </div>
             <div style="clear: both;" />
             <center>#{vc.rs.exetime}</center>
             <script type="text/javascript">
