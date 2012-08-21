@@ -80,9 +80,6 @@ public class GeneraTabla extends HttpServlet {
         }
         c = rs.getVotacion().getOpciones().size();
         ops = rs.getVotacion().getOpciones();
-        for (Opcion o : ops) {
-            System.out.println("Opcion: " + o.getNombre());
-        }
         // Vamos a estrenar Java 7:
         switch (cual) {
             case "pref":
