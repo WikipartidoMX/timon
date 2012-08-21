@@ -203,7 +203,7 @@ public class GeneraTabla extends HttpServlet {
         celverde.setBottomBorderColor(gris);
         celverde.setFont(vals);
         CreationHelper helper = wb.getCreationHelper();
-
+        try {
         Sheet sh = wb.createSheet("Matriz de Preferencia");
         sh.setDisplayGridlines(false);
         Row head = sh.createRow(5);
@@ -251,6 +251,62 @@ public class GeneraTabla extends HttpServlet {
         sh.autoSizeColumn(1);
         sh.setColumnWidth(0, 5500);
 
+        } catch (Exception e) {
+            throw new ServletException("No es posible generar la hoja de preferencias.");
+        }
+        try {
+        Sheet sh = wb.createSheet("Rutas más Fuertes");
+        m = rs.getSp();
+        sh.setDisplayGridlines(false);
+        Row head = sh.createRow(5);
+
+        for (int i = 0; i < c; i++) {
+            Cell cell = head.createCell(i + 2);
+
+            cell.setCellStyle(headstyle);
+            cell.setCellValue(ops.get(i).getNombre());
+            sh.setColumnWidth(i + 2, 3500);
+            if (vl.tieneImagenLaOpcion(ops.get(i).getId())) {
+                byte[] ima = vl.getImagenDeOpcion(ops.get(i).getId());
+                int pictureid = wb.addPicture(ima, getPictureType(ima));
+                Drawing drawing = sh.createDrawingPatriarch();
+                ClientAnchor anchor = helper.createClientAnchor();
+                anchor.setCol1(i + 2);
+                anchor.setRow1(0);
+                Picture pict = drawing.createPicture(anchor, pictureid);
+                ByteArrayInputStream in = new ByteArrayInputStream(ima);
+                BufferedImage bima = ImageIO.read(in);
+                int w = bima.getWidth();
+                float factor = 80f / w;
+                pict.resize(factor);
+            }
+        }
+
+        for (int i = 0; i < c; i++) {
+            Row row = sh.createRow(i + 6);
+            row.setHeightInPoints((4 * sh.getDefaultRowHeightInPoints()));
+            Cell nom = row.createCell(1);
+            nom.setCellValue(ops.get(i).getNombre());
+            nom.setCellStyle(headstyler);
+            for (int j = 0; j < c; j++) {
+                Cell cell = row.createCell(j + 2);
+                if (!ops.get(i).equals(ops.get(j))) {
+                    if (m[i][j] > m[j][i]) {
+                        cell.setCellStyle(celverde);
+                    } else {
+                        cell.setCellStyle(celrojo);
+                    }
+                    cell.setCellValue(m[i][j]);
+                }
+            }
+        }
+        sh.autoSizeColumn(1);
+        sh.setColumnWidth(0, 5500);
+
+        } catch (Exception e) {
+            throw new ServletException("No es posible generar la hoja de preferencias.");
+        }
+        
         response.setHeader("Content-Disposition", "attachment; filename=\"Resultados " + rs.getVotacion().getNombre() + ".xlsx\"");
         response.setContentType("application/xlsx");
         wb.write(response.getOutputStream());

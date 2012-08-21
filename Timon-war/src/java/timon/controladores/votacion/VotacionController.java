@@ -14,8 +14,6 @@
  */
 package timon.controladores.votacion;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.*;
 import java.util.logging.Level;
@@ -25,11 +23,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.primefaces.model.DualListModel;
 import timon.controladores.UserManager;
 import timon.entities.registro.Miembro;
@@ -61,7 +54,6 @@ public class VotacionController implements Serializable {
     private Votacion votacion;
     private String wikiDescVotacion;
     private DualListModel<Opcion> opciones;
-    private String wikiDescOpcion;
     private LogVotacion logvot = new LogVotacion();
     private ResultadoSchulze rs;
 
@@ -128,7 +120,6 @@ public class VotacionController implements Serializable {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocurrio un error al tratar de obtener el resultado de la eleccion.", null));
             }
             try {
-                setWikiDescVotacion(getContentFromURL(votacion.getUrl()));
                 opcionesDisponibles = vl.getOpcionesParaVotacion(votacion);
                 opciones = new DualListModel<Opcion>(opcionesDisponibles, opcionesVotadas);
             } catch (Exception ex) {
@@ -138,19 +129,7 @@ public class VotacionController implements Serializable {
         }
     }
 
-    public void verWikiDescOpcion(long id) {
-        System.out.println("Invocando verWikiDescOpcion...");
-        try {
-            System.out.println("Sacando la opcion con id " + id);
-            Opcion op = vl.getOpcion(id);
-            wikiDescOpcion = getContentFromURL(op.getUrl());
-            System.out.println("Contiene:");
-            System.out.println(wikiDescOpcion);
-        } catch (Exception ex) {
-            mrlog.log(Level.SEVERE, "Error al sacar contenido del wiki", ex);
-        }
 
-    }
 
     public void onCompleteProgressBar() {
         rs = null;
@@ -207,72 +186,6 @@ public class VotacionController implements Serializable {
         return a;
     }
 
-    public String getContentFromURL(String url) throws IOException {
-        StringBuilder resp = new StringBuilder();
-        HttpEntity entity = null;
-        HttpClient httpclient = null;
-        HttpGet httpget = null;
-        try {
-            //System.out.println("Cargando la pagina de descripcion " + url);
-            httpclient = new DefaultHttpClient();
-            //httpclient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 1);
-            //httpclient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 15000);
-            //httpclient.getParams().setParameter(CoreConnectionPNames.STALE_CONNECTION_CHECK, false);
-            //httpclient.getParams().setParameter(CoreConnectionPNames.TCP_NODELAY, true);
-
-            httpget = new HttpGet(url);
-
-            HttpResponse response = httpclient.execute(httpget);
-            //System.out.println(response.getStatusLine());
-            entity = response.getEntity();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            resp.append(e.getMessage());
-        }
-        InputStream instream = null;
-        if (entity != null) {
-
-            try {
-                instream = entity.getContent();
-                // do something useful with the response
-                byte[] buffer = new byte[1024];
-                int read;
-                while ((read = instream.read(buffer)) != -1) {
-                    resp.append(new String(Arrays.copyOfRange(buffer, 0, read), "UTF8"));
-
-                }
-
-
-            } catch (IOException ex) {
-                System.out.println("Error IO conectando al wiki!!!");
-                // In case of an IOException the connection will be released
-                // back to the connection manager automatically
-                throw ex;
-
-            } catch (RuntimeException ex) {
-
-                System.out.println("Error Runtime conectando al wiki!!!");
-                // In case of an unexpected exception you may want to abort
-                // the HTTP request in order to shut down the underlying
-                // connection and release it back to the connection manager.
-                httpget.abort();
-                throw ex;
-
-            } finally {
-
-                // Closing the input stream will trigger connection release
-                instream.close();
-
-            }
-
-            // When HttpClient instance is no longer needed,
-            // shut down the connection manager to ensure
-            // immediate deallocation of all system resources
-            httpclient.getConnectionManager().shutdown();
-        }
-
-        return resp.toString();
-    }
 
     /**
      * @return the votacion
@@ -344,19 +257,7 @@ public class VotacionController implements Serializable {
         this.opciones = opciones;
     }
 
-    /**
-     * @return the wikiDescOpcion
-     */
-    public String getWikiDescOpcion() {
-        return wikiDescOpcion;
-    }
 
-    /**
-     * @param wikiDescOpcion the wikiDescOpcion to set
-     */
-    public void setWikiDescOpcion(String wikiDescOpcion) {
-        this.wikiDescOpcion = wikiDescOpcion;
-    }
 
     /**
      * @return the logvot

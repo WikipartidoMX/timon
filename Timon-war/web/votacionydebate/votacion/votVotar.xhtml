@@ -38,7 +38,7 @@
 
 
                         <h:panelGroup rendered="#{not empty op.url}">
-                            <span onclick="$('#contenidoWikiDescOpcion').html('Cargando...'); $('#contenidoWikiDescOpcion').load('/Timon-war/ShowOpcionContentFromWiki?oid=#{op.id}'); $('#mas').toggle();" class="liga" style="font-size: 10px;">Más información</span>
+                            <span onclick="$('#contenidoWikiDescOpcion').html('Cargando...'); $('#contenidoWikiDescOpcion').load('#{facesContext.externalContext.request.contextPath}/GetContentFromWiki?oid=#{op.id}'); $('#mas').toggle();" class="liga" style="font-size: 10px;">Más información</span>
                         </h:panelGroup>
 
                     </p:column>
@@ -53,7 +53,7 @@
                 </div>
                 <div style="clear:both;" />
                 <div id="contenidoWikiDescOpcion" style="position: absolute; height: 445px; width: 600px; overflow: auto; ">
-                    #{vc.wikiDescOpcion}
+                    
                 </div>
             </div>
 
@@ -88,7 +88,7 @@
 
 
                                 <h:panelGroup rendered="#{not empty vot.opcion.url}">
-                                    <span onclick="$('#contenidoWikiDescOpcion').html('Cargando...'); $('#contenidoWikiDescOpcion').load('/Timon-war/ShowOpcionContentFromWiki?oid=#{vot.opcion.id}'); $('#mas').toggle();" class="liga" style="font-size: 10px;">Más información</span>
+                                    <span onclick="$('#contenidoWikiDescOpcion').html('Cargando...'); $('#contenidoWikiDescOpcion').load('#{facesContext.externalContext.request.contextPath}/GetContentFromWiki?oid=#{vot.opcion.id}'); $('#mas').toggle();" class="liga" style="font-size: 10px;">Más información</span>
                                 </h:panelGroup>
 
                             </div>

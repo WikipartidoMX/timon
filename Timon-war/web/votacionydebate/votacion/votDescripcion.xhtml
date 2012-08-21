@@ -22,11 +22,13 @@
 
     <ui:define name="content">
 
+        
         <div style="float: left;">
 
             <div class="cajaTituloChico" style="width:615px;">#{vc.votacion.descripcion}</div>
             <div class="cajaContent" style="width:600px;" >
-                <h:outputText value="#{vc.wikiDescVotacion}" escape="false" />
+                <iframe src="#{facesContext.externalContext.request.contextPath}/GetContentFromWiki?vid=#{vc.votacion.id}"
+                        width="600" height="500" />
             </div>
         </div>
 

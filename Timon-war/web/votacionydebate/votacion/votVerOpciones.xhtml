@@ -39,7 +39,7 @@
                                     <span style="font-size: 18px; font-weight: bold;">#{op.nombre}</span><br/>
                                     <span style="font-size: 14px;">#{op.descripcion}</span><br/>
                                     <h:panelGroup rendered="#{not empty op.url}">
-                                        <span onclick="$('#contenidoWikiDescOpcion').html('Cargando...'); $('#contenidoWikiDescOpcion').load('/Timon-war/ShowOpcionContentFromWiki?oid=#{op.id}'); $('#mas').toggle();" class="liga" style="font-size: 12px;">Ver más información</span>
+                                        <span onclick="$('#contenidoWikiDescOpcion').html('Cargando...'); $('#contenidoWikiDescOpcion').load('/Timon-war/GetContentFromWiki?oid=#{op.id}'); $('#mas').toggle();" class="liga" style="font-size: 12px;">Ver más información</span>
                                     </h:panelGroup>
                                 </div>
                                 <div style="clear: both;" />
@@ -56,7 +56,7 @@
                                     <span style="font-size: 18px; font-weight: bold;">#{op.nombre}</span><br/>
                                     <span style="font-size: 14px;">#{op.descripcion}</span><br/>
                                     <h:panelGroup rendered="#{not empty op.url}">
-                                        <span onclick="$('#contenidoWikiDescOpcion').html('Cargando...'); $('#contenidoWikiDescOpcion').load('/Timon-war/ShowOpcionContentFromWiki?oid=#{op.id}'); $('#mas').toggle();" class="liga" style="font-size: 12px;">Ver más información</span>
+                                        <span onclick="$('#contenidoWikiDescOpcion').html('Cargando...'); $('#contenidoWikiDescOpcion').load('/Timon-war/GetContentFromWiki?oid=#{op.id}'); $('#mas').toggle();" class="liga" style="font-size: 12px;">Ver más información</span>
                                     </h:panelGroup>
                                 </div>
                                 <div style="clear: both;" />
@@ -71,7 +71,7 @@
                 </div>
                 <div style="clear:both;" />
                 <div id="contenidoWikiDescOpcion" style="position: absolute; height: 445px; width: 600px; overflow: auto; ">
-                    #{vc.wikiDescOpcion}
+                    
                 </div>
             </div>
         </h:form>

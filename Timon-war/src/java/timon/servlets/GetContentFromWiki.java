@@ -14,13 +14,11 @@
  */
 package timon.servlets;
 
-import timon.entities.votacionydebate.Opcion;
-import timon.entities.votacionydebate.Votacion;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -30,17 +28,20 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import timon.entities.votacionydebate.Opcion;
+import timon.entities.votacionydebate.Votacion;
 import timon.sessionbeans.VotoYDebateLogic;
 
 /**
  *
  * @author Alfonso Tames
  */
-@WebServlet(name = "ShowOpcionContentFromWiki", urlPatterns = {"/ShowOpcionContentFromWiki"})
-public class ShowOpcionContentFromWiki extends HttpServlet {
+@WebServlet(name = "GetContentFromWiki", urlPatterns = {"/GetContentFromWiki"})
+public class GetContentFromWiki extends HttpServlet {
 
     @Inject
     VotoYDebateLogic vl;
+
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -55,13 +56,12 @@ public class ShowOpcionContentFromWiki extends HttpServlet {
         try {
             vid = Integer.parseInt(request.getParameter("vid"));
         } catch (Exception e) {
-        }        
+        }
         if (vid != 0) {
             Votacion v = vl.getVotacion(vid);
             url = v.getUrl();
-            titulo = new String(v.getNombre());
-        } else
-        if (oid != 0) {
+            titulo = v.getNombre();
+        } else if (oid != 0) {
             Opcion o = vl.getOpcion(oid);
             url = o.getUrl();
             titulo = o.getNombre();
@@ -70,13 +70,16 @@ public class ShowOpcionContentFromWiki extends HttpServlet {
             response.setStatus(500);
             return;
         }
-        titulo = "<h1>"+titulo+"</h1>";
-        System.out.println("URL: "+url);
+        url = "http://wiki.wikipartido.mx/wiki/index.php/" + url + "?action=render";
+        titulo = "<h1>" + titulo + "</h1>";
+        System.out.println("URL: " + url);
         response.setContentType("text/html; charset=UTF-8");
-        ServletOutputStream out = response.getOutputStream();
+
         HttpEntity entity = null;
         HttpClient httpclient = null;
         HttpGet httpget = null;
+        StringBuilder html = new StringBuilder();
+        html.append(titulo);
         try {
             httpclient = new DefaultHttpClient();
             httpget = new HttpGet(url);
@@ -87,13 +90,14 @@ public class ShowOpcionContentFromWiki extends HttpServlet {
         }
         InputStream instream = null;
         if (entity != null) {
-            out.write(titulo.getBytes());
+
             try {
                 instream = entity.getContent();
                 byte[] buffer = new byte[1024];
-                int read = 0;
+                int read;
                 while ((read = instream.read(buffer)) != -1) {
-                    out.write(buffer, 0, read);
+                    //out.write(buffer, 0, read);
+                    html.append(new String(buffer,"UTF-8"));
                 }
             } catch (IOException ex) {
                 throw ex;
@@ -104,13 +108,15 @@ public class ShowOpcionContentFromWiki extends HttpServlet {
             } finally {
 
                 instream.close();
-                out.flush();
-                out.close();
+
             }
             httpclient.getConnectionManager().shutdown();
         }
-
-
+        // Repara las imagenes que vienen del wiki ¬¬
+        String r = html.toString();
+        String n = r.replace("src=\"/wiki", "src=\"http://wiki.wikipartido.mx/wiki");
+        PrintWriter pw = response.getWriter();
+        pw.write(n);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
