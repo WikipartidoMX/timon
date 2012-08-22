@@ -72,7 +72,7 @@ public class VotacionController implements Serializable {
                 if (avance == null) {
                     try {
                         vl.cuentaConSchulze(votacion);
-                        
+
                     } catch (Exception ex) {
                         mrlog.log(Level.SEVERE, "Ocurrió un error al tratar de iniciar el conteo de la votacion {0}", ex.getMessage());
                         throw new Exception("Ocurrió un error al tratar de iniciar el conteo de la votacion" + ex.getMessage());
@@ -114,6 +114,18 @@ public class VotacionController implements Serializable {
         if (getVact() != getVid() || getVact() == 0) {
             votacion = vl.getVotacion(getVid());
             rs = null;
+            if (votacion.getUrl() != null) {
+                System.out.println("Se supone que esto no es nulo: "+votacion.getUrl());
+
+                    try {                        
+                        wikiDescVotacion = vl.getContentFromWiki(votacion);
+                    } catch (Exception ex) {
+                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No es posible extraer el contenido del documento "+votacion.getUrl()+" del Wiki.", null));
+                    }
+                
+            } else {
+                wikiDescVotacion = "No hay documento en el Wiki asociado a esta votación";
+            }
             try {
                 rs = getRs();
             } catch (Exception e) {
@@ -128,8 +140,6 @@ public class VotacionController implements Serializable {
             setVact(getVid());
         }
     }
-
-
 
     public void onCompleteProgressBar() {
         rs = null;
@@ -185,7 +195,6 @@ public class VotacionController implements Serializable {
         mrlog.log(Level.FINE, "Reportando un avance de... {0} para {1}", new Object[]{a, votacion.getId()});
         return a;
     }
-
 
     /**
      * @return the votacion
@@ -256,8 +265,6 @@ public class VotacionController implements Serializable {
     public void setOpciones(DualListModel<Opcion> opciones) {
         this.opciones = opciones;
     }
-
-
 
     /**
      * @return the logvot

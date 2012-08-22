@@ -149,7 +149,7 @@
                         <tr>
                             <td>&nbsp;</td>
                             <ui:repeat value="#{vc.votacion.opciones}" var="op">
-                                <td>
+                                <td align="center">
                                     #{op.nombre}<br/>
                                     <p:graphicImage width="40" height="40" url="/ShowImagenOpcion?oid=#{op.id}" rendered="#{vc.tieneImagenLaOpcion(op.id)}" />
                                 </td>
@@ -157,12 +157,12 @@
                         </tr>
                         <ui:repeat value="#{vc.votacion.opciones}" var="op" varStatus="i">
                             <tr>
-                                <td align="center">
+                                <td align="center" valign="center">
                                     <div style="width:200px; ">
-                                        <div style="float: right; width: 40">
+                                        <div style="float: right; width: 40px;">
                                             <p:graphicImage  width="40" height="40" url="/ShowImagenOpcion?oid=#{op.id}" rendered="#{vc.tieneImagenLaOpcion(op.id)}" />
                                         </div>                                            
-                                        <div style="float: right; width: 50">
+                                        <div style="float: right; width: 120px; margin-right: 5px;">
                                             #{op.nombre}
                                         </div>
 

@@ -17,6 +17,8 @@ package timon.servlets;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -47,8 +49,8 @@ public class GetContentFromWiki extends HttpServlet {
             throws ServletException, IOException {
         long oid = 0;
         long vid = 0;
-        String url = null;
-        String titulo = null;
+
+        Object o=null;
         try {
             oid = Integer.parseInt(request.getParameter("oid"));
         } catch (Exception e) {
@@ -58,65 +60,19 @@ public class GetContentFromWiki extends HttpServlet {
         } catch (Exception e) {
         }
         if (vid != 0) {
-            Votacion v = vl.getVotacion(vid);
-            url = v.getUrl();
-            titulo = v.getNombre();
+            o = vl.getVotacion(vid);
+
         } else if (oid != 0) {
-            Opcion o = vl.getOpcion(oid);
-            url = o.getUrl();
-            titulo = o.getNombre();
+            o = vl.getOpcion(oid);
         }
-        if (url == null) {
-            response.setStatus(500);
-            return;
-        }
-        url = "http://wiki.wikipartido.mx/wiki/index.php/" + url + "?action=render";
-        titulo = "<h1>" + titulo + "</h1>";
-        System.out.println("URL: " + url);
-        response.setContentType("text/html; charset=UTF-8");
+        response.setContentType("text/html");
 
-        HttpEntity entity = null;
-        HttpClient httpclient = null;
-        HttpGet httpget = null;
-        StringBuilder html = new StringBuilder();
-        html.append(titulo);
-        try {
-            httpclient = new DefaultHttpClient();
-            httpget = new HttpGet(url);
-            HttpResponse r = httpclient.execute(httpget);
-            entity = r.getEntity();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        InputStream instream = null;
-        if (entity != null) {
-
-            try {
-                instream = entity.getContent();
-                byte[] buffer = new byte[1024];
-                int read;
-                while ((read = instream.read(buffer)) != -1) {
-                    //out.write(buffer, 0, read);
-                    html.append(new String(buffer,"UTF-8"));
-                }
-            } catch (IOException ex) {
-                throw ex;
-
-            } catch (RuntimeException ex) {
-                httpget.abort();
-                throw ex;
-            } finally {
-
-                instream.close();
-
-            }
-            httpclient.getConnectionManager().shutdown();
-        }
-        // Repara las imagenes que vienen del wiki ¬¬
-        String r = html.toString();
-        String n = r.replace("src=\"/wiki", "src=\"http://wiki.wikipartido.mx/wiki");
         PrintWriter pw = response.getWriter();
-        pw.write(n);
+        try {
+            pw.write(vl.getContentFromWiki(o));
+        } catch (Exception ex) {
+            throw new ServletException("Error al intentar sacar el contenido del Wiki!");
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

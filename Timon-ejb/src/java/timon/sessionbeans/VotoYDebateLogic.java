@@ -14,6 +14,8 @@
  */
 package timon.sessionbeans;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.*;
 import java.util.logging.Level;
@@ -25,6 +27,11 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import timon.entities.registro.Estado;
 import timon.entities.registro.Miembro;
 import timon.entities.votacionydebate.*;
@@ -488,6 +495,81 @@ public class VotoYDebateLogic implements Serializable {
         }
         mrlog.log(Level.FINE, q.toString());
         return m;
+    }
+    
+    public String getContentFromWiki(Object para) throws Exception {
+        String res = null;
+        String url = null;
+        String titulo = null;
+        mrlog.log(Level.FINE,"Determinando el tipo de clase...");
+        if (para instanceof Opcion) {
+            mrlog.log(Level.FINE,"La clase es Opcion...");
+            Opcion op = (Opcion)para;
+            if (op.getUrl() != null) {
+                url = op.getUrl();
+                System.out.println("El URL no es nulo: "+url);
+            }
+            titulo = op.getNombre();
+        }
+        if (para instanceof Votacion) {
+            mrlog.log(Level.FINE,"La clase es Votacion...");
+            Votacion vot = (Votacion)para;
+            if (vot.getUrl() != null) {
+                url = vot.getUrl();
+            }
+            titulo = vot.getNombre();
+        }        
+                url = "http://wiki.wikipartido.mx/wiki/index.php/" + url + "?action=render";
+        titulo = "<h1>" + titulo + "</h1>";
+        System.out.println("URL: " + url);
+        
+
+        HttpEntity entity = null;
+        HttpClient httpclient = null;
+        HttpGet httpget = null;
+        StringBuilder html = new StringBuilder();
+        html.append(titulo);
+        try {
+            httpclient = new DefaultHttpClient();
+            httpget = new HttpGet(url);
+            HttpResponse r = httpclient.execute(httpget);
+            if (r.getStatusLine().getStatusCode() == 404) {
+                throw new Exception("No existe el documento en el Wiki");
+            }
+            entity = r.getEntity();
+            
+        } catch (Exception e) {
+            throw e;
+        }
+        
+        InputStream instream = null;
+        if (entity != null) {
+
+            try {
+                instream = entity.getContent();
+                byte[] buffer = new byte[1024];
+                int read;
+                while ((read = instream.read(buffer)) != -1) {
+                    //out.write(buffer, 0, read);
+                    html.append(new String(buffer,0,read,"UTF-8"));
+                }
+            } catch (IOException ex) {
+                throw ex;
+
+            } catch (RuntimeException ex) {
+                httpget.abort();
+                throw ex;
+            } finally {
+
+                instream.close();
+
+            }
+            httpclient.getConnectionManager().shutdown();
+        }
+        // Repara las imagenes que vienen del wiki ¬¬
+        res = html.toString().replace("src=\"/wiki", "src=\"http://wiki.wikipartido.mx/wiki");
+        
+        return res;
     }
 
     class Preferencia {
