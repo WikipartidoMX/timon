@@ -406,15 +406,15 @@ public class VotoYDebateLogic implements Serializable {
     }
 
     /**
-     * Generación de la matriz de preferencia de esta elección.
-     * Este es el método rápido y no reporta el progreso de la operación porque
-     * la base de datos hace en un solo paso la generación de la matriz.
-     * 
-     * MariaDB tiene contemplado reportar el progreso de los queries así que 
+     * Generación de la matriz de preferencia de esta elección. Este es el
+     * método rápido y no reporta el progreso de la operación porque la base de
+     * datos hace en un solo paso la generación de la matriz.
+     *
+     * MariaDB tiene contemplado reportar el progreso de los queries así que
      * esperaremos a su implementación.
-     * 
+     *
      * ¡MariaDB es hasta 10 veces más rápida en este query que MySQL!
-     * 
+     *
      * @param vot La votación que se va a resolver.
      * @return La matriz de preferencia completa de esta votacion
      */
@@ -449,17 +449,19 @@ public class VotoYDebateLogic implements Serializable {
                 }
             }
             mv.getConteos().put(vot.getId(), Integer.valueOf((i * 100) / t));
-        }        
+        }
         return m;
     }
-    
-/**
- * Método lento para la generación de la matriz de preferencias de la votación.
- * No estamos usando este método porque es muy lento aunque sí reporta el avance del conteo.
- * La idea es tener un método que reporte el avance del conteo.
- * @param vot La votación en cuestión
- * @return La matriz de preferencia.
- */
+
+    /**
+     * Método lento para la generación de la matriz de preferencias de la
+     * votación. No estamos usando este método porque es muy lento aunque sí
+     * reporta el avance del conteo. La idea es tener un método que reporte el
+     * avance del conteo.
+     *
+     * @param vot La votación en cuestión
+     * @return La matriz de preferencia.
+     */
     private long[][] getMatrizDePreferenciaLento(Votacion vot) {
         // Método más lento pero que reporta avance a la barra de progreso...
         List<Opcion> ops = vot.getOpciones();
@@ -496,33 +498,39 @@ public class VotoYDebateLogic implements Serializable {
         mrlog.log(Level.FINE, q.toString());
         return m;
     }
-    
+
     public String getContentFromWiki(Object para) throws Exception {
         String res = null;
         String url = null;
         String titulo = null;
-        mrlog.log(Level.FINE,"Determinando el tipo de clase...");
+        mrlog.log(Level.FINE, "Determinando el tipo de clase...");
         if (para instanceof Opcion) {
-            mrlog.log(Level.FINE,"La clase es Opcion...");
-            Opcion op = (Opcion)para;
+            mrlog.log(Level.FINE, "La clase es Opcion...");
+            Opcion op = (Opcion) para;
             if (op.getUrl() != null) {
                 url = op.getUrl();
-                System.out.println("El URL no es nulo: "+url);
+                System.out.println("El URL no es nulo: " + url);
             }
             titulo = op.getNombre();
         }
         if (para instanceof Votacion) {
-            mrlog.log(Level.FINE,"La clase es Votacion...");
-            Votacion vot = (Votacion)para;
+            mrlog.log(Level.FINE, "La clase es Votacion...");
+            Votacion vot = (Votacion) para;
             if (vot.getUrl() != null) {
                 url = vot.getUrl();
             }
             titulo = vot.getNombre();
-        }        
-                url = "http://wiki.wikipartido.mx/wiki/index.php/" + url + "?action=render";
+        }
+        url = url.replace("?", "");
+        url = url.replace("=", "");
+        url = url.replace("/", "");
+        url = url.replace("\\", "");
+        url = url.replace("&", "");
+        
+        url = "http://wiki.wikipartido.mx/wiki/index.php/" + url + "?action=render";
         titulo = "<h1>" + titulo + "</h1>";
         System.out.println("URL: " + url);
-        
+
 
         HttpEntity entity = null;
         HttpClient httpclient = null;
@@ -537,11 +545,11 @@ public class VotoYDebateLogic implements Serializable {
                 throw new Exception("No existe el documento en el Wiki");
             }
             entity = r.getEntity();
-            
+
         } catch (Exception e) {
             throw e;
         }
-        
+
         InputStream instream = null;
         if (entity != null) {
 
@@ -551,7 +559,7 @@ public class VotoYDebateLogic implements Serializable {
                 int read;
                 while ((read = instream.read(buffer)) != -1) {
                     //out.write(buffer, 0, read);
-                    html.append(new String(buffer,0,read,"UTF-8"));
+                    html.append(new String(buffer, 0, read, "UTF-8"));
                 }
             } catch (IOException ex) {
                 throw ex;
@@ -568,7 +576,7 @@ public class VotoYDebateLogic implements Serializable {
         }
         // Repara las imagenes que vienen del wiki ¬¬
         res = html.toString().replace("src=\"/wiki", "src=\"http://wiki.wikipartido.mx/wiki");
-        
+
         return res;
     }
 

@@ -106,25 +106,25 @@ public class VotacionController implements Serializable {
     }
 
     public void verVotacion() {
-
-        List<Opcion> opcionesDisponibles = new LinkedList<Opcion>();
-        List<Opcion> opcionesVotadas = new LinkedList<Opcion>();
-        //System.out.println("vact " + getVact());
-        //System.out.println("vid " + getVid());
+        
+        List<Opcion> opcionesDisponibles;
+        List<Opcion> opcionesVotadas = new LinkedList<>();
+        mrlog.log(Level.FINE, "vact {0}", getVact());
+        mrlog.log(Level.FINE, "vid {0}", getVid());
         if (getVact() != getVid() || getVact() == 0) {
             votacion = vl.getVotacion(getVid());
+            setVact(getVid());
+            wikiDescVotacion = "No hay documento en el Wiki asociado a esta votación";
             rs = null;
             if (votacion.getUrl() != null) {
-                System.out.println("Se supone que esto no es nulo: "+votacion.getUrl());
+                System.out.println("Se supone que esto no es nulo: " + votacion.getUrl());
 
-                    try {                        
-                        wikiDescVotacion = vl.getContentFromWiki(votacion);
-                    } catch (Exception ex) {
-                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No es posible extraer el contenido del documento "+votacion.getUrl()+" del Wiki.", null));
-                    }
-                
-            } else {
-                wikiDescVotacion = "No hay documento en el Wiki asociado a esta votación";
+                try {
+                    wikiDescVotacion = vl.getContentFromWiki(votacion);
+                } catch (Exception ex) {
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No es posible extraer el contenido del documento " + votacion.getUrl() + " del Wiki.", null));
+                }
+
             }
             try {
                 rs = getRs();
@@ -133,11 +133,11 @@ public class VotacionController implements Serializable {
             }
             try {
                 opcionesDisponibles = vl.getOpcionesParaVotacion(votacion);
-                opciones = new DualListModel<Opcion>(opcionesDisponibles, opcionesVotadas);
+                opciones = new DualListModel<>(opcionesDisponibles, opcionesVotadas);
             } catch (Exception ex) {
-                Logger.getLogger(NuevaVotacionController.class.getName()).log(Level.SEVERE, null, ex);
+                mrlog.log(Level.SEVERE, null, ex);
             }
-            setVact(getVid());
+
         }
     }
 
