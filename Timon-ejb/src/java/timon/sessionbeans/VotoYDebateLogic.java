@@ -216,10 +216,7 @@ public class VotoYDebateLogic implements Serializable {
         return em.find(Tema.class, id);
     }
 
-    @PermitAll
-    public List<Votacion> getVotaciones(int start, int max) {
-        return getVotaciones(start, max, null, null);
-    }
+
 
     public Votacion getVotacion(long id) {
         return em.find(Votacion.class, id);
@@ -255,20 +252,53 @@ public class VotoYDebateLogic implements Serializable {
     public List<Delegacion> getDelegacionesPara(Miembro m) {
         return em.createQuery("select d from Delegacion d where d.miembro = :m").setParameter("m", m).getResultList();
     }
+    @PermitAll
+    public LazyResult getVotaciones(int start, int max) {
+        return getVotaciones(start, max, null, null, false, null, null);
+    }
+    public LazyResult getVotaciones(int start, int max, Tema filtroTema, 
+            Estado filtroEstado, boolean filtroAbiertas, 
+            Date filtroFechaCierreDesde, Date filtroFechaCierreHasta) {
+        mrlog.log(Level.FINE, "Buscando votaciones de {0} a {1}", new Object[]{start, max});
+        StringBuilder ejbql = new StringBuilder();
+        StringBuilder ejbqlCount = new StringBuilder();
+        StringBuilder filtros = new StringBuilder();
+        StringBuilder froms = new StringBuilder();
+        ejbql.append("select v from Votacion v ");
+        ejbqlCount.append("select count(v) from Votacion v ");
+        boolean filtrar = false;
+        if (filtroTema != null) {
+            froms.append(", Tema t ");
+            filtros.append(" t member of v.temas and t = :tema ");
+            filtrar = true;
+        }
+        if (filtrar) {
+            ejbql.append(froms).append(" where ").append(filtros);
+            ejbqlCount.append(froms).append(" where ").append(filtros);
+        }
+        mrlog.log(Level.FINE,ejbql.toString());
+        mrlog.log(Level.FINE,ejbqlCount.toString());
+        
 
-    public List<Votacion> getVotaciones(int start, int max, List<Tema> temas, Estado estado) {
-        String ejbql = "select v from Votacion v";
-        /*
-         * Falta implementar filtros (si llegamos a tener muchas votaciones) for
-         * (Tema t : temas) {
-         *
-         * }
-         *
-         */
-        Query query = em.createQuery(ejbql);
+        Query query = em.createQuery(ejbql.toString());
+        Query queryCount = em.createQuery(ejbqlCount.toString());
+        if (filtrar) {
+            if (filtroTema != null) {
+                query.setParameter("tema", filtroTema);
+                queryCount.setParameter("tema", filtroTema);
+            }
+            
+        }
+        long sl = (Long)queryCount.getSingleResult();
+        int s = (int)sl;
         query.setFirstResult(start);
         query.setMaxResults(max);
-        return query.getResultList();
+        mrlog.log(Level.FINE,"Regresando {0} resgistros",query.getResultList().size());
+        List<Votacion> votas = query.getResultList();
+        for (Votacion v : votas) {
+            mrlog.log(Level.FINE,"Votacion: {0}",v.getNombre());
+        }
+        return new LazyResult(votas,s);
     }
 
     public byte[] getImagenVotacion(long vid) {
@@ -578,6 +608,52 @@ public class VotoYDebateLogic implements Serializable {
         res = html.toString().replace("src=\"/wiki", "src=\"http://wiki.wikipartido.mx/wiki");
 
         return res;
+    }
+    /**
+     * El LazyResult nos es útil en resultados que requieren paginación.
+     */
+    public class LazyResult {
+        private int size;
+        private List set;
+        
+        public LazyResult(List set, int totalSize) {
+            this.set = set;
+            this.size = totalSize;
+        }
+
+
+        /**
+         * @return the set
+         */
+        public List getSet() {
+            return set;
+        }
+
+        /**
+         * @param set the set to set
+         */
+        public void setSet(List set) {
+            this.set = set;
+        }
+
+        /**
+         * @return the size
+         */
+        public int getSize() {
+            return size;
+        }
+
+        /**
+         * @param size the size to set
+         */
+        public void setSize(int size) {
+            this.size = size;
+        }
+
+
+
+
+        
     }
 
     class Preferencia {

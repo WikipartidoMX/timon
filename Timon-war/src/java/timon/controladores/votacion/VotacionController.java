@@ -21,17 +21,23 @@ import java.util.logging.Logger;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.primefaces.model.DualListModel;
+import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortOrder;
 import timon.controladores.UserManager;
+import timon.entities.registro.Estado;
 import timon.entities.registro.Miembro;
 import timon.entities.votacionydebate.LogVotacion;
 import timon.entities.votacionydebate.Opcion;
 import timon.entities.votacionydebate.ResultadoSchulze;
+import timon.entities.votacionydebate.Tema;
 import timon.entities.votacionydebate.Votacion;
 import timon.entities.votacionydebate.Voto;
 import timon.sessionbeans.VotoYDebateLogic;
+import timon.sessionbeans.VotoYDebateLogic.LazyResult;
 import timon.singletons.MonitorDeVotaciones;
 
 /**
@@ -56,10 +62,28 @@ public class VotacionController implements Serializable {
     private DualListModel<Opcion> opciones;
     private LogVotacion logvot = new LogVotacion();
     private ResultadoSchulze rs;
+    private LazyDataModel<Votacion> votaciones;
+    private List<SelectItem> temas;
+    private Tema filtroTema;
+    private Estado filtroEstado = null;
+    private boolean filtroAbiertas = false;
+    private Date filtroFechaCierreDesde = null;
+    private Date filtroFechaCierreHasta = null;
+    private boolean enVotacion = false;
 
     public VotacionController() {
         logvot = new LogVotacion();
         rs = null;
+        votaciones = new LazyDataModel() {
+            @Override
+            public List<Votacion> load(int start, int max, String string, SortOrder so, Map map) {
+                mrlog.log(Level.FINE, "Filtro Tema: {0}", getFiltroTema());
+                LazyResult vots = vl.getVotaciones(start, max, getFiltroTema(), filtroEstado, filtroAbiertas, filtroFechaCierreDesde, filtroFechaCierreHasta);
+                this.setRowCount(vots.getSize());
+                return vots.getSet();
+            }
+        };
+        mrlog.log(Level.FINE, "votaciones Row Count: {0} Page Size: {1}", new Object[]{votaciones.getRowCount(), votaciones.getPageSize()});
     }
 
     public ResultadoSchulze getRs() throws Exception {
@@ -96,35 +120,32 @@ public class VotacionController implements Serializable {
         return rs;
     }
 
-    public List<Votacion> getVotaciones() {
-        return vl.getVotaciones(0, 100);
-    }
-
     // Que tan pesado es un delegado para cierta votacion
     public long numeroAtomico(Miembro delegado) {
         return vl.numeroAtomico(votacion, delegado);
     }
 
     public void verVotacion() {
-        
+
         List<Opcion> opcionesDisponibles;
         List<Opcion> opcionesVotadas = new LinkedList<>();
-        mrlog.log(Level.FINE, "vact {0}", getVact());
-        mrlog.log(Level.FINE, "vid {0}", getVid());
+        mrlog.log(Level.FINEST, "vact {0}", getVact());
+        mrlog.log(Level.FINEST, "vid {0}", getVid());
         if (getVact() != getVid() || getVact() == 0) {
             votacion = vl.getVotacion(getVid());
             setVact(getVid());
             wikiDescVotacion = "No hay documento en el Wiki asociado a esta votación";
             rs = null;
             if (votacion.getUrl() != null) {
-                System.out.println("Se supone que esto no es nulo: " + votacion.getUrl());
+                if (!votacion.getUrl().equals("")) {
+                    System.out.println("Se supone que esto no es nulo:-" + votacion.getUrl() + "-");
 
-                try {
-                    wikiDescVotacion = vl.getContentFromWiki(votacion);
-                } catch (Exception ex) {
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No es posible extraer el contenido del documento " + votacion.getUrl() + " del Wiki.", null));
+                    try {
+                        wikiDescVotacion = vl.getContentFromWiki(votacion);
+                    } catch (Exception ex) {
+                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No es posible extraer el contenido del documento " + votacion.getUrl() + " del Wiki.", null));
+                    }
                 }
-
             }
             try {
                 rs = getRs();
@@ -278,5 +299,128 @@ public class VotacionController implements Serializable {
      */
     public void setLogvot(LogVotacion logvot) {
         this.logvot = logvot;
+    }
+
+    /**
+     * @return the votaciones
+     */
+    public LazyDataModel getVotaciones() {
+        mrlog.log(Level.FINE, "VotacionController::getVotaciones");
+        mrlog.log(Level.FINE, "VotacionController::getVotaciones Votaciones tiene {0}", votaciones.getRowCount());
+
+        return votaciones;
+    }
+
+    /**
+     * @param votaciones the votaciones to set
+     */
+    public void setVotaciones(LazyDataModel votaciones) {
+        this.votaciones = votaciones;
+    }
+
+    /**
+     * @return the filtroAbiertas
+     */
+    public boolean isFiltroAbiertas() {
+        return filtroAbiertas;
+    }
+
+    /**
+     * @param filtroAbiertas the filtroAbiertas to set
+     */
+    public void setFiltroAbiertas(boolean filtroAbiertas) {
+        this.filtroAbiertas = filtroAbiertas;
+    }
+
+    /**
+     * @return the filtroFechaCierreDesde
+     */
+    public Date getFiltroFechaCierreDesde() {
+        return filtroFechaCierreDesde;
+    }
+
+    /**
+     * @param filtroFechaCierreDesde the filtroFechaCierreDesde to set
+     */
+    public void setFiltroFechaCierreDesde(Date filtroFechaCierreDesde) {
+        this.filtroFechaCierreDesde = filtroFechaCierreDesde;
+    }
+
+    /**
+     * @return the filtroFechaCierreHasta
+     */
+    public Date getFiltroFechaCierreHasta() {
+        return filtroFechaCierreHasta;
+    }
+
+    /**
+     * @param filtroFechaCierreHasta the filtroFechaCierreHasta to set
+     */
+    public void setFiltroFechaCierreHasta(Date filtroFechaCierreHasta) {
+        this.filtroFechaCierreHasta = filtroFechaCierreHasta;
+    }
+
+    /**
+     * @return the filtroEstado
+     */
+    public Estado getFiltroEstado() {
+        return filtroEstado;
+    }
+
+    /**
+     * @param filtroEstado the filtroEstado to set
+     */
+    public void setFiltroEstado(Estado filtroEstado) {
+        this.filtroEstado = filtroEstado;
+    }
+
+    /**
+     * @return the enVotacion
+     */
+    public boolean isEnVotacion() {
+        return enVotacion;
+    }
+
+    /**
+     * @param enVotacion the enVotacion to set
+     */
+    public void setEnVotacion(boolean enVotacion) {
+        this.enVotacion = enVotacion;
+    }
+
+    /**
+     * @return the temas
+     */
+    public List<SelectItem> getTemas() {
+        if (temas == null) {
+            temas = new ArrayList<>();
+
+            temas.add(new SelectItem(null,"Todos los Temas"));
+            for (Tema t : vl.getTemas()) {
+                temas.add(new SelectItem(t, t.getNombre()));
+            }
+        }
+        return temas;
+    }
+
+    /**
+     * @param temas the temas to set
+     */
+    public void setTemas(List<SelectItem> temas) {
+        this.temas = temas;
+    }
+
+    /**
+     * @return the filtroTema
+     */
+    public Tema getFiltroTema() {
+        return filtroTema;
+    }
+
+    /**
+     * @param filtroTema the filtroTema to set
+     */
+    public void setFiltroTema(Tema filtroTema) {
+        this.filtroTema = filtroTema;
     }
 }

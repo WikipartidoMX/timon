@@ -14,13 +14,6 @@
  */
 package timon.controladores.votacion;
 
-import timon.entities.votacionydebate.Opcion;
-import timon.entities.votacionydebate.ImagenVotacion;
-import timon.entities.votacionydebate.Votacion;
-import timon.entities.votacionydebate.Tema;
-import timon.entities.votacionydebate.ImagenOpcion;
-import timon.controladores.UserManager;
-import timon.entities.registro.Estado;
 import java.io.Serializable;
 import java.util.*;
 import javax.enterprise.context.SessionScoped;
@@ -33,6 +26,13 @@ import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.primefaces.model.UploadedFile;
+import timon.controladores.UserManager;
+import timon.entities.registro.Estado;
+import timon.entities.votacionydebate.ImagenOpcion;
+import timon.entities.votacionydebate.ImagenVotacion;
+import timon.entities.votacionydebate.Opcion;
+import timon.entities.votacionydebate.Tema;
+import timon.entities.votacionydebate.Votacion;
 import timon.sessionbeans.TimonLogic;
 import timon.sessionbeans.VotoYDebateLogic;
 
@@ -117,7 +117,6 @@ public class NuevaVotacionController implements Serializable {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "La votación requiere una fecha de cierre", null));
                 return "";
             }
-
             nuevaVotacion.setOpciones(new LinkedList<Opcion>());
             for (OpcionMasImagen o : opimas) {
                 o.getOpcion().setVotacion(nuevaVotacion);

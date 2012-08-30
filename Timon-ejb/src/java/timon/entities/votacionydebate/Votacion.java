@@ -14,12 +14,12 @@
  */
 package timon.entities.votacionydebate;
 
-import timon.entities.registro.Estado;
-import timon.entities.registro.Miembro;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.*;
+import timon.entities.registro.Estado;
+import timon.entities.registro.Miembro;
 
 /**
  *

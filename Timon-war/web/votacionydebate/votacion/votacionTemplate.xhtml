@@ -34,7 +34,10 @@
                 <div id="encabezadoSeccion" style="margin-bottom: 10px;">
                     <h1>#{nombreVotacion}</h1>
                                 Temas:
-            <ui:repeat value="#{vc.votacion.temas}" var="t">#{t.nombre}, </ui:repeat>
+                        <ui:repeat value="#{vc.votacion.temas}" var="t" varStatus="st">
+                            <h:outputText rendered="#{!st.first and !st.last}" value=", " />
+                            <h:outputText rendered="#{st.last and vc.votacion.temas.size() > 1}" value=" y " />
+                            #{t.nombre}</ui:repeat>
                 </div>
 
                 <div id="menuVotacion">                

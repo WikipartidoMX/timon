@@ -11,54 +11,66 @@
 
 
     <ui:define name="content">
-        <link href="#{facesContext.externalContext.request.contextPath}/resources/css/votacion.css" rel="stylesheet" type="text/css" /> 
+        <h:form>
+            <link href="#{facesContext.externalContext.request.contextPath}/resources/css/votacion.css" rel="stylesheet" type="text/css" /> 
 
-        <div style="position: absolute; float:right;">
-            <a href="nuevaVotacion/nv.xhtml">Crear Nueva Votación</a>
-        </div>
-        <div class="encabezadoSeccion">
-            <h1 style="border: none;">VOTACIONES</h1>
-        </div>
-        <div style="border-bottom: 6px solid #bfb8b2; border-top: 6px solid #bfb8b2; width: 930px; margin: auto; ">
-            Tema <select ></select> Incluir votaciones cerradas: <input type="checkbox" name="test" checked="true" />   
-            
-        </div>
-
-        <p:dataGrid value="#{vc.votaciones}" var="v">
-            <div onclick="location='votacion/votDescripcion.xhtml?vid=#{v.id}';" class="cajaVot" style="
-                 background-image: url(#{facesContext.externalContext.request.contextPath}/ImagenDeVotacion?vid=#{v.id});
-                 margin-bottom: 15px;">
-                <div class="headerCajaVot">
-                    <div class="tituloCajaVot">
-                        #{v.nombre}
-                    </div>
-
-                </div>
-                <img class="avatarCajaVot" src="#{facesContext.externalContext.request.contextPath}/ShowAvatar?mid=#{v.miembro.id}"
-                     />
-                <div class="convocaCajaVot">
-                    Convocada por <br/> #{v.miembro.nombre} #{v.miembro.apellidoPaterno} #{v.miembro.apellidoMaterno}
-                </div>
-
-                <div class="descripcionCajaVot">
-                    <div class="textoDescCajaVot">
-                        #{v.descripcionCorta}
-                    </div>
-                    <div style="font-style: normal; padding-left: 4px; padding-top: 2px; padding-bottom: 2px;  font-size: 12px; background-color: black;">
-                        Temas:
-                        <ui:repeat value="#{v.temas}" var="t">#{t.nombre}, </ui:repeat>
-                    </div>
-                </div>
-                <div class="timerCajaVot">
-                    <div class="textoTimerCajaVot">La votación cierra el 
-                        <h:outputText value="#{v.fechaCierre}" >
-                            <f:convertDateTime pattern="dd 'de' MMMM yyyy 'a las' K:mm a" locale="es" />
-                        </h:outputText>
-
-                    </div>
-                </div>                
+            <div style="position: absolute; float:right;">
+                <a href="nuevaVotacion/nv.xhtml">Crear Nueva Votación</a>
             </div>
-        </p:dataGrid>
+            <div class="encabezadoSeccion">
+                <h1 style="border: none;">VOTACIONES</h1>
+            </div>
+            <div style="border-bottom: 6px solid #bfb8b2; border-top: 6px solid #bfb8b2; width: 930px; margin: auto; ">
+                <div style="margin-top:6px;">
+                    <p:selectOneMenu style="width: 300px;" id="tema" value="#{vc.filtroTema}" converter="tema">
+                        <f:selectItems value="#{vc.temas}" var="t" itemLabel="#{t.label}" itemValue="#{t.value}" />
+                        <f:ajax event="change" render="votaciones"   />
+                        <p:effect event="change" type="appear" for="votaciones" />
+                    </p:selectOneMenu>
+
+                    Incluir votaciones cerradas: <input type="checkbox" name="test" checked="true" />   
+                </div>
+            </div>
+            <p:dataGrid id="votaciones" value="#{vc.votaciones}" var="v" paginator="true" lazy="true" rows="6">
+
+                <div onclick="location='votacion/votDescripcion.xhtml?vid=#{v.id}';" class="cajaVot" style="
+                     background-image: url(#{facesContext.externalContext.request.contextPath}/ImagenDeVotacion?vid=#{v.id});
+                     margin-bottom: 15px;">
+                    <div class="headerCajaVot">
+                        <div class="tituloCajaVot">
+                            #{v.nombre}
+                        </div>
+
+                    </div>
+                    <img class="avatarCajaVot" src="#{facesContext.externalContext.request.contextPath}/ShowAvatar?mid=#{v.miembro.id}"
+                         />
+                    <div class="convocaCajaVot">
+                        Convocada por <br/> #{v.miembro.nombre} #{v.miembro.apellidoPaterno} #{v.miembro.apellidoMaterno}
+                    </div>
+
+                    <div class="descripcionCajaVot">
+                        <div class="textoDescCajaVot">
+                            #{v.descripcionCorta}
+                        </div>
+                        <div style="font-style: normal; padding-left: 4px; padding-top: 2px; padding-bottom: 2px;  font-size: 12px; background-color: black;">
+                            Temas:
+                            <ui:repeat value="#{v.temas}" var="t" varStatus="st">
+                                <h:outputText rendered="#{!st.first and !st.last}" value=", " />
+                                <h:outputText rendered="#{st.last and v.temas.size() > 1}" value=" y " />
+                                #{t.nombre}</ui:repeat>
+                        </div>
+                    </div>
+                    <div class="timerCajaVot">
+                        <div class="textoTimerCajaVot">La votación cierra el 
+                            <h:outputText value="#{v.fechaCierre}" >
+                                <f:convertDateTime pattern="dd 'de' MMMM yyyy 'a las' K:mm a" locale="es" />
+                            </h:outputText>
+
+                        </div>
+                    </div>                
+                </div>
+            </p:dataGrid>
+        </h:form>
     </ui:define>
 
 
