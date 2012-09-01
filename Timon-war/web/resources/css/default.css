@@ -83,3 +83,8 @@ a:link:hover, a:visited:hover  {
 .rengloneven {
     background-color: #f0eeea;
 }
+
+.ui-datagrid .ui-paginator {
+    background: none;
+    border: none;
+}

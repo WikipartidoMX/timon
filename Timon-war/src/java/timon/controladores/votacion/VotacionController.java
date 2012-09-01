@@ -24,6 +24,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
+import org.primefaces.component.datagrid.DataGrid;
 import org.primefaces.model.DualListModel;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
@@ -65,11 +66,14 @@ public class VotacionController implements Serializable {
     private LazyDataModel<Votacion> votaciones;
     private List<SelectItem> temas;
     private Tema filtroTema;
+    private String filtroTexto;
     private Estado filtroEstado = null;
     private boolean filtroAbiertas = false;
     private Date filtroFechaCierreDesde = null;
     private Date filtroFechaCierreHasta = null;
     private boolean enVotacion = false;
+    private DataGrid dataGrid;
+    
 
     public VotacionController() {
         logvot = new LogVotacion();
@@ -78,12 +82,17 @@ public class VotacionController implements Serializable {
             @Override
             public List<Votacion> load(int start, int max, String string, SortOrder so, Map map) {
                 mrlog.log(Level.FINE, "Filtro Tema: {0}", getFiltroTema());
-                LazyResult vots = vl.getVotaciones(start, max, getFiltroTema(), filtroEstado, filtroAbiertas, filtroFechaCierreDesde, filtroFechaCierreHasta);
+                LazyResult vots = vl.getVotaciones(start, max, filtroTema, filtroTexto, filtroEstado, filtroAbiertas, filtroFechaCierreDesde, filtroFechaCierreHasta);
                 this.setRowCount(vots.getSize());
                 return vots.getSet();
             }
         };
         mrlog.log(Level.FINE, "votaciones Row Count: {0} Page Size: {1}", new Object[]{votaciones.getRowCount(), votaciones.getPageSize()});
+        
+    }
+    
+    public void reset() {
+        dataGrid.setFirst(0);
     }
 
     public ResultadoSchulze getRs() throws Exception {
@@ -422,5 +431,33 @@ public class VotacionController implements Serializable {
      */
     public void setFiltroTema(Tema filtroTema) {
         this.filtroTema = filtroTema;
+    }
+
+    /**
+     * @return the dataGrid
+     */
+    public DataGrid getDataGrid() {
+        return dataGrid;
+    }
+
+    /**
+     * @param dataGrid the dataGrid to set
+     */
+    public void setDataGrid(DataGrid dataGrid) {
+        this.dataGrid = dataGrid;
+    }
+
+    /**
+     * @return the filtroTexto
+     */
+    public String getFiltroTexto() {
+        return filtroTexto;
+    }
+
+    /**
+     * @param filtroTexto the filtroTexto to set
+     */
+    public void setFiltroTexto(String filtroTexto) {
+        this.filtroTexto = filtroTexto;
     }
 }

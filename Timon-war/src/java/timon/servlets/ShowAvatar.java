@@ -21,6 +21,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -35,6 +36,7 @@ import timon.sessionbeans.TimonLogic;
  */
 @WebServlet(name = "ShowAvatar", urlPatterns = {"/ShowAvatar"})
 public class ShowAvatar extends HttpServlet {
+    private static final Logger mrlog = Logger.getLogger(ShowAvatar.class.getName());
 
     @Inject
     TimonLogic tl;
@@ -50,7 +52,9 @@ public class ShowAvatar extends HttpServlet {
         try {
             mid = Integer.parseInt(request.getParameter("mid"));
         } catch (Exception e) {
-            throw new ServletException("No es posible identificar al usuario.");
+            //throw new ServletException("No es posible identificar al usuario.");
+            return;
+            
         }
         byte[] f = null;
         String filename = "camafeoh.png";

@@ -16,7 +16,7 @@
 }
 #top {
     position: relative;
-    background-color: #e5dfd8;
+    background-color: #e7e5e3;
     padding: 5px;
     margin: 0px 0px 0px 0px;
     border-radius: 5px 5px 0px 0px;
@@ -70,7 +70,7 @@
 
 #content {
     position: relative;
-    background-color: #cfcfca;
+    background-color: #e6e6e6;
     padding: 5px;
     margin: 0px 0px 0px 0px;
     font-family: 'Molengo';

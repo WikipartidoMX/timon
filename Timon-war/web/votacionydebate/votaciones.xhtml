@@ -24,14 +24,15 @@
                 <div style="margin-top:6px;">
                     <p:selectOneMenu style="width: 300px;" id="tema" value="#{vc.filtroTema}" converter="tema">
                         <f:selectItems value="#{vc.temas}" var="t" itemLabel="#{t.label}" itemValue="#{t.value}" />
-                        <f:ajax event="change" render="votaciones"   />
+                        <f:ajax event="change" render="votaciones" listener="#{vc.reset()}" />
                         <p:effect event="change" type="appear" for="votaciones" />
                     </p:selectOneMenu>
-
+                    <p:inputText id="filtroTexo" value="#{vc.filtroTexto}" size="30" />
                     Incluir votaciones cerradas: <input type="checkbox" name="test" checked="true" />   
                 </div>
             </div>
-            <p:dataGrid id="votaciones" value="#{vc.votaciones}" var="v" paginator="true" lazy="true" rows="6">
+            <p:dataGrid id="votaciones" value="#{vc.votaciones}" var="v" paginator="true" lazy="true" rows="6" binding="#{vc.dataGrid}"  
+                        paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink}">
 
                 <div onclick="location='votacion/votDescripcion.xhtml?vid=#{v.id}';" class="cajaVot" style="
                      background-image: url(#{facesContext.externalContext.request.contextPath}/ImagenDeVotacion?vid=#{v.id});

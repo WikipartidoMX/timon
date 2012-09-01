@@ -216,8 +216,6 @@ public class VotoYDebateLogic implements Serializable {
         return em.find(Tema.class, id);
     }
 
-
-
     public Votacion getVotacion(long id) {
         return em.find(Votacion.class, id);
     }
@@ -252,12 +250,14 @@ public class VotoYDebateLogic implements Serializable {
     public List<Delegacion> getDelegacionesPara(Miembro m) {
         return em.createQuery("select d from Delegacion d where d.miembro = :m").setParameter("m", m).getResultList();
     }
+
     @PermitAll
     public LazyResult getVotaciones(int start, int max) {
-        return getVotaciones(start, max, null, null, false, null, null);
+        return getVotaciones(start, max, null, null, null, false, null, null);
     }
-    public LazyResult getVotaciones(int start, int max, Tema filtroTema, 
-            Estado filtroEstado, boolean filtroAbiertas, 
+
+    public LazyResult getVotaciones(int start, int max, Tema filtroTema, String filtroTexto,
+            Estado filtroEstado, boolean filtroAbiertas,
             Date filtroFechaCierreDesde, Date filtroFechaCierreHasta) {
         mrlog.log(Level.FINE, "Buscando votaciones de {0} a {1}", new Object[]{start, max});
         StringBuilder ejbql = new StringBuilder();
@@ -272,13 +272,24 @@ public class VotoYDebateLogic implements Serializable {
             filtros.append(" t member of v.temas and t = :tema ");
             filtrar = true;
         }
+        if (!filtroTexto.matches(".*\\w.*")) {
+            String[] palabs = filtroTexto.split("\\s");
+            int i = 1;
+            for (String p : palabs) {
+                filtros.append("(m.nombre like :p").append(i);
+                if (i < palabs.length) {
+                    filtros.append(" and ");
+                }
+                i++;
+            }
+        }
         if (filtrar) {
             ejbql.append(froms).append(" where ").append(filtros);
             ejbqlCount.append(froms).append(" where ").append(filtros);
         }
-        mrlog.log(Level.FINE,ejbql.toString());
-        mrlog.log(Level.FINE,ejbqlCount.toString());
-        
+        mrlog.log(Level.FINE, ejbql.toString());
+        mrlog.log(Level.FINE, ejbqlCount.toString());
+
 
         Query query = em.createQuery(ejbql.toString());
         Query queryCount = em.createQuery(ejbqlCount.toString());
@@ -287,18 +298,26 @@ public class VotoYDebateLogic implements Serializable {
                 query.setParameter("tema", filtroTema);
                 queryCount.setParameter("tema", filtroTema);
             }
-            
+            if (!filtroTexto.matches(".*\\w.*")) {
+                int i = 1;
+                String[] palabs = filtroTexto.split("\\s");
+                for (String p : palabs) {
+                    query.setParameter("p" + Integer.toString(i), "%" + p + "%");
+                    i++;
+                }
+            }
+
         }
-        long sl = (Long)queryCount.getSingleResult();
-        int s = (int)sl;
+        long sl = (Long) queryCount.getSingleResult();
+        int s = (int) sl;
         query.setFirstResult(start);
         query.setMaxResults(max);
-        mrlog.log(Level.FINE,"Regresando {0} resgistros",query.getResultList().size());
+        mrlog.log(Level.FINE, "Regresando {0} resgistros", query.getResultList().size());
         List<Votacion> votas = query.getResultList();
         for (Votacion v : votas) {
-            mrlog.log(Level.FINE,"Votacion: {0}",v.getNombre());
+            mrlog.log(Level.FINE, "Votacion: {0}", v.getNombre());
         }
-        return new LazyResult(votas,s);
+        return new LazyResult(votas, s);
     }
 
     public byte[] getImagenVotacion(long vid) {
@@ -556,7 +575,7 @@ public class VotoYDebateLogic implements Serializable {
         url = url.replace("/", "");
         url = url.replace("\\", "");
         url = url.replace("&", "");
-        
+
         url = "http://wiki.wikipartido.mx/wiki/index.php/" + url + "?action=render";
         titulo = "<h1>" + titulo + "</h1>";
         System.out.println("URL: " + url);
@@ -609,18 +628,19 @@ public class VotoYDebateLogic implements Serializable {
 
         return res;
     }
+
     /**
      * El LazyResult nos es útil en resultados que requieren paginación.
      */
     public class LazyResult {
+
         private int size;
         private List set;
-        
+
         public LazyResult(List set, int totalSize) {
             this.set = set;
             this.size = totalSize;
         }
-
 
         /**
          * @return the set
@@ -649,11 +669,6 @@ public class VotoYDebateLogic implements Serializable {
         public void setSize(int size) {
             this.size = size;
         }
-
-
-
-
-        
     }
 
     class Preferencia {
