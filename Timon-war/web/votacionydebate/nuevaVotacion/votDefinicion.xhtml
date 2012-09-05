@@ -49,26 +49,7 @@
         </div>
         <div class="caja" style="float: left; margin-left: 15px; width: 250px;">
             <div style=" margin-top: 15px;">
-                <div>
-                    <div class="campo">Cierre de la Discusión</div>
-                    <div class="valor">
-                        <p:calendar id="cierredebate"
-                                    required="true"
-                                    requiredMessage="Se requiere una fecha de cierre de discusión"
-                                    selectOtherMonths="true"
 
-                                    locale="de"
-                                    value="#{nvc.nuevaVotacion.fechaCierreDebate}"
-                                    mindate="#{nvc.hoy}"
-                                    
-                                    pattern="MM/dd/yyyy HH:mm a"
-                                    
-                                    >
-                            <f:ajax event="blur" render="errocierredebate"  />
-                        </p:calendar><br/>                    
-                        <h:message for="cierredebate" id="errocierredebate" style="color:red"/>
-                    </div>
-                </div>
                 <div>
                     <div class="campo">Cierre de la Votación</div>
                     <div class="valor">

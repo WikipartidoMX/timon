@@ -40,11 +40,12 @@ public class ResultadoSchulze implements Serializable {
     private long[][] pref;
     private long[][] sp;
     private long exetime;
-    private int avance=0;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date fechaConteo;
-    private int miembros;
-    private float quorum;
+    private long poblacion;
+    private long participacion;
+    private boolean hayQuorum;
+    private long quorum;
 
 
     public Long getId() {
@@ -168,46 +169,64 @@ public class ResultadoSchulze implements Serializable {
         this.fechaConteo = fechaConteo;
     }
 
+
+
     /**
-     * @return the avance
+     * @return the poblacion
      */
-    public int getAvance() {
-        return avance;
+    public long getPoblacion() {
+        return poblacion;
     }
 
     /**
-     * @param avance the avance to set
+     * @param poblacion the poblacion to set
      */
-    public void setAvance(int avance) {
-        this.avance = avance;
+    public void setPoblacion(long poblacion) {
+        this.poblacion = poblacion;
     }
 
     /**
-     * @return the miembros
+     * @return the participacion
      */
-    public int getMiembros() {
-        return miembros;
+    public long getParticipacion() {
+        return participacion;
     }
 
     /**
-     * @param miembros the miembros to set
+     * @param participacion the participacion to set
      */
-    public void setMiembros(int miembros) {
-        this.miembros = miembros;
+    public void setParticipacion(long participacion) {
+        this.participacion = participacion;
+    }
+
+    /**
+     * @return the hayQuorum
+     */
+    public boolean isHayQuorum() {
+        return hayQuorum;
+    }
+
+    /**
+     * @param hayQuorum the hayQuorum to set
+     */
+    public void setHayQuorum(boolean hayQuorum) {
+        this.hayQuorum = hayQuorum;
     }
 
     /**
      * @return the quorum
      */
-    public float getQuorum() {
+    public long getQuorum() {
         return quorum;
     }
 
     /**
      * @param quorum the quorum to set
      */
-    public void setQuorum(float quorum) {
+    public void setQuorum(long quorum) {
         this.quorum = quorum;
     }
+
+
     
 }

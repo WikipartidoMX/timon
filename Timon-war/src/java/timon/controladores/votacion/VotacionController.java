@@ -71,13 +71,14 @@ public class VotacionController implements Serializable {
     private boolean filtroAbiertas = false;
     private Date filtroFechaCierreDesde = null;
     private Date filtroFechaCierreHasta = null;
-    private boolean enVotacion = false;
     private DataGrid dataGrid;
+    private Date hoy;
     
 
     public VotacionController() {
         logvot = new LogVotacion();
         rs = null;
+        hoy = new Date();
         votaciones = new LazyDataModel() {
             @Override
             public List<Votacion> load(int start, int max, String string, SortOrder so, Map map) {
@@ -93,6 +94,20 @@ public class VotacionController implements Serializable {
     
     public void reset() {
         dataGrid.setFirst(0);
+    }
+    
+    public long getParticipacion() {
+        return vl.getParticipacion(votacion);
+    }
+    public long getQuorum() {
+        return vl.getQuorum(vl.getPoblacion(votacion));
+    }
+    public long getPoblacion() {
+        return vl.getPoblacion(votacion);
+    }
+    
+    public boolean isPerteneceAEstadosDeVotacion() {
+        return vl.perteneceAEstadosDeVotacion(um.getUser(), votacion);
     }
 
     public ResultadoSchulze getRs() throws Exception {
@@ -128,6 +143,29 @@ public class VotacionController implements Serializable {
         }
         return rs;
     }
+    
+    public String getStatus() {
+        return getStatus(votacion);
+    }
+    
+    public String getStatus(Votacion vot) {
+        String status = "";
+        ResultadoSchulze rs= vl.getUltimoResultado(vot);
+        if (rs == null) {
+            return "";
+        }
+        if (rs.isHayQuorum() && hoy.after(vot.getFechaCierre())) {
+            return "efectiva";
+        }
+        if (rs.isHayQuorum() && hoy.before(vot.getFechaCierre())) {
+            return "conquorum";
+        }
+        if (!rs.isHayQuorum() && hoy.after(vot.getFechaCierre())) {
+            return "sinquorum";
+        }
+        return status;
+    }
+    
 
     // Que tan pesado es un delegado para cierta votacion
     public long numeroAtomico(Miembro delegado) {
@@ -192,6 +230,7 @@ public class VotacionController implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Para votar debe ingresar a la plataforma como miembro.", null));
             return "";
         }
+
         List<Opcion> votos = opciones.getTarget();
         logvot.setVotacion(votacion);
         logvot.setMiembro(um.getUser());
@@ -200,7 +239,7 @@ public class VotacionController implements Serializable {
             vl.guardarVotacion(logvot, votos);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "¡Gracias por Votar! Tus votos se han guardado con éxito", null));
         } catch (Exception e) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al tratar de guardar la votacion!!!" + e.getMessage(), null));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al tratar de guardar la votación: " + e.getMessage(), null));
             mrlog.log(Level.SEVERE, "Error al tratar de guardar la votacion!!! {0}", e.getMessage());
             return "";
         }
@@ -383,19 +422,7 @@ public class VotacionController implements Serializable {
         this.filtroEstado = filtroEstado;
     }
 
-    /**
-     * @return the enVotacion
-     */
-    public boolean isEnVotacion() {
-        return enVotacion;
-    }
 
-    /**
-     * @param enVotacion the enVotacion to set
-     */
-    public void setEnVotacion(boolean enVotacion) {
-        this.enVotacion = enVotacion;
-    }
 
     /**
      * @return the temas
@@ -459,5 +486,19 @@ public class VotacionController implements Serializable {
      */
     public void setFiltroTexto(String filtroTexto) {
         this.filtroTexto = filtroTexto;
+    }
+
+    /**
+     * @return the hoy
+     */
+    public Date getHoy() {
+        return hoy;
+    }
+
+    /**
+     * @param hoy the hoy to set
+     */
+    public void setHoy(Date hoy) {
+        this.hoy = hoy;
     }
 }

@@ -11,66 +11,123 @@
 
 
     <ui:define name="content">
-        <h:form>
-            <link href="#{facesContext.externalContext.request.contextPath}/resources/css/votacion.css" rel="stylesheet" type="text/css" /> 
+        <script src="#{facesContext.externalContext.request.contextPath}/resources/js/jquery.ba-dotimeout.min.js" />
+        <link href="#{facesContext.externalContext.request.contextPath}/resources/css/votacion.css" rel="stylesheet" type="text/css" />
 
-            <div style="position: absolute; float:right;">
-                <a href="nuevaVotacion/nv.xhtml">Crear Nueva Votación</a>
-            </div>
+        <h:form id="buscavots">
+            <p:remoteCommand name="actualizar" update="votaciones" actionListener="#{vc.reset()}" />
             <div class="encabezadoSeccion">
                 <h1 style="border: none;">VOTACIONES</h1>
             </div>
             <div style="border-bottom: 6px solid #bfb8b2; border-top: 6px solid #bfb8b2; width: 930px; margin: auto; ">
-                <div style="margin-top:6px;">
-                    <p:selectOneMenu style="width: 300px;" id="tema" value="#{vc.filtroTema}" converter="tema">
-                        <f:selectItems value="#{vc.temas}" var="t" itemLabel="#{t.label}" itemValue="#{t.value}" />
-                        <f:ajax event="change" render="votaciones" listener="#{vc.reset()}" />
-                        <p:effect event="change" type="appear" for="votaciones" />
-                    </p:selectOneMenu>
-                    <p:inputText id="filtroTexo" value="#{vc.filtroTexto}" size="30" />
-                    Incluir votaciones cerradas: <input type="checkbox" name="test" checked="true" />   
+                <div style="margin-top:6px; margin-bottom: 6px;">
+                    <div style="float:left;">
+                        <div style="font-size:12px; margin-bottom: 5px;">Filtrar por Tema:</div>
+                        <p:selectOneMenu style="width: 300px;" id="tema" value="#{vc.filtroTema}" converter="tema">
+                            <f:selectItems value="#{vc.temas}" var="t" itemLabel="#{t.label}" itemValue="#{t.value}" />
+                            <p:ajax event="change" update="votaciones" listener="#{vc.reset()}" />
+                            <p:effect event="change" type="appear" for="votaciones" />
+                        </p:selectOneMenu>
+                    </div>
+                    <div style="float:left; margin-left: 10px;">
+                        <div style="font-size:12px; margin-bottom: 5px;">Filtrar por palabras:</div>
+                        <p:inputText styleClass="filtro"  id="filtroTexto" value="#{vc.filtroTexto}" size="30" onkeyup="
+                            $(this).doTimeout( 'tecleo', 500, function(){
+                                actualizar();
+                            });">
+
+                        </p:inputText>
+                    </div>
+                    <div style="float:left; margin-left: 10px;">
+                        <div style="font-size:12px; margin-bottom: 5px;">Filtrar por Status:</div>
+                        Votaciones Abiertas:
+                        <p:selectBooleanCheckbox value="#{vc.filtroAbiertas}">
+                            <p:ajax update="votaciones" listener="#{vc.reset()}"/>
+                        </p:selectBooleanCheckbox>
+                    </div>
+                    <div style="clear:both;" />
                 </div>
             </div>
             <p:dataGrid id="votaciones" value="#{vc.votaciones}" var="v" paginator="true" lazy="true" rows="6" binding="#{vc.dataGrid}"  
-                        paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink}">
+                        paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink}" emptyMessage="No se encontraron votaciones.">
 
-                <div onclick="location='votacion/votDescripcion.xhtml?vid=#{v.id}';" class="cajaVot" style="
-                     background-image: url(#{facesContext.externalContext.request.contextPath}/ImagenDeVotacion?vid=#{v.id});
-                     margin-bottom: 15px;">
-                    <div class="headerCajaVot">
-                        <div class="tituloCajaVot">
-                            #{v.nombre}
+                <div style="position: relative; cursor: pointer;" onclick="location='votacion/votDescripcion.xhtml?vid=#{v.id}';">
+                    <h:panelGroup rendered="#{vc.getStatus(v) eq 'efectiva'}">
+                        <div style="position: absolute; top:0px; left: 184px; z-index: 20;"><img src="#{facesContext.externalContext.request.contextPath}/images/efectiva.png" /></div>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{vc.getStatus(v) eq 'sinquorum'}">
+                        <div style="position: absolute; top:0px; left: 184px; z-index: 20;"><img src="#{facesContext.externalContext.request.contextPath}/images/sinquorum.png" /></div>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{vc.getStatus(v) eq 'conquorum'}">
+                        <div style="position: absolute; top:0px; left: 184px; z-index: 20;"><img src="#{facesContext.externalContext.request.contextPath}/images/conquorum.png" /></div>
+                    </h:panelGroup>                    
+                    <div  class="cajaVot" style="
+                          background-image: url(#{facesContext.externalContext.request.contextPath}/ImagenDeVotacion?vid=#{v.id});
+                          margin-bottom: 15px;">
+
+                        <div class="headerCajaVot">
+                            <div class="tituloCajaVot">
+                                #{v.nombre}
+                            </div>
+
+                        </div>
+                        <img class="avatarCajaVot" src="#{facesContext.externalContext.request.contextPath}/ShowAvatar?mid=#{v.miembro.id}"
+                             />
+                        <div class="convocaCajaVot">
+                            Convocada por <br/> #{v.miembro.nombre} #{v.miembro.apellidoPaterno} #{v.miembro.apellidoMaterno}
                         </div>
 
+                        <div class="descripcionCajaVot">
+                            <div class="textoDescCajaVot">
+                                #{v.descripcionCorta}
+                            </div>
+                            <div style="font-style: normal; padding-left: 4px; padding-top: 2px; padding-bottom: 2px;  font-size: 12px; background-color: black;">
+                                <h:panelGroup rendered="#{v.temas.size() eq 0}">
+                                    Tema Abierto
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{v.temas.size() gt 0}">
+                                    Temas:
+                                    <ui:repeat value="#{v.temas}" var="t" varStatus="st">
+                                        <h:outputText rendered="#{!st.first and !st.last}" value=", " />
+                                        <h:outputText rendered="#{st.last and v.temas.size() > 1}" value=" y " />
+                                        #{t.nombre}</ui:repeat>
+                                </h:panelGroup>
+                            </div>
+                            <h:panelGroup rendered="#{v.estados.size() gt 0}">
+                                <div style="font-style: normal; padding-left: 4px; padding-top: 2px; padding-bottom: 2px;  font-size: 12px; background-color: black;">
+                                    Restringida a 
+                                    <ui:repeat value="#{v.estados}" var="t" varStatus="st">
+                                        <h:outputText rendered="#{!st.first and !st.last}" value=", " />
+                                        <h:outputText rendered="#{st.last and v.temas.size() > 1}" value=" y " />
+                                        #{t.nombre}</ui:repeat>
+                                </div>
+                            </h:panelGroup>
+                        </div>
+
+                        <h:panelGroup rendered="#{vc.hoy.after(v.fechaCierre)}">
+                            <div class="timerCajaVot">
+                                <div class="textoTimerCajaVot">Cerró el 
+                                    <h:outputText value="#{v.fechaCierre}" >
+                                        <f:convertDateTime pattern="dd 'de' MMMM yyyy 'a las' K:mm a" locale="es" />
+                                    </h:outputText>
+                                </div>
+                            </div>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{vc.hoy.before(v.fechaCierre)}">
+                            <div class="timerCajaVot">
+                                <div class="textoTimerCajaVot">Cierra el 
+                                    <h:outputText value="#{v.fechaCierre}" >
+                                        <f:convertDateTime pattern="dd 'de' MMMM yyyy 'a las' K:mm a" locale="es" />
+                                    </h:outputText>
+                                </div>
+                            </div>
+                        </h:panelGroup>                    
                     </div>
-                    <img class="avatarCajaVot" src="#{facesContext.externalContext.request.contextPath}/ShowAvatar?mid=#{v.miembro.id}"
-                         />
-                    <div class="convocaCajaVot">
-                        Convocada por <br/> #{v.miembro.nombre} #{v.miembro.apellidoPaterno} #{v.miembro.apellidoMaterno}
-                    </div>
-
-                    <div class="descripcionCajaVot">
-                        <div class="textoDescCajaVot">
-                            #{v.descripcionCorta}
-                        </div>
-                        <div style="font-style: normal; padding-left: 4px; padding-top: 2px; padding-bottom: 2px;  font-size: 12px; background-color: black;">
-                            Temas:
-                            <ui:repeat value="#{v.temas}" var="t" varStatus="st">
-                                <h:outputText rendered="#{!st.first and !st.last}" value=", " />
-                                <h:outputText rendered="#{st.last and v.temas.size() > 1}" value=" y " />
-                                #{t.nombre}</ui:repeat>
-                        </div>
-                    </div>
-                    <div class="timerCajaVot">
-                        <div class="textoTimerCajaVot">La votación cierra el 
-                            <h:outputText value="#{v.fechaCierre}" >
-                                <f:convertDateTime pattern="dd 'de' MMMM yyyy 'a las' K:mm a" locale="es" />
-                            </h:outputText>
-
-                        </div>
-                    </div>                
                 </div>
             </p:dataGrid>
+            <div>
+                <a href="nuevaVotacion/nv.xhtml">Crear Nueva Votación</a>
+            </div>                
         </h:form>
     </ui:define>
 

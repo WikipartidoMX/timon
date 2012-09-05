@@ -24,20 +24,70 @@
     <h:body>
 
         <div id="container">
+            <h:panelGroup rendered="#{vc.status eq 'efectiva'}">
+                <div style="position: absolute; top:119px; left: 905px; z-index: 20;"><img src="#{facesContext.externalContext.request.contextPath}/images/efectiva.png" /></div>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{vc.status eq 'sinquorum'}">
+                <div style="position: absolute; top:119px; left: 905px; z-index: 20;"><img src="#{facesContext.externalContext.request.contextPath}/images/sinquorum.png" /></div>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{vc.status eq 'conquorum'}">
+                <div style="position: absolute; top:119px; left: 905px; z-index: 20;"><img src="#{facesContext.externalContext.request.contextPath}/images/conquorum.png" /></div>
+            </h:panelGroup> 
             <div id="top"><ui:include src="/header.xhtml" /></div>
-            <div id="menu">                
+            <div id="menu" style="margin-bottom: 0px;">                
                 <ui:insert name="menu"><ui:include src="/menu.xhtml" /></ui:insert>
             </div>
             <div style="clear:both;"  />
-            <div id="content">
+            <div id="content" style="margin-top:0px;">
+                <div id="encabezadoSeccion" style="margin-bottom: 0px; margin-top: 0px;">
+                    <div style="float:left; width:715px;  font-family: Francois One, sans-serif; font-size: 36px; padding-left: 10px;">
+                        #{nombreVotacion}
+                    </div>
+                    <div style="float:left; width:240px;  top:0px; bottom:0px; font-size: 12px;">
+                        <h:panelGroup rendered="#{vc.participacion lt vc.quorum}"><div style="color: red;">Votos Emitidos: #{vc.participacion} Quórum: #{vc.quorum}.</div></h:panelGroup>
+                        <h:panelGroup rendered="#{vc.participacion ge vc.quorum}"><div style="color: green;">Votos Emitidos: #{vc.participacion} Quórum: #{vc.quorum}.</div></h:panelGroup>
+                        <div>
+                            <h:panelGroup rendered="#{vc.votacion.temas.size() eq 0}">
+                                Tema Abierto
+                            </h:panelGroup>
+                            <h:panelGroup rendered="#{vc.votacion.temas.size() gt 0}">
+                                Registrada en 
+                                <ui:repeat value="#{vc.votacion.temas}" var="t" varStatus="st">
+                                    <h:outputText rendered="#{!st.first and !st.last}" value=", " />
+                                    <h:outputText rendered="#{st.last and vc.votacion.temas.size() > 1}" value=" y " />
+                                    #{t.nombre}</ui:repeat>
+                            </h:panelGroup>
+                        </div>
+                        <div>
+                            <h:panelGroup rendered="#{vc.votacion.estados.size() gt 0}">
+                                Restringida a 
+                                <ui:repeat value="#{vc.votacion.estados}" var="t" varStatus="st">
+                                    <h:outputText rendered="#{!st.first and !st.last}" value=", " />
+                                    <h:outputText rendered="#{st.last and v.temas.size() > 1}" value=" y " />
+                                    #{t.nombre}</ui:repeat>
+                            </h:panelGroup>
+                        </div>
+                        <div>
+                            <h:panelGroup rendered="#{vc.hoy.after(vc.votacion.fechaCierre)}">
+                                Cerró el 
+                                <h:outputText value="#{vc.votacion.fechaCierre}" >
+                                    <f:convertDateTime pattern="dd 'de' MMMM 'de' yyyy 'a las' K:mm a" locale="es" />
+                                </h:outputText>
+                            </h:panelGroup>
+                            <h:panelGroup rendered="#{vc.hoy.before(vc.votacion.fechaCierre)}">
+                                Cerrará el 
+                                <h:outputText value="#{vc.votacion.fechaCierre}" >
+                                    <f:convertDateTime pattern="dd 'de' MMMM yyyy 'a las' K:mm a" locale="es" />
+                                </h:outputText>
 
-                <div id="encabezadoSeccion" style="margin-bottom: 10px;">
-                    <h1>#{nombreVotacion}</h1>
-                                Temas:
-                        <ui:repeat value="#{vc.votacion.temas}" var="t" varStatus="st">
-                            <h:outputText rendered="#{!st.first and !st.last}" value=", " />
-                            <h:outputText rendered="#{st.last and vc.votacion.temas.size() > 1}" value=" y " />
-                            #{t.nombre}</ui:repeat>
+                            </h:panelGroup>                            
+                        </div>
+                    </div>
+                    <div style="clear: both;" />
+
+
+
+
                 </div>
 
                 <div id="menuVotacion">                

@@ -28,15 +28,14 @@
                 background-image: url(#{facesContext.externalContext.request.contextPath}/images/pbar-ani.gif); 
             }
         </style>
-        <h1>Resultados</h1>
         <canvas class="trabajando" id="trabajando" data-processing-sources="#{facesContext.externalContext.request.contextPath}/resources/loaders/test2/test2.pde"></canvas>
         <h:form id="resultados">
             <div id="contenidoWikiDescOpcion" style="position: absolute; height: 445px; width: 600px; overflow: auto; ">
                 
             </div>
 
-            <div class="cajaTituloChico" style="width:535px; margin-top: 15px;" >Último Resultado de la Votacion</div>
-            <div class="cajaContent" style="width:540px; padding: 0px;" >
+            <div class="cajaTituloChico" style="margin-top: 15px;" >Último Resultado de la Votacion</div>
+            <div class="cajaContent" style="padding: 0px;" >
                 <div id="barra" style="margin-top:15px; display: none;">
                     <p:progressBar  widgetVar="pbar" ajax="true" value="#{vc.avance}"  styleClass="animated" labelTemplate="Calculando el resultado... {value}%">
                         <p:ajax event="complete" update=":resultados:scores,:resultados:matpref,:resultados:matps,:resultados:directgraph" listener="#{vc.onCompleteProgressBar}" oncomplete="Processing.getInstanceById('trabajando').noLoop(); $('.trabajando').fadeOut(); " />                    </p:progressBar>
@@ -51,7 +50,7 @@
                                 <div style="width: 100px; float: left;">
                                     <p:graphicImage width="80" height="80" url="/ShowImagenOpcion?oid=#{score.opcion.id}" rendered="#{vc.tieneImagenLaOpcion(score.opcion.id)}" />
                                 </div>
-                                <div style="width: 350px; float: left;">
+                                <div style="width: 600px; float: left;">
                                     <strong>#{score.opcion.nombre} : #{score.score}</strong><br/>
                                     <span style="font-size: 12px;">#{score.opcion.descripcion}</span><br/>
                                     <h:panelGroup rendered="#{not empty vot.opcion.url}">
@@ -69,7 +68,7 @@
                                 <div style="width: 100px; float: left;">
                                     <p:graphicImage width="80" height="80" url="/ShowImagenOpcion?oid=#{score.opcion.id}" rendered="#{vc.tieneImagenLaOpcion(score.opcion.id)}" />
                                 </div>
-                                <div style="width: 350px; float: left;">
+                                <div style="width: 600px; float: left;">
                                     <strong>#{score.opcion.nombre} : #{score.score}</strong><br/>
                                     <span style="font-size: 12px;">#{score.opcion.descripcion}</span><br/>
                                     <h:panelGroup rendered="#{not empty vot.opcion.url}">
