@@ -11,11 +11,121 @@
 
 
     <ui:define name="content">
+        <div class="encabezadoSeccion" />
+        <link rel="stylesheet" href="#{facesContext.externalContext.request.contextPath}/resources/css/showcase/style.css" />
+        <script type="text/javascript" src="#{facesContext.externalContext.request.contextPath}/resources/js/jquery.aw-showcase.min.js"></script>
+        <script type="text/javascript">
 
+            $(document).ready(function()
+            {
+                $("#showcase").awShowcase(
+                {
+                    content_width:			900,
+                    content_height:			470,
+                    fit_to_parent:			true,
+                    auto:					true,
+                    interval:				4000,
+                    continuous:				true,
+                    loading:				true,
+                    tooltip_width:			200,
+                    tooltip_icon_width:		32,
+                    tooltip_icon_height:	32,
+                    tooltip_offsetx:		18,
+                    tooltip_offsety:		0,
+                    arrows:					true,
+                    buttons:				false,
+                    btn_numbers:			true,
+                    keybord_keys:			true,
+                    mousetrace:				false, /* Trace x and y coordinates for the mouse */
+                    pauseonover:			true,
+                    stoponclick:			false,
+                    transition:				'hslide', /* hslide/vslide/fade */
+                    transition_delay:		0,
+                    transition_speed:		500,
+                    show_caption:			'onload', /* onload/onhover/show */
+                    thumbnails:				false,
+                    thumbnails_position:	'outside-last', /* outside-last/outside-first/inside-last/inside-first */
+                    thumbnails_direction:	'vertical', /* vertical/horizontal */
+                    thumbnails_slidex:		1, /* 0 = auto / 1 = slide one thumbnail / 2 = slide two thumbnails / etc. */
+                    dynamic_height:			false, /* For dynamic height to work in webkit you need to set the width and height of images in the source. Usually works to only set the dimension of the first slide in the showcase. */
+                    speed_change:			true, /* Set to true to prevent users from swithing more then one slide at once. */
+                    viewline:				false, /* If set to true content_width, thumbnails, transition and dynamic_height will be disabled. As for dynamic height you need to set the width and height of images in the source. */
+                    custom_function:		null /* Define a custom function that runs on content change */
+                });
+            });
 
-        <h1>Bienvenido al Wikipartido de México</h1>
-        <img src="#{facesContext.externalContext.request.contextPath}/carrusel/bandera.png" />
-
+        </script>
+        <div id="showcase" class="showcase">
+            <!-- Each child div in #showcase represents a slide -->
+            <div class="showcase-slide">
+                <!-- Put the slide content in a div with the class .showcase-content -->
+                <div class="showcase-content">
+                    <!-- If the slide contains multiple elements you should wrap them in a div with the class .showcase-content-wrapper. 
+                    We usually wrap even if there is only one element, because it looks better. :-) -->
+                    <div class="showcase-content-wrapper">
+                        <div class="showcase_titulo">Democracia Real</div>
+                        <h2>Let's start with an image...</h2>
+                        <p><em>pssst.. you can use the arrow keys to navigate.</em></p>
+                    </div>
+                </div>
+            </div>
+            <div class="showcase-slide">
+                <!-- Put the slide content in a div with the class .showcase-content -->
+                <div class="showcase-content">
+                    <!-- If the slide contains multiple elements you should wrap them in a div with the class .showcase-content-wrapper. 
+                    We usually wrap even if there is only one element, because it looks better. :-) -->
+                    <div class="showcase-content-wrapper">
+                        <div class="showcase_titulo">Apertura Total</div>
+                        <h2>Let's start with an image...</h2>
+                        <p><em>pssst.. you can use the arrow keys to navigate.</em></p>
+                    </div>
+                </div>
+            </div>                
+        </div>
+        <div>
+            <div style="float: left; padding: 5px;">
+                <div class="cajaTituloChico">
+                    Próximos Eventos
+                </div>
+                <div class="cajaContent">
+                    <iframe src="#{facesContext.externalContext.request.contextPath}/resources/calendar/calendar.html" style=" border-width:0 " width="705" height="400" frameborder="0" scrolling="no"></iframe>
+                </div>
+            </div>
+            <div style="float: right; padding: 5px;">
+                <div style="width: 250;">
+                    <script charset="utf-8" src="http://widgets.twimg.com/j/2/widget.js"></script>
+                    <script>
+                        new TWTR.Widget({
+                            version: 2,
+                            type: 'profile',
+                            rpp: 10,
+                            interval: 30000,
+                            width: 250,
+                            height: 600,
+                            theme: {
+                                shell: {
+                                    background: '#bfb8b2',
+                                    color: '#555555',
+                                    font: 'Francois One'
+                                },
+                                tweets: {
+                                    background: '#ffffff',
+                                    color: '#696969',
+                                    links: '#555555'
+                                }
+                            },
+                            features: {
+                                scrollbar: false,
+                                loop: false,
+                                live: false,
+                                behavior: 'all'
+                            }
+                        }).render().setUser('wikipartidomx').start();
+                    </script>
+                </div>
+            </div>
+            <div style="clear: both;" />
+        </div>
 
     </ui:define>
 

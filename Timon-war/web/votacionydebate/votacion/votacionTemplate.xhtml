@@ -25,13 +25,13 @@
 
         <div id="container">
             <h:panelGroup rendered="#{vc.status eq 'efectiva'}">
-                <div style="position: absolute; top:119px; left: 905px; z-index: 20;"><img src="#{facesContext.externalContext.request.contextPath}/images/efectiva.png" /></div>
+                <div style="position: absolute; top:120px; left: 905px; z-index: 20;"><img src="#{facesContext.externalContext.request.contextPath}/images/efectiva.png" /></div>
             </h:panelGroup>
             <h:panelGroup rendered="#{vc.status eq 'sinquorum'}">
-                <div style="position: absolute; top:119px; left: 905px; z-index: 20;"><img src="#{facesContext.externalContext.request.contextPath}/images/sinquorum.png" /></div>
+                <div style="position: absolute; top:120px; left: 905px; z-index: 20;"><img src="#{facesContext.externalContext.request.contextPath}/images/sinquorum.png" /></div>
             </h:panelGroup>
             <h:panelGroup rendered="#{vc.status eq 'conquorum'}">
-                <div style="position: absolute; top:119px; left: 905px; z-index: 20;"><img src="#{facesContext.externalContext.request.contextPath}/images/conquorum.png" /></div>
+                <div style="position: absolute; top:120px; left: 905px; z-index: 20;"><img src="#{facesContext.externalContext.request.contextPath}/images/conquorum.png" /></div>
             </h:panelGroup> 
             <div id="top"><ui:include src="/header.xhtml" /></div>
             <div id="menu" style="margin-bottom: 0px;">                
@@ -39,8 +39,8 @@
             </div>
             <div style="clear:both;"  />
             <div id="content" style="margin-top:0px;">
-                <div id="encabezadoSeccion" style="margin-bottom: 0px; margin-top: 0px;">
-                    <div style="float:left; width:715px;  font-family: Francois One, sans-serif; font-size: 36px; padding-left: 10px;">
+                <div class="encabezadoSeccion">                
+                    <div style="text-align: left; float:left; width:715px;  font-family: Francois One, sans-serif; font-size: 36px; padding-left: 10px;">
                         #{nombreVotacion}
                     </div>
                     <div style="float:left; width:240px;  top:0px; bottom:0px; font-size: 12px;">
@@ -94,6 +94,7 @@
                     <ui:insert name="menu"><ui:include src="menuVotacion.xhtml" /></ui:insert>
                 </div>
                 <div style="padding: 10px;">
+                    
                     <ui:insert name="content">Content</ui:insert>
                 </div>
 

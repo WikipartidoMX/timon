@@ -114,11 +114,11 @@
 .cajaTitulo {
     margin-top: 15px;
     position: relative;
-    border: 1px solid #e5dfd8;
+    border: 1px solid #bfb8b2;
     border-radius: 10px 10px 0px 0px;
     margin: 0px auto;
     padding: 10px;
-    background-color: #e5dfd8;
+    background-color: #bfb8b2;
     font-family: 'Francois One', sans-serif;
     font-weight: bold;
     font-size:  42px;    
@@ -127,11 +127,11 @@
 .cajaTituloChico {
     margin-top: 15px;
     position: relative;
-    border: 1px solid #e5dfd8;
+    border: 1px solid #bfb8b2;
     border-radius: 10px 10px 0px 0px;
     margin: 0px auto;
     padding-left: 5px;
-    background-color: #e5dfd8;
+    background-color: #bfb8b2;
     font-family: 'Francois One', sans-serif;
     font-weight: bold;
     font-size:  20px;    
