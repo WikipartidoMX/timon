@@ -20,11 +20,11 @@
             {
                 $("#showcase").awShowcase(
                 {
-                    content_width:			900,
-                    content_height:			470,
+                    content_width:			1016,
+                    content_height:			400,
                     fit_to_parent:			true,
                     auto:					true,
-                    interval:				4000,
+                    interval:				5000,
                     continuous:				true,
                     loading:				true,
                     tooltip_width:			200,
@@ -37,7 +37,7 @@
                     btn_numbers:			true,
                     keybord_keys:			true,
                     mousetrace:				false, /* Trace x and y coordinates for the mouse */
-                    pauseonover:			true,
+                    pauseonover:			false,
                     stoponclick:			false,
                     transition:				'hslide', /* hslide/vslide/fade */
                     transition_delay:		0,
@@ -57,30 +57,12 @@
         </script>
         <div id="showcase" class="showcase">
             <!-- Each child div in #showcase represents a slide -->
-            <div class="showcase-slide">
-                <!-- Put the slide content in a div with the class .showcase-content -->
-                <div class="showcase-content">
-                    <!-- If the slide contains multiple elements you should wrap them in a div with the class .showcase-content-wrapper. 
-                    We usually wrap even if there is only one element, because it looks better. :-) -->
-                    <div class="showcase-content-wrapper">
-                        <div class="showcase_titulo">Democracia Real</div>
-                        <h2>Let's start with an image...</h2>
-                        <p><em>pssst.. you can use the arrow keys to navigate.</em></p>
-                    </div>
-                </div>
-            </div>
-            <div class="showcase-slide">
-                <!-- Put the slide content in a div with the class .showcase-content -->
-                <div class="showcase-content">
-                    <!-- If the slide contains multiple elements you should wrap them in a div with the class .showcase-content-wrapper. 
-                    We usually wrap even if there is only one element, because it looks better. :-) -->
-                    <div class="showcase-content-wrapper">
-                        <div class="showcase_titulo">Apertura Total</div>
-                        <h2>Let's start with an image...</h2>
-                        <p><em>pssst.. you can use the arrow keys to navigate.</em></p>
-                    </div>
-                </div>
-            </div>                
+            <ui:repeat value="#{sc.slides}" var="s">
+                <h:outputText value="#{s.xhtml}" escape="false" />
+            </ui:repeat>
+
+
+
         </div>
         <div>
             <div style="float: left; padding: 5px;">
@@ -88,7 +70,7 @@
                     Próximos Eventos
                 </div>
                 <div class="cajaContent">
-                    <iframe src="#{facesContext.externalContext.request.contextPath}/resources/calendar/calendar.html" style=" border-width:0 " width="705" height="400" frameborder="0" scrolling="no"></iframe>
+                    <iframe src="https://www.google.com/calendar/embed?showTitle=0&amp;src=wikipartidomx%40gmail.com&amp;ctz=America/Mexico_City" style=" border-width:0 " width="705" height="400" frameborder="0" scrolling="no"></iframe>
                 </div>
             </div>
             <div style="float: right; padding: 5px;">

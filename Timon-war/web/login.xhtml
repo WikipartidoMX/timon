@@ -16,7 +16,7 @@
 
 
     <ui:define name="content">
-
+<div style="margin:5px;">&nbsp;</div>
         <div class="cajaTitulo"  style="width: 500px;">
             Ingresar al Wikipartido
         </div>
@@ -50,11 +50,12 @@
                     <h1>Bienvenido #{um.user.nombre} #{um.user.apellidoPaterno} #{um.user.apellidoMaterno}</h1>
                     <p:commandButton style="margin-top: 15px;"  value="TERMINAR SESIÓN" action="#{um.logout}" update="loginform" />
                 </h:panelGroup>
+                
             </h:form>
 
         </div>
 
-
+<br/>
     </ui:define>
 
 

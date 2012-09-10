@@ -21,7 +21,7 @@
         <c:if test="#{donde eq 'menuinicio'}"><c:set var="clase" value="mopoff" /></c:if>
 
         <c:if test="#{donde eq 'menuque_es'}"><c:set var="clase" value="mopon" /></c:if>
-        <div id="menuque_es" class="#{clase}"><div class="textopcion">¿Qué es?</div></div>
+        <div id="menuque_es" class="#{clase}" onclick="location='#{facesContext.externalContext.request.contextPath}/faces/quees.xhtml';"><div class="textopcion">¿Qué es?</div></div>
         <c:if test="#{donde eq 'menuque_es'}"><c:set var="clase" value="mopoff" /></c:if>        
 
         <div id="menuinicio" class="#{clase}" onclick="window.open('http://wiki.wikipartido.mx',
@@ -31,7 +31,7 @@
 
 
         <c:if test="#{donde eq 'menucal'}"><c:set var="clase" value="mopon" /></c:if>
-        <div id="menucal" class="#{clase}"><div class="textopcion">Calendario de Actividades</div></div>
+        <div id="menucal" class="#{clase}" onclick="location='#{facesContext.externalContext.request.contextPath}/faces/calendario.xhtml';"><div class="textopcion">Calendario de Actividades</div></div>
         <c:if test="#{donde eq 'menucal'}"><c:set var="clase" value="mopoff" /></c:if>          
 
         <c:if test="#{donde eq 'menuvotdeb'}"><c:set var="clase" value="mopon" /></c:if>

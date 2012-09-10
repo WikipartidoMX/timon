@@ -48,7 +48,7 @@ public class MiembroConverter implements Converter {
                 Miembro m = tl.getMiembro(id);
                 return m;
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                System.out.println("Hubo un error: "+e.getMessage());
                 return null;
             }
         }
