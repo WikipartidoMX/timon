@@ -44,6 +44,8 @@ public class ShowImagenOpcion extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String etag = request.getHeader("If-None-Match");
+        String tag;          
         long oid = 0;
         try {
             oid = Integer.parseInt(request.getParameter("oid"));
@@ -53,7 +55,13 @@ public class ShowImagenOpcion extends HttpServlet {
         f = vl.getImagenDeOpcion(oid);
 
         if (f != null) {
-            
+            tag = String.valueOf(f.length);
+            if (tag.equals(etag)) {
+                response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                return;
+            }
+            response.addHeader("Cache-Control", "public");
+            response.addHeader("Etag", tag);            
             String mime = "image/xyz";
             if (Arrays.equals(Arrays.copyOfRange(f, 0, 8), png)) {
                 mime = "image/png";

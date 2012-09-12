@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import timon.controladores.UserManager;
+import timon.entities.registro.Avatar;
 import timon.entities.registro.Miembro;
 import timon.sessionbeans.TimonLogic;
 
@@ -36,8 +37,8 @@ import timon.sessionbeans.TimonLogic;
  */
 @WebServlet(name = "ShowAvatar", urlPatterns = {"/ShowAvatar"})
 public class ShowAvatar extends HttpServlet {
-    private static final Logger mrlog = Logger.getLogger(ShowAvatar.class.getName());
 
+    private static final Logger mrlog = Logger.getLogger(ShowAvatar.class.getName());
     @Inject
     TimonLogic tl;
     @Inject
@@ -50,23 +51,23 @@ public class ShowAvatar extends HttpServlet {
             throws ServletException, IOException {
         String etag = request.getHeader("If-None-Match");
         String tag;
-        long mid = 0;
+        long mid;
         try {
             mid = Integer.parseInt(request.getParameter("mid"));
         } catch (Exception e) {
             //throw new ServletException("No es posible identificar al usuario.");
             return;
-            
+
         }
-        byte[] f = null;
+        byte[] f;
         String filename = "camafeoh.png";
-        
+
         Miembro m = tl.getMiembro(mid);
-        f = tl.getAvatarFile(mid);
-        tag = String.valueOf(mid);
-        if (f == null) {
+        Avatar avatar = tl.getAvatar(mid);
+
+        if (avatar == null) {
             String path = request.getServletContext().getRealPath("/images/" + filename);
-            
+
             try {
                 tag = "camafeoh";
                 if (m.getSexo().equals("M")) {
@@ -79,9 +80,12 @@ public class ShowAvatar extends HttpServlet {
             }
             File file = new File(path);
             f = org.apache.commons.io.FileUtils.readFileToByteArray(file);
+        } else {
+            f = avatar.getFile();
+            tag = String.valueOf(avatar.getFile().length);
         }
         if (f != null) {
-            
+
             String mime = "image/xyz";
             if (Arrays.equals(Arrays.copyOfRange(f, 0, 8), png)) {
                 mime = "image/png";
@@ -94,15 +98,15 @@ public class ShowAvatar extends HttpServlet {
             }
             response.setContentType(mime);
             response.setContentLength(f.length);
-                        
-            
+
+
             if (tag.equals(etag)) {
                 response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
                 return;
             }
             response.addHeader("Cache-Control", "public");
             response.addHeader("Etag", tag);
-            
+
             ByteArrayInputStream input = new ByteArrayInputStream(f);
             BufferedOutputStream output = new BufferedOutputStream(response.getOutputStream());
             try {

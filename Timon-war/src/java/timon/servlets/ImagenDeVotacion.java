@@ -42,15 +42,26 @@ public class ImagenDeVotacion extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String etag = request.getHeader("If-None-Match");
+        String tag;        
         long vid = Integer.parseInt(request.getParameter("vid"));
-        byte[] f = null;
+        byte[] f;
         f = vydl.getImagenVotacion(vid);
+        
         if (f == null) {
             String path = request.getServletContext().getRealPath("/images/fondoVotacion.png");
             File file = new File(path);
             f = org.apache.commons.io.FileUtils.readFileToByteArray(file);
         }
         if (f != null) {
+            tag = String.valueOf(f.length);
+            if (tag.equals(etag)) {
+                response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                return;
+            }
+            response.addHeader("Cache-Control", "public");
+            response.addHeader("Etag", tag);
+            
             String mime = "image/xyz";
             if (Arrays.equals(Arrays.copyOfRange(f, 0, 8), png)) {
                 mime = "image/png";
@@ -61,6 +72,7 @@ public class ImagenDeVotacion extends HttpServlet {
             if (Arrays.equals(Arrays.copyOfRange(f, 0, 3), gif)) {
                 mime = "image/gif";
             }
+         
             response.setContentType(mime);
             response.setContentLength(f.length);
             ByteArrayInputStream input = new ByteArrayInputStream(f);

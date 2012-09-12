@@ -670,7 +670,7 @@ public class VotoYDebateLogic implements Serializable {
         url = url.replace("\\", "");
         url = url.replace("&", "");
 
-        url = "http://wiki.wikipartido.mx/wiki/index.php/" + url + "?action=render";
+        url = "http://wiki.wikipartido.mx/index.php/" + url + "?action=render";
         titulo = "<h1>" + titulo + "</h1>";
         System.out.println("URL: " + url);
 
