@@ -15,8 +15,7 @@ int z = 0;
 
 void setup() {
   size(970, 300);
-  b = loadImage("http://wikipartido.mx/resources/loaders/test2/fondo","png");
-  //b = loadImage("/Users/alfonso/NetBeansProjects/timon/Timon-war/web/resources/loaders/test2/fondo.png");
+  b = loadImage("http://wikipartido.mx/resources/loaders/conteo/fondo","png");
   v = new Voter();
   background(190, 190, 190, 50);
   helvetica1 = createFont("Helvetica", 24);
