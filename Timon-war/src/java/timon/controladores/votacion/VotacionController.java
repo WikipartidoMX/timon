@@ -24,6 +24,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
 import org.primefaces.component.datagrid.DataGrid;
 import org.primefaces.model.DualListModel;
 import org.primefaces.model.LazyDataModel;
@@ -34,6 +35,7 @@ import timon.entities.registro.Miembro;
 import timon.entities.votacionydebate.LogVotacion;
 import timon.entities.votacionydebate.Opcion;
 import timon.entities.votacionydebate.ResultadoSchulze;
+import timon.entities.votacionydebate.Score;
 import timon.entities.votacionydebate.Tema;
 import timon.entities.votacionydebate.Votacion;
 import timon.entities.votacionydebate.Voto;
@@ -73,7 +75,9 @@ public class VotacionController implements Serializable {
     private Date filtroFechaCierreHasta = null;
     private DataGrid dataGrid;
     private Date hoy;
-    
+    // ganador empate
+    private String tipoResultado;
+    private int scoreGanador;
 
     public VotacionController() {
         logvot = new LogVotacion();
@@ -89,23 +93,25 @@ public class VotacionController implements Serializable {
             }
         };
         mrlog.log(Level.FINE, "votaciones Row Count: {0} Page Size: {1}", new Object[]{votaciones.getRowCount(), votaciones.getPageSize()});
-        
+
     }
-    
+
     public void reset() {
         dataGrid.setFirst(0);
     }
-    
+
     public long getParticipacion() {
         return vl.getParticipacion(votacion);
     }
+
     public long getQuorum() {
         return vl.getQuorum(vl.getPoblacion(votacion));
     }
+
     public long getPoblacion() {
         return vl.getPoblacion(votacion);
     }
-    
+
     public boolean isPerteneceAEstadosDeVotacion() {
         return vl.perteneceAEstadosDeVotacion(um.getUser(), votacion);
     }
@@ -143,14 +149,14 @@ public class VotacionController implements Serializable {
         }
         return rs;
     }
-    
+
     public String getStatus() {
         return getStatus(votacion);
     }
-    
+
     public String getStatus(Votacion vot) {
         String status = "";
-        ResultadoSchulze rs= vl.getUltimoResultado(vot);
+        ResultadoSchulze rs = vl.getUltimoResultado(vot);
         if (rs == null) {
             return "";
         }
@@ -165,7 +171,6 @@ public class VotacionController implements Serializable {
         }
         return status;
     }
-    
 
     // Que tan pesado es un delegado para cierta votacion
     public long numeroAtomico(Miembro delegado) {
@@ -196,6 +201,16 @@ public class VotacionController implements Serializable {
             }
             try {
                 rs = getRs();
+                tipoResultado = "ganador";
+                int ganador = 0;
+                for (Score s : rs.getScores()) {
+                    if (s.getLugar() == 1) {
+                        ganador++;
+                    }
+                }
+                if (ganador > 1) {
+                    tipoResultado = "empate";
+                }
             } catch (Exception e) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocurrio un error al tratar de obtener el resultado de la eleccion.", null));
             }
@@ -230,7 +245,13 @@ public class VotacionController implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Para votar debe ingresar a la plataforma como miembro.", null));
             return "";
         }
-
+        HttpServletRequest hsr = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        String h = hsr.getHeader("x-forwarded-for");
+        if (h == null) {
+            h = hsr.getRemoteAddr();
+        }
+        logvot.setIp(h);
+        mrlog.log(Level.FINE,"EL ip es {0}",h);
         List<Opcion> votos = opciones.getTarget();
         logvot.setVotacion(votacion);
         logvot.setMiembro(um.getUser());
@@ -422,8 +443,6 @@ public class VotacionController implements Serializable {
         this.filtroEstado = filtroEstado;
     }
 
-
-
     /**
      * @return the temas
      */
@@ -431,7 +450,7 @@ public class VotacionController implements Serializable {
         if (temas == null) {
             temas = new ArrayList<>();
 
-            temas.add(new SelectItem(null,"Todos los Temas"));
+            temas.add(new SelectItem(null, "Todos los Temas"));
             for (Tema t : vl.getTemas()) {
                 temas.add(new SelectItem(t, t.getNombre()));
             }
@@ -500,5 +519,33 @@ public class VotacionController implements Serializable {
      */
     public void setHoy(Date hoy) {
         this.hoy = hoy;
+    }
+
+    /**
+     * @return the tipoResultado
+     */
+    public String getTipoResultado() {
+        return tipoResultado;
+    }
+
+    /**
+     * @param tipoResultado the tipoResultado to set
+     */
+    public void setTipoResultado(String tipoResultado) {
+        this.tipoResultado = tipoResultado;
+    }
+
+    /**
+     * @return the scoreGanador
+     */
+    public int getScoreGanador() {
+        return scoreGanador;
+    }
+
+    /**
+     * @param scoreGanador the scoreGanador to set
+     */
+    public void setScoreGanador(int scoreGanador) {
+        this.scoreGanador = scoreGanador;
     }
 }

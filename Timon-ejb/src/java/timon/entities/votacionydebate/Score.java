@@ -1,7 +1,18 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ *   __    __ _ _     _   ___           _   _     _             __  __
+ *  / / /\ \ (_) | __(_) / _ \__ _ _ __| |_(_) __| | ___   /\/\ \ \/ /
+ *  \ \/  \/ / | |/ /| |/ /_)/ _` | '__| __| |/ _` |/ _ \ /    \ \  / 
+ *   \  /\  /| |   < | / ___/ (_| | |  | |_| | (_| | (_) / /\/\ \/  \ 
+ *    \/  \/ |_|_|\_\|_\/    \__,_|_|   \__|_|\__,_|\___/\/    \/_/\_\
+ *                                              
+ *                                              
+ *  
+ * Wikipartido de Mexico
+ * VER ARCHIVO DE LiCENCIA
+ * 
+ * 
  */
+
 package timon.entities.votacionydebate;
 
 import java.io.Serializable;
@@ -9,7 +20,7 @@ import javax.persistence.*;
 
 /**
  *
- * @author alfonso
+ * @author Alfonso Tames
  */
 @Entity
 public class Score implements Serializable, Comparable<Score> {
@@ -19,6 +30,7 @@ public class Score implements Serializable, Comparable<Score> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private int score;
+    private int lugar;
     @OneToOne
     private Opcion opcion;
 
@@ -94,6 +106,20 @@ public class Score implements Serializable, Comparable<Score> {
      */
     public void setOpcion(Opcion opcion) {
         this.opcion = opcion;
+    }
+
+    /**
+     * @return the lugar
+     */
+    public int getLugar() {
+        return lugar;
+    }
+
+    /**
+     * @param lugar the lugar to set
+     */
+    public void setLugar(int lugar) {
+        this.lugar = lugar;
     }
 
 

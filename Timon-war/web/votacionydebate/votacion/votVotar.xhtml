@@ -18,15 +18,32 @@
     <ui:param name="dondevot" value="votvotar" />
     <ui:param name="nombreVotacion" value="#{vc.votacion.nombre}" />
 
-
+    <ui:define name="head">
+        <script type="text/javascript">
+            var RecaptchaOptions = {
+                lang : 'es'
+            };
+        </script>   
+    </ui:define>
 
     <ui:define name="content">
 
         <h:form id="formaVotacion" enctype="multipart/form-data">
             <h:panelGroup rendered="#{empty vc.logVotacion}">
+                <div class="caja">
+                    Para votar, arrastra opciones de la lista de <strong>Opciones Disponibles</strong>
+                    a la <strong>Lista de Preferencias</strong>. Es muy importante que tus opciones estén acomodadas en el orden de tu preferencia.
+                </div>
                 <div style="margin-top: 10px;">
-
-
+                    <div style="margin-bottom: 10px;">
+                        <div style="float: left; margin-left: 130px;">
+                            <h2>Opciones Disponibles</h2>
+                        </div>
+                        <div style="float: right; margin-right: 180px;">
+                            <h2>Lista de Preferencias</h2>
+                        </div>
+                        <div style="clear: both;" />
+                    </div>
                     <p:pickList value="#{vc.opciones}" var="op" itemValue="#{op}" converter="opcion" showTargetControls="true">
 
                         <p:column>
@@ -68,7 +85,12 @@
             <p:messages id="mensajes" />
 
             <h:panelGroup rendered="#{empty vc.logVotacion}">
-                <p:commandButton value="Votar" action="#{vc.guardarVotacion}" update="mensajes" />
+                <div style="margin-left: 310px; margin-top: 10px;">
+                    <p:captcha label="Captcha" id="captcha" language="es" validatorMessage="El valor del captcha es incorrecto" />
+                    </div>
+                <div style="margin-left: 430px; margin-top: 10px;">
+                    <p:commandButton value="Votar" action="#{vc.guardarVotacion}" update="mensajes" ajax="false" />
+                </div>
             </h:panelGroup>
             <br/><br/>
             <h:panelGroup rendered="#{not empty vc.logVotacion}">

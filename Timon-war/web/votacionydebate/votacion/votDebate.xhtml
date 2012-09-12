@@ -51,42 +51,48 @@
                 <p:treeNode id="treenode">
 
                     <div class="caja" style="margin: 0px;">
-                        <div style="float:left; width: 140px;">
-                            <div class="avatar" style="margin-bottom: 5px;width:100px; height:100px; background-size: 100px 100px; background-image: url(#{facesContext.externalContext.request.contextPath}/ShowAvatar?mid=#{node.miembro.id})" />                            
-                            <div style="font-size: 12px;">#{node.miembro.nombre} #{node.miembro.apellidoPaterno} #{node.miembro.apellidoMaterno} <br/>
-                                <h:panelGroup rendered="#{vc.numeroAtomico(node.miembro) gt 0}">
-                                    Delegado x #{vc.numeroAtomico(node.miembro)}<br/>
-                                </h:panelGroup>
-                                <h:panelGroup rendered="#{not empty node.opcion.nombre}">
-                                    <hr />
-                                    <div style="float: left; width:90px; font-size: 10px;">
-                                        A favor de #{node.opcion.nombre}
-                                    </div>                                    
-                                    <div style="float: left;">
-                                        <p:graphicImage width="40" height="40" url="/ShowImagenOpcion?oid=#{node.opcion.id}" rendered="#{vc.tieneImagenLaOpcion(node.opcion.id)}" />
+                        <table border="0">
+                            <tr><td valign="top">
+                                    <div style="float:left; width: 120px;">
+                                        <div class="avatar" style="margin-bottom: 5px;width:100px; height:100px; background-size: 100px 100px; background-image: url(#{facesContext.externalContext.request.contextPath}/ShowAvatar?mid=#{node.miembro.id})" />                            
+                                        <div style="font-size: 12px;"><strong>#{node.miembro.nombre} #{node.miembro.apellidoPaterno} #{node.miembro.apellidoMaterno} </strong><br/>
+                                            <h:panelGroup rendered="#{vc.numeroAtomico(node.miembro) gt 0}">
+                                                Delegado x #{vc.numeroAtomico(node.miembro)}<br/>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{not empty node.opcion.nombre}">
+                                                <hr />
+                                                <div style="float: left; width:90px; font-size: 10px;">
+                                                    A favor de #{node.opcion.nombre}
+                                                </div>                                    
+                                                <div style="float: left;">
+                                                    <p:graphicImage width="40" height="40" url="/ShowImagenOpcion?oid=#{node.opcion.id}" rendered="#{vc.tieneImagenLaOpcion(node.opcion.id)}" />
+                                                </div>
+
+
+                                            </h:panelGroup>
+                                        </div>
                                     </div>
+                                </td><td valign="top">
+                                    <div style="float:right;">
+                                        <div>#{node.discurso} </div>
+                                        <div style="font-size:12px; margin-top: 20px;">
+                                            <div>
 
+                                                <h:outputText value="#{node.fecha}" >
+                                                    <f:convertDateTime pattern="dd 'de' MMMM yyyy 'a las' K:mm a" locale="es" />
+                                                </h:outputText>
 
-                                </h:panelGroup>
-                            </div>
-                        </div>
-                        <div style="float:left;">
-                            <div>#{node.discurso} </div>
-                            <div style="font-size:12px; margin-top: 20px;">
-                                <div>
-
-                                    <h:outputText value="#{node.fecha}" >
-                                        <f:convertDateTime pattern="dd 'de' MMMM yyyy 'a las' K:mm a" locale="es" />
-                                    </h:outputText>
-
-                                </div>
-                                <div>
-                                    <a href="nuevoArgumento.xhtml?vid=#{vc.vid}&amp;pater=#{node.id}">Responder</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div style="clear: both;" />
+                                            </div>
+                                            <div>
+                                                <a href="nuevoArgumento.xhtml?vid=#{vc.vid}&amp;pater=#{node.id}">Responder</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="clear: both;" />
+                                </td></tr>
+                            </table>
                     </div>
+                    
                 </p:treeNode>
             </p:tree>
 

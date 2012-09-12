@@ -1,5 +1,7 @@
 
-PFont helvetica12;
+PFont helvetica1;
+PFont helvetica2;
+
 PImage b;
 
 
@@ -14,10 +16,12 @@ int z = 0;
 void setup() {
   size(970, 300);
   b = loadImage("http://localhost:8080/Timon-war/resources/loaders/test2/fondo","png");
+  //b = loadImage("/Users/alfonso/NetBeansProjects/timon/Timon-war/web/resources/loaders/test2/fondo.png");
   v = new Voter();
   background(190, 190, 190, 50);
-  helvetica12 = createFont("Helvetica", 12);
-  textFont(helvetica12);
+  helvetica1 = createFont("Helvetica", 24);
+  helvetica2 = createFont("Helvetica", 12);
+  
   smooth();
   stroke(0);
   frameRate(24);
@@ -30,11 +34,14 @@ void draw() {
   rotate(rot);
   v.display();  
   popMatrix();
-  text("rot="+rot, 10, 20);
-  text("vuelta="+vuelta, 10, 40);
-  text("tick="+tick, 10, 60);
+  fill(180);
+  textFont(helvetica1);
+  text("CONTANDO LOS VOTOS",25,40);
+  textFont(helvetica2);
+  text("El sistema realizará el computo de la elección en caso de que se haya realizado antes o si se acaba "
+  +"de registrar un voto. En votaciones con pocas opciones el conteo requiere algunos segundos pero si se presentan varias decenas de opciones "
+  +"y varios miles de electores, el conteo puede llevar algunos minutos por lo que le pedimos su paciencia. ",25,70,380,250);
 
-  text("z="+z, 10, 80);
   rot = rot +0.02;
   if (rot > (TWO_PI)) {
     rot=0;

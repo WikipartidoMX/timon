@@ -16,9 +16,13 @@
 
         <h:form id="buscavots">
             <p:remoteCommand name="actualizar" update="votaciones" actionListener="#{vc.reset()}" />
+                        <div style="float:right; margin-top: 5px; margin-right: 35px;">
+                <a href="nuevaVotacion/nv.xhtml">Crear Nueva Votación</a>
+            </div> 
             <div class="encabezadoSeccion">
                 <h1 style="border: none;">VOTACIONES</h1>
             </div>
+
             <div style="border-bottom: 6px solid #bfb8b2; border-top: 6px solid #bfb8b2; width: 930px; margin: auto; ">
                 <div style="margin-top:6px; margin-bottom: 6px;">
                     <div style="float:left;">
@@ -125,9 +129,7 @@
                     </div>
                 </div>
             </p:dataGrid>
-            <div>
-                <a href="nuevaVotacion/nv.xhtml">Crear Nueva Votación</a>
-            </div>                
+
         </h:form>
     </ui:define>
 

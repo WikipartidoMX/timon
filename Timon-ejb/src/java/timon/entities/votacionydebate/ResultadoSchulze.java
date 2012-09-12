@@ -13,6 +13,7 @@
  * 
  */
 
+
 package timon.entities.votacionydebate;
 
 import java.io.Serializable;

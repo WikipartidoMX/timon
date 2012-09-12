@@ -32,6 +32,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import timon.entities.log.Actividad;
 import timon.entities.registro.Estado;
 import timon.entities.registro.Miembro;
 import timon.entities.votacionydebate.*;
@@ -70,6 +71,27 @@ public class VotoYDebateLogic implements Serializable {
     public void remove(Object obj) {
         em.remove(obj);
     }
+    
+    public boolean isIPsaturado(String ip, Votacion vot) {
+        boolean saturado = false;
+        Date ahora = new Date();
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(ahora);
+        cal.add(Calendar.HOUR, -24);
+        List<LogVotacion> logs = em.createQuery("select l from LogVotacion l where l.votacion = :vot and l.ip = :ip and l.fecha > :lapso")
+                .setParameter("lapso", cal.getTime())
+                .setParameter("vot", vot)
+                .setParameter("ip", ip)
+                .getResultList();
+        if (logs != null) {
+            if (logs.size() > 2) {
+                saturado = true;
+            }
+        } else {
+            saturado = false;
+        }
+        return saturado;
+    }
 
     /*
      * La lógica de guardar la votación y contar los votos está separada
@@ -88,6 +110,18 @@ public class VotoYDebateLogic implements Serializable {
         if (hoy.after(logvot.getVotacion().getFechaCierre())) {
             throw new Exception("¡La votación ya está cerrada! No es posible registrar más votos.");
         }
+        
+        if (isIPsaturado(logvot.getIp(),logvot.getVotacion())) {
+            Actividad act = new Actividad();
+            act.setMiembro(logvot.getMiembro());
+            act.setIp(logvot.getIp());
+            act.setFecha(new Date());
+            act.setTipo("votacion");
+            act.setDescripcion("Rebase del límite de votacion :"+logvot.getVotacion().getId()+": "+logvot.getVotacion().getNombre());
+            persist(act);
+            throw new Exception("Se ha alcanzado el límite de votos.");
+        }
+        
         mrlog.log(Level.FINE, "Registrando Votos de {0} para votacion: {1}",
                 new Object[]{logvot.getMiembro().getNombre(), logvot.getVotacion()});
         mrlog.log(Level.FINE, "Verificando si {0} ya votó en esta votación...", logvot.getMiembro().getNombre());
@@ -499,6 +533,14 @@ public class VotoYDebateLogic implements Serializable {
             scores.add(new Score(opciones.get(i), score[i]));
         }
         Collections.sort(scores);
+        int lugar=1;
+        for (i=0; i < scores.size()-1; i++) {
+            scores.get(i).setLugar(lugar);
+            if (scores.get(i).getScore() > scores.get(i+1).getScore()) {
+                lugar++;
+            }
+        }
+        scores.get(i).setLugar(lugar);
         rs.setScores(scores);
         rs.setPref(prefe);
         rs.setSp(p);
