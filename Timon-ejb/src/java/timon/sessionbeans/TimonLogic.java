@@ -14,14 +14,15 @@
  */
 package timon.sessionbeans;
 
-import timon.entities.registro.Avatar;
-import timon.entities.registro.Estado;
-import timon.entities.registro.Miembro;
 import java.io.Serializable;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import org.mindrot.BCrypt;
+import timon.entities.registro.Avatar;
+import timon.entities.registro.Estado;
+import timon.entities.registro.Miembro;
 
 /**
  *
@@ -41,12 +42,17 @@ public class TimonLogic implements Serializable {
         return em.merge(object);
     }
 
-    public Miembro login(String email, String passwd) {
+    public Miembro login(String email, String passwd) throws Exception {
         try {
-            return (Miembro) em.createQuery("select m from Miembro m "
-                    + "where m.email=:email and m.password=:passwd").setParameter("email", email).setParameter("passwd", passwd).getSingleResult();
+            Miembro m = (Miembro) em.createQuery("select m from Miembro m "
+                    + "where m.email=:email").setParameter("email", email).getSingleResult();
+            if (BCrypt.checkpw(passwd, m.getPassword())) {
+                return m;
+            } else {
+                throw new Exception("No tiene acceso a la plataforma.");
+            }
         } catch (Exception e) {            
-            return null;
+            throw new Exception("No existe el usuario");
         }
     }
     

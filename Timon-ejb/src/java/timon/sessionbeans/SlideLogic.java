@@ -18,6 +18,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
+import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -39,7 +40,7 @@ public class SlideLogic implements Serializable {
         SlideImage si = em.find(SlideImage.class, id);
         return si.getFile();
     }    
-    
+    @PermitAll
     public List<Slide> getActiveSlides() {
         Date hoy = new Date();
         return em.createQuery("select s from Slide s where s.activa = true and :hoy < s.expira order by s.orden desc").setParameter("hoy", hoy).getResultList();

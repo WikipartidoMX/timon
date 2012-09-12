@@ -14,8 +14,6 @@
  */
 package timon.servlets;
 
-import timon.controladores.UserManager;
-import timon.entities.registro.Miembro;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -28,6 +26,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import timon.controladores.UserManager;
+import timon.entities.registro.Miembro;
 import timon.sessionbeans.TimonLogic;
 
 /**
@@ -48,6 +48,8 @@ public class ShowAvatar extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String etag = request.getHeader("If-None-Match");
+        String tag;
         long mid = 0;
         try {
             mid = Integer.parseInt(request.getParameter("mid"));
@@ -58,13 +60,18 @@ public class ShowAvatar extends HttpServlet {
         }
         byte[] f = null;
         String filename = "camafeoh.png";
+        
         Miembro m = tl.getMiembro(mid);
         f = tl.getAvatarFile(mid);
+        tag = String.valueOf(mid);
         if (f == null) {
             String path = request.getServletContext().getRealPath("/images/" + filename);
+            
             try {
+                tag = "camafeoh";
                 if (m.getSexo().equals("M")) {
                     filename = "camafeom.png";
+                    tag = "camafeom";
                     path = request.getServletContext().getRealPath("/images/" + filename);
                 }
             } catch (Exception e) {
@@ -87,6 +94,14 @@ public class ShowAvatar extends HttpServlet {
             }
             response.setContentType(mime);
             response.setContentLength(f.length);
+                        
+            
+            if (tag.equals(etag)) {
+                response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                return;
+            }
+            response.addHeader("Cache-Control", "public");
+            response.addHeader("Etag", tag);
             
             ByteArrayInputStream input = new ByteArrayInputStream(f);
             BufferedOutputStream output = new BufferedOutputStream(response.getOutputStream());

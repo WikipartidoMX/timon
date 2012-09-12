@@ -14,14 +14,16 @@
  */
 package timon.controladores;
 
-import timon.entities.registro.Miembro;
 import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import timon.entities.registro.Miembro;
 import timon.sessionbeans.TimonLogic;
 
 /**
@@ -31,7 +33,7 @@ import timon.sessionbeans.TimonLogic;
 @Named(value = "um")
 @SessionScoped
 public class UserManager implements Serializable {
-    
+
     @Inject
     private Registro registro;
     @Inject
@@ -40,14 +42,13 @@ public class UserManager implements Serializable {
     private String email;
     private String passwd;
     private String origen;
-
     @Resource
     private javax.transaction.UserTransaction utx;
-    
+
     public UserManager() {
-        user = null;      
+        user = null;
     }
-    
+
     public boolean isValid() {
         boolean v = false;
         if (user != null) {
@@ -57,21 +58,22 @@ public class UserManager implements Serializable {
         return v;
     }
 
-    public String logout() {        
+    public String logout() {
         FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
         return "/index.xhtml?faces-redirect=true";
     }
 
-    public String login() {
-        System.out.println("Login con: "+email+" y "+passwd+" desde "+origen);
+    public String login() throws Exception {
+        System.out.println("Login con: " + email + " y " + passwd + " desde " + origen);
         String r = "";
-        
+
         Miembro u = null;
         try {
-        u= tl.login(email, passwd);
-        registro.setMiembro(u);
+            u = tl.login(email, passwd);
+            registro.setMiembro(u);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));
+            return "";
         }
         if (u != null) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Bienvenido " + u.getNombre(), null));
@@ -91,10 +93,17 @@ public class UserManager implements Serializable {
         this.user = u;
         return r;
     }
+
     public String loginsinredirect() {
         origen = null;
-        return login();
+        try {
+            return login();
+        } catch (Exception ex) {
+            Logger.getLogger(UserManager.class.getName()).log(Level.SEVERE, null, ex);
+            return "";
+        }
     }
+
     /**
      * @return the user
      */
@@ -150,6 +159,4 @@ public class UserManager implements Serializable {
     public void setOrigen(String origen) {
         this.origen = origen;
     }
-
-    
 }

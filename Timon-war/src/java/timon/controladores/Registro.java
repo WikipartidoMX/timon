@@ -14,9 +14,6 @@
  */
 package timon.controladores;
 
-import timon.entities.registro.Avatar;
-import timon.entities.registro.Estado;
-import timon.entities.registro.Miembro;
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -39,8 +36,12 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.mindrot.BCrypt;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
+import timon.entities.registro.Avatar;
+import timon.entities.registro.Estado;
+import timon.entities.registro.Miembro;
 import timon.sessionbeans.TimonLogic;
 
 /**
@@ -205,6 +206,12 @@ public class Registro implements Serializable {
 
             miembro.setPaso(1L);
             System.out.println("Presistiendo...");
+            // Encriptar password
+            // Vamos a usar bCrypt y a esperar a que mediawiki refuerce su seguridad
+            String hashed;
+            hashed = BCrypt.hashpw(miembro.getPassword(), BCrypt.gensalt(12));
+            miembro.setPassword(hashed);
+
             persist(miembro);
 
             um.setUser(miembro);
@@ -244,6 +251,9 @@ public class Registro implements Serializable {
             try {
                 miembro.setPaso(2L);
                 miembro.setEstado(tl.getEstado(estadoid));
+                String hashed;
+                hashed = BCrypt.hashpw(miembro.getPassword(), BCrypt.gensalt(12));
+                miembro.setPassword(hashed);
                 utx.begin();
                 tl.merge(miembro);
                 utx.commit();
