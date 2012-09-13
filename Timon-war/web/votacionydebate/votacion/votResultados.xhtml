@@ -111,6 +111,9 @@
 
                     <div class="cajaTituloChico"  >Matriz de Preferencias</div>
                     <div class="cajaContent" >
+                        <h:panelGroup rendered="#{fn:length(vc.votacion.opciones) ge 12}">
+                            Por su tamaño, no es posible enseñar la matriz de Preferencias. Decargue el archivo en formato Excel o texto.
+                        </h:panelGroup>
                         <h:panelGroup id="matpref" rendered="#{fn:length(vc.votacion.opciones) lt 12}">
                             <table>
                                 <tr>
@@ -166,8 +169,11 @@
                             <p:graphicImage id="directgraph" url="/DirectedGraph" />
                         </div>    
                     </h:panelGroup>
-                    <div class="cajaTituloChico">Rutas Fuertes</div>
+                    <div class="cajaTituloChico">Rutas más Fuertes</div>
                     <div class="cajaContent" >
+                        <h:panelGroup rendered="#{fn:length(vc.votacion.opciones) ge 12}">
+                            Por su tamaño, no es posible enseñar la matriz de Rutas más Fuertes. Decargue el archivo en formato Excel o texto.
+                        </h:panelGroup>
                         <h:panelGroup id="matps" rendered="#{fn:length(vc.votacion.opciones) lt 12}">
                             <table>
                                 <tr>
@@ -218,7 +224,7 @@
                     </div>
 
                     <h:panelGroup>
-                        <div class="cajaTituloChico"  >Descarga los Resultados Detallados</div>
+                        <div class="cajaTituloChico"  >Descarga los Resultados en Archivo</div>
                         <div class="cajaContent" >
                             <div style="margin-top:20px;">                    
                                 <div style="margin-top: 10px;">
