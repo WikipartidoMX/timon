@@ -27,7 +27,7 @@ import timon.sessionbeans.VotoYDebateLogic;
  *
  * @author Alfonso Tames
  */
-@FacesConverter(forClass=Votacion.class,value="miembro")
+@FacesConverter(forClass=Votacion.class,value="votacion")
 public class VotacionConverter implements Converter {
     
     // Por alguna razon no esta inyectando el session bean!!!    
@@ -48,7 +48,7 @@ public class VotacionConverter implements Converter {
                 Votacion v = vl.getVotacion(id);
                 return v;
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                System.out.println("Error en VotacionConverter"+e.getMessage());
                 return null;
             }
         }

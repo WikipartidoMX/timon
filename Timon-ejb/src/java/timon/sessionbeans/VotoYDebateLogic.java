@@ -267,26 +267,31 @@ public class VotoYDebateLogic implements Serializable {
     }
 
     public List<Miembro> completarMiembro(String query) {
-        String q = "select m from Miembro m where ";
+        mrlog.log(Level.FINE,"completando el miembro...");
+        List<Miembro> miembros;
+        StringBuilder q = new StringBuilder();
+        q.append("select m from Miembro m where ");
         String[] palabs = query.split("\\s");
         int i = 1;
         for (String p : palabs) {
-            q += "(m.nombre like :p" + i + " or "
-                    + "m.apellidoPaterno like :p" + i + " or "
-                    + "m.apellidoMaterno like :p" + i + ") ";
+            q.append("(m.nombre like :p").append(i).append(" or m.apellidoPaterno like :p").append(i)
+                    .append(" or m.apellidoMaterno like :p").append(i).append(") ");
             if (i < palabs.length) {
-                q += " and ";
+                q.append(" and ");
             }
             i++;
         }
-        q += " and m.paso = 2";
-        Query ejq = em.createQuery(q);
+        q.append(" and m.paso = 2");
+        Query ejq = em.createQuery(q.toString());
         i = 1;
         for (String p : palabs) {
             ejq.setParameter("p" + Integer.toString(i), "%" + p + "%");
             i++;
         }
-        return ejq.getResultList();
+        mrlog.log(Level.FINE,"ejecutando el query...");
+        miembros = ejq.getResultList();
+        mrlog.log(Level.FINE,"regresando una lista de {0} miembros.",miembros.size());
+        return miembros;
     }
 
     public List<Delegacion> getDelegacionesPara(Miembro m) {
@@ -565,7 +570,7 @@ public class VotoYDebateLogic implements Serializable {
         List<Opcion> opciones = vot.getOpciones();
         int t = opciones.size();
         long[][] m = new long[t][t];
-        StringBuilder q = new StringBuilder("select count(*), v1.opcion_id, v2.opcion_id from voto as v1, ").append("(select miembro_id, opcion_id, rank from voto where votacion_id=").append(vot.getId()).append(" union select v.miembro_id, o.id as opcion_id, null as rank from ").append("voto as v, opcion as o where v.votacion_id=").append(vot.getId()).append(" and o.votacion_id=").append(vot.getId()).append(" and o.id != v.opcion_id and o.id not in (select vt.opcion_id from ").append("voto as vt where vt.miembro_id=v.miembro_id and vt.votacion_id=").append(vot.getId()).append(")) ").append("as v2 where v1.miembro_id=v2.miembro_id and ((v1.rank < v2.rank) or ").append("(v2.rank is null)) and v2.opcion_id != v1.opcion_id and v1.votacion_id=").append(vot.getId()).append(" group by v1.opcion_id, v2.opcion_id");
+        StringBuilder q = new StringBuilder("select count(*), v1.OPCION_ID, v2.OPCION_ID from VOTO as v1, ").append("(select MIEMBRO_ID, OPCION_ID, RANK from VOTO where VOTACION_ID=").append(vot.getId()).append(" union select v.MIEMBRO_ID, o.ID as OPCION_ID, null as RANK from ").append("VOTO as v, OPCION as o where v.VOTACION_ID=").append(vot.getId()).append(" and o.VOTACION_ID=").append(vot.getId()).append(" and o.ID != v.OPCION_ID and o.ID not in (select vt.OPCION_ID from ").append("VOTO as vt where vt.MIEMBRO_ID=v.MIEMBRO_ID and vt.VOTACION_ID=").append(vot.getId()).append(")) ").append("as v2 where v1.MIEMBRO_ID=v2.MIEMBRO_ID and ((v1.RANK < v2.RANK) or ").append("(v2.RANK is null)) and v2.OPCION_ID != v1.OPCION_ID and v1.VOTACION_ID=").append(vot.getId()).append(" group by v1.OPCION_ID, v2.OPCION_ID");
         mrlog.log(Level.FINE, q.toString());
         List<Object> objs = em.createNativeQuery(q.toString()).getResultList();
         Map vals = new HashMap<Preferencia, Long>();
@@ -718,7 +723,7 @@ public class VotoYDebateLogic implements Serializable {
             httpclient.getConnectionManager().shutdown();
         }
         // Repara las imagenes que vienen del wiki ¬¬
-        res = html.toString().replace("src=\"/wiki", "src=\"http://wiki.wikipartido.mx/wiki");
+        res = html.toString().replace("src=\"/", "src=\"http://wiki.wikipartido.mx/");
 
         return res;
     }

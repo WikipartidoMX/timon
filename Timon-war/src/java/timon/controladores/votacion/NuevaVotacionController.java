@@ -98,6 +98,7 @@ public class NuevaVotacionController implements Serializable {
     }
 
     public String guardarVotacion() {
+        System.out.println("Fecha: "+nuevaVotacion.getFechaCierre());
         if (um.getUser() == null) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Para guardar la votación debe ingresar a la plataforma como miembro.", null));
             return "";

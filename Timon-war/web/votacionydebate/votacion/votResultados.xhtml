@@ -43,7 +43,7 @@
                 </h:panelGroup>
                 <h:panelGroup id="resultados" rendered="#{vc.rs.participacion > 0}">
                     <div class="cajaTituloChico" style="margin-top: 15px;" >
-                        Último Resultado de la Votacion
+                        Último Resultado de la Votación
                         <div style="font-family: Molengo; font-size: 12px;">
                             Conteo realizado el 
                             <h:outputText value="#{vc.rs.fechaConteo}" >
@@ -58,19 +58,19 @@
                         <h:panelGroup id="scores">
                             <ui:repeat value="#{vc.rs.scores}" var="score" varStatus="s">
                                 <h:panelGroup rendered="#{s.even}">
-                                    <div class="rengloneven" style="margin-bottom: 0px; padding: 15px;">
+                                    <div class="rengloneven" style="margin-bottom: 0px; padding: 15px; position:relative;">
+                                        <h:panelGroup rendered="#{score.lugar eq 1}">
+                                            <div style="position: absolute; top: -3px; right: -1px;">
+                                                <img src="#{facesContext.externalContext.request.contextPath}/images/#{vc.tipoResultado}.png" />
+                                            </div>
+                                        </h:panelGroup>                                          
                                         <div style="font-size: 55px; width: 50px; float: left;">
                                             #{score.lugar}
                                         </div>
                                         <div style="width: 100px; float: left;">
                                             <p:graphicImage width="80" height="80" url="/ShowImagenOpcion?oid=#{score.opcion.id}" rendered="#{vc.tieneImagenLaOpcion(score.opcion.id)}" />
                                         </div>
-                                        <div style="width: 600px; float: left;">
-                                            <h:panelGroup rendered="#{score.lugar eq 1}">
-                                                <div style="position: absolute; top:-3px; right: -1px;">
-                                                    <img src="#{facesContext.externalContext.request.contextPath}/images/#{vc.tipoResultado}.png" />
-                                                </div>
-                                            </h:panelGroup>                                    
+                                        <div style="width: 600px; float: left;">                                            
                                             <strong>#{score.opcion.nombre}</strong><br/>
                                             <span style="font-size: 12px;">#{score.opcion.descripcion}</span><br/>
                                             <h:panelGroup rendered="#{not empty vot.opcion.url}">
@@ -81,19 +81,19 @@
                                     </div>
                                 </h:panelGroup>
                                 <h:panelGroup rendered="#{s.odd}">
-                                    <div class="renglonodd" style="margin-bottom: 0px; padding: 15px;">
+                                    <div class="renglonodd" style="margin-bottom: 0px; padding: 15px; position:relative;">
+                                        <h:panelGroup rendered="#{score.lugar eq 1}">
+                                            <div style="position: absolute; top: -3px; right: -1px;">
+                                                <img src="#{facesContext.externalContext.request.contextPath}/images/#{vc.tipoResultado}.png" />
+                                            </div>
+                                        </h:panelGroup>                                          
                                         <div style="font-size: 55px; width: 50px; float: left;">
                                             #{score.lugar}
                                         </div>
                                         <div style="width: 100px; float: left;">
-                                            <h:panelGroup rendered="#{score.lugar eq 1}">
-                                                <div style="position: absolute; top:-3px; right: -1px;">
-                                                    <img src="#{facesContext.externalContext.request.contextPath}/images/#{vc.tipoResultado}.png" />
-                                                </div>
-                                            </h:panelGroup>                                    
                                             <p:graphicImage width="80" height="80" url="/ShowImagenOpcion?oid=#{score.opcion.id}" rendered="#{vc.tieneImagenLaOpcion(score.opcion.id)}" />
                                         </div>
-                                        <div style="width: 600px; float: left;">
+                                        <div style="width: 600px; float: left;">   
                                             <strong>#{score.opcion.nombre}</strong><br/>
                                             <span style="font-size: 12px;">#{score.opcion.descripcion}</span><br/>
                                             <h:panelGroup rendered="#{not empty vot.opcion.url}">

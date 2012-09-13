@@ -21,6 +21,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -39,6 +41,7 @@ import timon.sessionbeans.VotoYDebateLogic;
 @SessionScoped
 public class DelegacionController implements Serializable {
 
+    private static final Logger mrlog = Logger.getLogger(DelegacionController.class.getName());
     @Inject
     UserManager um;
     @Inject
@@ -88,6 +91,7 @@ public class DelegacionController implements Serializable {
     }
 
     public List<Miembro> completarMiembro(String query) {
+        mrlog.log(Level.FINE,"completarMiembro: llamando el session bean...");
         return vydl.completarMiembro(query);
     }
 

@@ -14,6 +14,8 @@
  */
 package timon.converters;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import timon.entities.registro.Miembro;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -29,7 +31,7 @@ import timon.sessionbeans.TimonLogic;
  */
 @FacesConverter(forClass=Miembro.class,value="miembro")
 public class MiembroConverter implements Converter {
-    
+    private static final Logger mrlog = Logger.getLogger(MiembroConverter.class.getName());
     // Por alguna razon no esta inyectando el session bean!!!    
     //@Inject
     //TimonLogic tl;
@@ -45,6 +47,7 @@ public class MiembroConverter implements Converter {
                 // A la antigua :(
                 Context ctx = new InitialContext();
                 TimonLogic tl = (TimonLogic) ctx.lookup("java:global/Timon/Timon-ejb/TimonLogic");
+                mrlog.log(Level.FINE,"Buscando al miembro con id {0}",id);
                 Miembro m = tl.getMiembro(id);
                 return m;
             } catch (Exception e) {

@@ -120,6 +120,7 @@ public class VotacionController implements Serializable {
         if (rs == null) {
             rs = vl.getUltimoResultado(votacion);
 
+
             if (rs == null) {
                 // Verifica si hay una votacion en proceso
                 Integer avance = mv.getConteos().get(votacion.getId());
@@ -145,6 +146,16 @@ public class VotacionController implements Serializable {
 
             if (rs != null) {
                 Collections.sort(rs.getScores());
+                tipoResultado = "ganador";
+                int ganador = 0;
+                for (Score s : rs.getScores()) {
+                    if (s.getLugar() == 1) {
+                        ganador++;
+                    }
+                }
+                if (ganador > 1) {
+                    tipoResultado = "empate";
+                }
             }
         }
         return rs;
@@ -201,16 +212,6 @@ public class VotacionController implements Serializable {
             }
             try {
                 rs = getRs();
-                tipoResultado = "ganador";
-                int ganador = 0;
-                for (Score s : rs.getScores()) {
-                    if (s.getLugar() == 1) {
-                        ganador++;
-                    }
-                }
-                if (ganador > 1) {
-                    tipoResultado = "empate";
-                }
             } catch (Exception e) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocurrio un error al tratar de obtener el resultado de la eleccion.", null));
             }
@@ -251,7 +252,7 @@ public class VotacionController implements Serializable {
             h = hsr.getRemoteAddr();
         }
         logvot.setIp(h);
-        mrlog.log(Level.FINE,"EL ip es {0}",h);
+        mrlog.log(Level.FINE, "EL ip es {0}", h);
         List<Opcion> votos = opciones.getTarget();
         logvot.setVotacion(votacion);
         logvot.setMiembro(um.getUser());
