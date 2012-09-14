@@ -28,7 +28,9 @@
             'open_window',
             'menubar, toolbar, location, directories, status, scrollbars, resizable, dependent, width=900, height=480, left=0, top=0');"><div class="textopcion">Wiki!</div></div>
 
-
+        <c:if test="#{donde eq 'menublog'}"><c:set var="clase" value="mopon" /></c:if>
+        <div id="menublog" class="#{clase}" onclick="location='#{facesContext.externalContext.request.contextPath}/faces/blog.xhtml';"><div class="textopcion">Blog</div></div>
+        <c:if test="#{donde eq 'menublog'}"><c:set var="clase" value="mopoff" /></c:if> 
 
         <c:if test="#{donde eq 'menucal'}"><c:set var="clase" value="mopon" /></c:if>
         <div id="menucal" class="#{clase}" onclick="location='#{facesContext.externalContext.request.contextPath}/faces/calendario.xhtml';"><div class="textopcion">Calendario de Actividades</div></div>
