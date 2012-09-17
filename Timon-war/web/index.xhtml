@@ -68,10 +68,15 @@
             <div style="float: left; padding: 5px;">
 
                 <div class="caja" style="width: 705px; margin: 0px 0px 15px 0px; padding: 10px 10px 10px 10px;">
-                    <ui:repeat value="#{bc.recentPosts}" var="post">
+                    <ui:repeat value="#{bc.recentPosts}" var="post" varStatus="st">
                         <h3>#{post.title}</h3>
-                        <div>#{post.date}</div>
+                        <div style="font-size: 10; color: #a59f98;">
+                            <h:outputText value="#{post.nativeDate}">
+                                <f:convertDateTime pattern="EEEE dd 'de' MMMM yyyy ' ' hh:mm a" locale="es" timeZone="GMT-8" />
+                            </h:outputText>
+                        </div>
                         <h:outputText value="#{post.excerpt}" escape="false" />
+                        <div style="font-size: 24px; text-align: center;"><h:outputText value="❃" rendered="#{!st.last}" /></div>
                     </ui:repeat>
                 </div>                
                 <div class="cajaTituloChico">

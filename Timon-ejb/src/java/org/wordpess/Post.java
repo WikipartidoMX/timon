@@ -5,6 +5,9 @@
 package org.wordpess;
 
 import com.google.gson.annotations.SerializedName;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -32,6 +35,19 @@ public class Post {
     @SerializedName("comment_status")
     public String commentStatus;
 
+    
+    /**
+     * @return la fecha en java.util.Date
+     */
+    public Date getNativeDate() throws Exception {
+        DateFormat formatter;
+        formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        try {
+            return formatter.parse(date);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
     /**
      * @return the id
      */
@@ -255,5 +271,7 @@ public class Post {
     public void setCommentStatus(String commentStatus) {
         this.commentStatus = commentStatus;
     }
+    
+    
 }
 
