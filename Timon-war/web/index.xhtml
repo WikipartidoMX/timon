@@ -66,9 +66,18 @@
         </div>
         <div>
             <div style="float: left; padding: 5px;">
+
+                <div class="caja" style="width: 705px; margin: 0px 0px 15px 0px; padding: 10px 10px 10px 10px;">
+                    <ui:repeat value="#{bc.recentPosts}" var="post">
+                        <h3>#{post.title}</h3>
+                        <div>#{post.date}</div>
+                        <h:outputText value="#{post.excerpt}" escape="false" />
+                    </ui:repeat>
+                </div>                
                 <div class="cajaTituloChico">
                     Próximos Eventos
                 </div>
+
                 <div class="cajaContent">
                     <iframe src="https://www.google.com/calendar/embed?showTitle=0&amp;src=wikipartidomx%40gmail.com&amp;ctz=America/Mexico_City" style=" border-width:0 " width="705" height="400" frameborder="0" scrolling="no"></iframe>
                 </div>

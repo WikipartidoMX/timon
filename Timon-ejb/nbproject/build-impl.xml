@@ -782,16 +782,24 @@ exists or setup the property manually. For example like this:
     <target depends="compile,-library-inclusion-in-archive-weblogic,-library-inclusion-in-archive-by-user" name="library-inclusion-in-archive"/>
     <target if="is.jars.in.ejbjar" name="-library-inclusion-in-archive-by-user">
         <copyfiles files="${libs.httpclient.classpath}" todir="${build.classes.dir}"/>
+        <copyfiles files="${libs.gson.classpath}" todir="${build.classes.dir}"/>
+        <copyfiles files="${libs.commons-io.classpath}" todir="${build.classes.dir}"/>
     </target>
     <target if="is.server.weblogic" name="-library-inclusion-in-archive-weblogic">
         <basename file="${libs.httpclient.classpath}" property="manifest.libs.httpclient.classpath"/>
+        <basename file="${libs.gson.classpath}" property="manifest.libs.gson.classpath"/>
+        <basename file="${libs.commons-io.classpath}" property="manifest.libs.commons-io.classpath"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Extension-List" value="jar-1 "/>
+            <attribute name="Extension-List" value="jar-1 jar-2 jar-3 "/>
             <attribute name="jar-1-Extension-Name" value="${manifest.libs.httpclient.classpath}"/>
+            <attribute name="jar-2-Extension-Name" value="${manifest.libs.gson.classpath}"/>
+            <attribute name="jar-3-Extension-Name" value="${manifest.libs.commons-io.classpath}"/>
         </manifest>
     </target>
     <target depends="compile" name="library-inclusion-in-manifest">
         <copyfiles files="${libs.httpclient.classpath}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${libs.gson.classpath}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${libs.commons-io.classpath}" todir="${dist.ear.dir}/lib"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update"/>
     </target>
     <target name="-copy-meta-inf">
