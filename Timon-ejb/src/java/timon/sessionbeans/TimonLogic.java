@@ -68,11 +68,12 @@ public class TimonLogic implements Serializable {
         return em.createQuery("select e from Estado e").getResultList();
     }
     
-    public Estado getEstado(long id) {
+    public Estado getEstado(long id) throws Exception{
         try {
             return em.find(Estado.class, id);
         } catch (Exception e) {
-            return null;
+            System.out.println("Error al obtener el estado: "+e.getMessage());
+            throw new Exception("Error al obtener el estado: "+e.getMessage());
         }
     }
     

@@ -98,7 +98,7 @@ public class NuevaVotacionController implements Serializable {
     }
 
     public String guardarVotacion() {
-        System.out.println("Fecha: "+nuevaVotacion.getFechaCierre());
+        System.out.println("Fecha: " + nuevaVotacion.getFechaCierre());
         if (um.getUser() == null) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Para guardar la votación debe ingresar a la plataforma como miembro.", null));
             return "";
@@ -234,8 +234,12 @@ public class NuevaVotacionController implements Serializable {
 
     public void agregarEstado() {
         //System.out.println("Agregando " + estadoid);
-        if (!selecEstados.contains(tl.getEstado(estadoid))) {
-            selecEstados.add(tl.getEstado(estadoid));
+        try {
+            if (!selecEstados.contains(tl.getEstado(estadoid))) {
+                selecEstados.add(tl.getEstado(estadoid));
+            }
+        } catch (Exception e) {
+            System.out.println("Ocurrió un error al agregar un estado "+e.getMessage());
         }
     }
 

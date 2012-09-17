@@ -9,7 +9,9 @@
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
                 >
 
-
+    <f:metadata> 
+        <f:event type="preRenderView" listener="#{registro.actualizaEstado}" />
+    </f:metadata> 
 
     <ui:define name="content">
         <link href="#{facesContext.externalContext.request.contextPath}/resources/css/afiliacion.css" rel="stylesheet" type="text/css" />        
@@ -193,7 +195,7 @@
                             <div class="valor">
                                 <h:selectOneMenu  style="color:grey; font-size: 14px;" id="selectEstado"  value="#{registro.estadoid}">
                                     <f:selectItems value="#{registro.estados}" />
-                                    <f:ajax event="blur" render="formaDeRegistro"  />
+                                    
                                 </h:selectOneMenu>
                             </div>                            
                             <div style="float:left;">
@@ -239,7 +241,7 @@
                             <ui:include src="/avisolegal.xhtml" />       <br/>
                             DECLARO BAJO PROTESTA DE DECIR VERDAD QUE NO ME HE AFILIADO A NINGUNA OTRA ASOCIACIÓN POLÍTICA INTERESADA EN OBTENER EL REGISTRO COMO PARTIDO POLÍTICO NACIONAL, DURANTE EL PROCESO DE REGISTRO CORRESPONDIENTE A LOS AÑOS 2013-2014
                             <br/><br/>
-                            <p:commandButton action="#{registro.registrar}" update="@form"  value="AFILIARME AL WIKIPARTIDO" />
+                            <p:commandButton action="#{registro.registrar}" ajax="false"  value="AFILIARME AL WIKIPARTIDO" />
 
                         </div>                 
                     </div>

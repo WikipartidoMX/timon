@@ -245,6 +245,9 @@ public class VotacionController implements Serializable {
         if (um.getUser() == null) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Para votar debe ingresar a la plataforma como miembro.", null));
             return "";
+        } else if (um.getUser().getPaso() == 1) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Para votar debes estar afiliado. ¡Afíliate hoy!", null));
+            return "";
         }
         HttpServletRequest hsr = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         String h = hsr.getHeader("x-forwarded-for");
@@ -265,7 +268,7 @@ public class VotacionController implements Serializable {
             mrlog.log(Level.SEVERE, "Error al tratar de guardar la votacion!!! {0}", e.getMessage());
             return "";
         }
-        mrlog.log(Level.FINE, "Acabe de guardar los votos de {0} ahora invoco el conteo de forma asíncrona...", um.getUser());
+        mrlog.log(Level.INFO, "Acabe de guardar los votos de {0} ahora invoco el conteo de forma asíncrona...", um.getUser());
         try {
             mv.getConteos().put(votacion.getId(), 0);
             vl.cuentaConSchulze(votacion);

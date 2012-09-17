@@ -68,6 +68,15 @@ public class Registro implements Serializable {
      */
     public Registro() {
         miembro = new Miembro();
+        
+    }
+    
+    public void actualizaEstado() {
+        if (um.getUser() != null) {
+             if (um.getUser().getPaso() > 1) {
+                 estadoid = um.getUser().getEstado().getId();
+             }
+        }
     }
 
     public String handleFileUpload(FileUploadEvent event) {
@@ -236,21 +245,30 @@ public class Registro implements Serializable {
     }
 
     public String nombreDeEstado(Long id) {
-        Estado estado = tl.getEstado(id);
+        Estado estado;
+        try {
+            estado = tl.getEstado(id);
+        } catch (Exception e) {
+            System.out.println("No es posible obtener el nombre del estado! "+e.getMessage());
+            return null;
+        }
         return estado.getNombre();
     }
 
-    public String registrar() {
+    public String registrar() throws Exception {
 
         miembro.setUrl(miembro.getUrl().replace("http://", ""));
         System.out.println("Afiliando a " + miembro.getNombre() + " " + miembro.getApellidoPaterno());
-        Miembro existe = null;
+        Miembro existe;
         existe = tl.getMiembroFromEmail(miembro.getEmail());
         if (existe != null) {
 
             try {
                 miembro.setPaso(2L);
-                miembro.setEstado(tl.getEstado(estadoid));
+                System.out.println("Estado Id: "+estadoid);
+                Estado estado = tl.getEstado(estadoid);
+                System.out.println("Poniendo al miembro el estado "+estado);
+                miembro.setEstado(estado);
                 String hashed;
                 hashed = BCrypt.hashpw(miembro.getPassword(), BCrypt.gensalt(12));
                 miembro.setPassword(hashed);
@@ -262,6 +280,7 @@ public class Registro implements Serializable {
                         "¡Se ha ingresado tu afiliación al sistema!", null));
             } catch (Exception e) {
                 System.out.println(e.getMessage());
+                throw new Exception("Ocurrió un error al tratar de afiliarte: " + e.getMessage() + " te agradeceremos reportarlo a wikipartidomx@gmail.com con este error.");
             }
             return "registro.xhtml?faces-redirect=true";
         }

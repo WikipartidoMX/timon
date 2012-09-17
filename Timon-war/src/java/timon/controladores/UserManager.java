@@ -64,7 +64,7 @@ public class UserManager implements Serializable {
     }
 
     public String login() throws Exception {
-        System.out.println("Login con: " + email + " y " + passwd + " desde " + origen);
+        System.out.println("Login con: " + email + " desde " + origen);
         String r = "";
 
         Miembro u = null;
