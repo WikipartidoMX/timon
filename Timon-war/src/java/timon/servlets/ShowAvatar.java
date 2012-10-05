@@ -91,7 +91,7 @@ public class ShowAvatar extends HttpServlet {
                 mime = "image/png";
             }
             if (Arrays.equals(Arrays.copyOfRange(f, 0, 3), jpg)) {
-                mime = "image/jpg";
+                mime = "image/jpeg";
             }
             if (Arrays.equals(Arrays.copyOfRange(f, 0, 3), gif)) {
                 mime = "image/gif";

@@ -41,6 +41,8 @@ public class ImagenDeSlide extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String etag = request.getHeader("If-None-Match");
+        String tag;        
         long id = Integer.parseInt(request.getParameter("id"));
         byte[] f;
         f = sl.getImagenDeSlide(id);
@@ -48,18 +50,25 @@ public class ImagenDeSlide extends HttpServlet {
             throw new ServletException("No se encontró la imagen.");
         }
         if (f != null) {
+            tag = String.valueOf(f.length);
             String mime = "image/xyz";
             if (Arrays.equals(Arrays.copyOfRange(f, 0, 8), png)) {
                 mime = "image/png";
             }
             if (Arrays.equals(Arrays.copyOfRange(f, 0, 3), jpg)) {
-                mime = "image/jpg";
+                mime = "image/jpeg";
             }
             if (Arrays.equals(Arrays.copyOfRange(f, 0, 3), gif)) {
                 mime = "image/gif";
             }
             response.setContentType(mime);
             response.setContentLength(f.length);
+            if (tag.equals(etag)) {
+                response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                return;
+            }
+            response.addHeader("Cache-Control", "public");
+            response.addHeader("Etag", tag);            
             ByteArrayInputStream input = new ByteArrayInputStream(f);
             try (   BufferedOutputStream output = new BufferedOutputStream(response.getOutputStream())) {
                 int b;
