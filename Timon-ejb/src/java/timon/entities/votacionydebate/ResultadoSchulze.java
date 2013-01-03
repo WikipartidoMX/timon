@@ -38,7 +38,9 @@ public class ResultadoSchulze implements Serializable {
     private Votacion votacion;
     @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
     private List<Score> scores;
+    // La Matriz de Preferencias
     private long[][] pref;
+    // La Matriz de Strong Paths
     private long[][] sp;
     private long exetime;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)

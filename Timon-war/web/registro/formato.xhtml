@@ -2,80 +2,106 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
     <h:head>
         <title>Formato de Afiliación al Wikipartido de México</title>
     </h:head>
     <h:body>
 
         <h:panelGroup rendered="#{um.valid}">
-        <table border="0" width="100%">
-            <tr><td><img src="../images/logo.png" /></td><td>FOLIO: #{registro.miembro.id}</td></tr>
-        </table>
-        <br/>
-        <img src="http://qrcode.kaywa.com/img.php?s=5&amp;d=#{registro.miembro.claveDeElector}" alt="QR Code" />
-        
-        <br/>
-        <center><h1 style="text-decoration: underline;">CONSTANCIA DE AFILIACIÓN</h1></center><br/><br/>
-        
-        <table border="0">
-            <tr style="font-size: 24px;">
-                <td style="color:#999999;">Nombre:&nbsp;&nbsp;</td>
-                <td>#{registro.miembro.nombre}&nbsp;&nbsp;</td>
-                <td>#{registro.miembro.apellidoPaterno}&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                <td>#{registro.miembro.apellidoMaterno}&nbsp;&nbsp;</td>
-            </tr>
-            <tr style="font-size: 10px;">
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>APELLIDO PATERNO</td>
-                <td>APELLIDO MATERNO</td>
-            </tr>
-        </table>
-        <br/>
-        <table border="0">
-            <tr style="font-size: 24px;">
-                <td style="color:#999999;">Dirección:</td>
-                <td>#{registro.miembro.calle} #{registro.miembro.numeroExterior} 
-                    - #{registro.miembro.numeroInterior}</td>                                                    
-            </tr>
-            <tr style="font-size: 24px;">
-                <td>&nbsp;</td><td>#{registro.miembro.colonia}</td><td>CP</td><td>#{registro.miembro.cp}</td>     
-            </tr>
-            <tr style="font-size: 24px;">
-                <td>&nbsp;</td><td colspan="3">#{registro.miembro.municipio}, #{registro.miembro.estado.nombre}. MÉXICO.</td>     
-            </tr>            
-        </table>
-        <br/>
-        <table border="0">
-            <tr style="font-size: 24px;">
-                <td style="color:#999999;">Clave de Elector:</td><td>#{registro.miembro.claveDeElector}</td><td style="color:#999999;">CURP:</td><td>#{registro.miembro.curp}</td>                
-            </tr>           
-        </table>
-        <table border="0">
-            <tr style="font-size: 24px;">
-                <td style="color:#999999;">Ocupación:</td><td>#{registro.miembro.ocupacion}</td>                
-            </tr>
-            <tr style="font-size: 24px;">
-                <td style="color:#999999;">Clave de Usuario en el Wiki:</td><td>#{registro.miembro.clavedeusuario}</td>                
-            </tr>              
-        </table>
-        <br/>
-        <br/>
-        <table border="0" width="100%">
-            <tr><td width="50%">
-        "POR ESTE ACTO MANIFIESTO MI VOLUNTAD DE AFILIARME AL WIKIPARTIDO DE MÉXICO, ASOCIACIÓN POLÍTICA,
-        DE MANERA LIBRE Y CONSCIENTE. ASÍ MISMO ACEPTO RESPETAR SUS PRINCIPIOS Y ESTATUTOS Y CONDUCIRME EN EL 
-        MARCO DE LA LEY ELECTORAL VIGENTE"
-        </td>
-                <td width="50%">
-                    _________________________<br/>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    FIRMA
-                </td>
-        </tr>
-        </table>
+            <table border="0" width="100%">
+                <tr><td><img src="../images/logo.png" width="600" /></td><td>FOLIO: #{registro.miembro.id}</td></tr>
+            </table>
+            <br/>
+            <img src="http://qrcode.kaywa.com/img.php?s=5&amp;d=#{registro.miembro.claveDeElector}" alt="QR Code" />
+
+            <br/>
+            <center><h1 style="text-decoration: underline;">CONSTANCIA DE AFILIACIÓN</h1></center><br/><br/>
+
+            <table border="0" align="right">
+                <tr style="font-size: 24px;">
+                    <td style="color:#999999;">Fecha de Afiliación:&nbsp;&nbsp;</td>
+                    <td>
+                        <h:outputText value="#{registro.miembro.fechaRegistro}" >
+                            <f:convertDateTime pattern="dd 'de' MMMM 'de' yyyy" locale="es" />
+                        </h:outputText>
+                    </td>
+                </tr>
+            </table> 
+            <table border="0">
+                <tr style="font-size: 24px;">
+                    <td style="color:#999999;">Nombre:&nbsp;&nbsp;</td>
+
+                    <td>#{registro.miembro.apellidoPaterno}&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td>#{registro.miembro.apellidoMaterno}&nbsp;&nbsp;</td>
+                    <td>#{registro.miembro.nombre}&nbsp;&nbsp;</td>
+                </tr>
+                <tr style="font-size: 10px;">
+                    <td>&nbsp;</td>
+                    <td>APELLIDO PATERNO</td>
+                    <td>APELLIDO MATERNO</td>
+                    <td>NOMBRE(S)</td>
+                </tr>
+            </table>
+
+
+            <br/>
+            <table border="0">
+                <tr style="font-size: 24px;">
+                    <td style="color:#999999;">Domicilio:</td>
+                    <td>#{registro.miembro.calle}</td><td> #{registro.miembro.numeroExterior}</td><td>
+                        #{registro.miembro.numeroInterior}</td>                                                    
+                </tr>
+                <tr style="font-size: 10px;">
+                    <td>&nbsp;</td>
+                    <td>CALLE</td>
+                    <td>NÚMERO EXTERIOR</td>
+                    <td>NÚMERO INTERIOR</td>
+                </tr>                
+                <tr style="font-size: 24px;">
+                    <td>&nbsp;</td><td>#{registro.miembro.colonia}</td><td>C.P. #{registro.miembro.cp}</td>     
+                </tr>
+                <tr style="font-size: 24px;">
+                    <td>&nbsp;</td><td>#{registro.miembro.municipio}</td><td>#{registro.miembro.estado.nombre}</td>     
+                </tr>
+                                <tr style="font-size: 10px;">
+                    <td>&nbsp;</td>
+                    <td>DELEGACIÓN O MUNICIPIO</td>
+                    <td>ESTADO</td>
+                </tr>
+            </table>
+            <br/>
+            <table border="0">
+                <tr style="font-size: 24px;">
+                    <td style="color:#999999;">Clave de Elector:</td><td>#{registro.miembro.claveDeElector}</td><td style="color:#999999;">CURP:</td><td>#{registro.miembro.curp}</td>                
+                </tr>           
+            </table>
+            <table border="0">
+                <tr style="font-size: 24px;">
+                    <td style="color:#999999;">Ocupación:</td><td>#{registro.miembro.ocupacion}</td>                
+                </tr>
+                <tr style="font-size: 24px;">
+                    <td style="color:#999999;">Clave de Usuario en el Wiki:</td><td>#{registro.miembro.clavedeusuario}</td>                
+                </tr>              
+            </table>
+
+            <br/>
+            <br/>
+            <table border="0" width="100%">
+                <tr>
+                    <td width="80%"><center>
+                            _________________________<br/>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>
+                            FIRMA O HUELLA DIGITAL
+                        </center><br/>
+                        Manifiesto mi voluntad de afiliarme de manera libre, autónoma y pacífica al Wikipartido de México.<br/>
+                        Declaro bajo protesta de decir verdad que no me he afiliado a ninguna otra organización interesada en obtener el registro como partido político nacional, durante el proceso de registro correspondiente a los años 2013-2014.
+                        Reconozco y acepto que acorde a lo establecido en el artículo 5, numeral 2 del Código Federal de Instituciones y Procedimientos Electorales, en este acto renuncio a mi afiliación previa a cualquier otro partido político.
+                    </td>
+                </tr>
+            </table>
         </h:panelGroup>
     </h:body>
 </html>

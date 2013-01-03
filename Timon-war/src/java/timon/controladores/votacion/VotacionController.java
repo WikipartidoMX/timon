@@ -71,6 +71,7 @@ public class VotacionController implements Serializable {
     private String filtroTexto;
     private Estado filtroEstado = null;
     private boolean filtroAbiertas = false;
+    private boolean filtroDesiertas = false;
     private Date filtroFechaCierreDesde = null;
     private Date filtroFechaCierreHasta = null;
     private DataGrid dataGrid;
@@ -87,13 +88,23 @@ public class VotacionController implements Serializable {
             @Override
             public List<Votacion> load(int start, int max, String string, SortOrder so, Map map) {
                 mrlog.log(Level.FINE, "Filtro Tema: {0}", getFiltroTema());
-                LazyResult vots = vl.getVotaciones(start, max, filtroTema, filtroTexto, filtroEstado, filtroAbiertas, filtroFechaCierreDesde, filtroFechaCierreHasta);
+                LazyResult vots = vl.getVotaciones(start, max, filtroTema, filtroTexto, filtroEstado, filtroAbiertas, filtroDesiertas, filtroFechaCierreDesde, filtroFechaCierreHasta);
+                
                 this.setRowCount(vots.getSize());
                 return vots.getSet();
             }
         };
         mrlog.log(Level.FINE, "votaciones Row Count: {0} Page Size: {1}", new Object[]{votaciones.getRowCount(), votaciones.getPageSize()});
 
+    }
+    
+    public boolean isCerrada() {
+        Date now = new Date();
+        if (votacion.getFechaCierre().before(now)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void reset() {
@@ -551,5 +562,19 @@ public class VotacionController implements Serializable {
      */
     public void setScoreGanador(int scoreGanador) {
         this.scoreGanador = scoreGanador;
+    }
+
+    /**
+     * @return the filtroDesiertas
+     */
+    public boolean isFiltroDesiertas() {
+        return filtroDesiertas;
+    }
+
+    /**
+     * @param filtroDesiertas the filtroDesiertas to set
+     */
+    public void setFiltroDesiertas(boolean filtroDesiertas) {
+        this.filtroDesiertas = filtroDesiertas;
     }
 }

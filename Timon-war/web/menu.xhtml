@@ -36,6 +36,10 @@
         <div id="menucal" class="#{clase}" onclick="location='#{facesContext.externalContext.request.contextPath}/faces/calendario.xhtml';"><div class="textopcion">Calendario de Actividades</div></div>
         <c:if test="#{donde eq 'menucal'}"><c:set var="clase" value="mopoff" /></c:if>          
 
+        <c:if test="#{donde eq 'menuforo'}"><c:set var="clase" value="mopon" /></c:if>
+        <div id="menuforo" class="#{clase}" onclick="location='#{facesContext.externalContext.request.contextPath}/faces/foro.xhtml';"><div class="textopcion">Foro</div></div>
+        <c:if test="#{donde eq 'menuforo'}"><c:set var="clase" value="mopoff" /></c:if>          
+
         <c:if test="#{donde eq 'menuvotdeb'}"><c:set var="clase" value="mopon" /></c:if>
         <div id="menuvotdeb" class="#{clase}" onclick="location='#{facesContext.externalContext.request.contextPath}/faces/votacionydebate/votaciones.xhtml';"><div class="textopcion">Votaciones y Debate</div></div>
         <c:if test="#{donde eq 'menuvotdeb'}"><c:set var="clase" value="mopoff" /></c:if>

@@ -43,7 +43,7 @@ public class SlideLogic implements Serializable {
     @PermitAll
     public List<Slide> getActiveSlides() {
         Date hoy = new Date();
-        return em.createQuery("select s from Slide s where s.activa = true and :hoy < s.expira order by s.orden desc").setParameter("hoy", hoy).getResultList();
+        return em.createQuery("select s from Slide s where s.activa = true and :hoy < s.expira order by s.orden").setParameter("hoy", hoy).getResultList();
     }
     
 }

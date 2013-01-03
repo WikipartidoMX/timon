@@ -44,8 +44,9 @@
                         #{nombreVotacion}
                     </div>
                     <div style="float:left; width:240px;  top:0px; bottom:0px; font-size: 12px;">
-                        <h:panelGroup rendered="#{vc.participacion lt vc.quorum}"><div style="color: red;">Votos Emitidos: #{vc.participacion} Quórum: #{vc.quorum}.</div></h:panelGroup>
-                        <h:panelGroup rendered="#{vc.participacion ge vc.quorum}"><div style="color: green;">Votos Emitidos: #{vc.participacion} Quórum: #{vc.quorum}.</div></h:panelGroup>
+                        <h:panelGroup rendered="#{(vc.participacion lt vc.quorum) and not vc.cerrada}"><div style="color: red;">Votos Emitidos: #{vc.participacion} Quórum: #{vc.quorum}.</div></h:panelGroup>
+                        <h:panelGroup rendered="#{(vc.participacion ge vc.quorum) and not vc.cerrada}"><div style="color: green;">Votos Emitidos: #{vc.participacion} Quórum: #{vc.quorum}.</div></h:panelGroup>
+                        <h:panelGroup rendered="#{vc.cerrada}"><div style="color: green;">Votos Emitidos: #{vc.participacion} Quórum: #{vc.rs.quorum}.</div></h:panelGroup>
                         <div>
                             <h:panelGroup rendered="#{vc.votacion.temas.size() eq 0}">
                                 Tema Abierto

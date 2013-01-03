@@ -71,7 +71,7 @@ public class VotoYDebateLogic implements Serializable {
     public void remove(Object obj) {
         em.remove(obj);
     }
-    
+
     public boolean isIPsaturado(String ip, Votacion vot) {
         boolean saturado = false;
         Date ahora = new Date();
@@ -98,30 +98,30 @@ public class VotoYDebateLogic implements Serializable {
      *
      */
     public void guardarVotacion(LogVotacion logvot, List<Opcion> opciones) throws Exception {
-        
+
         // TODO: Verificar que el delegado/miembro sea del estado o estados        
         if (logvot.getMiembro().getPaso() < 2) {
             throw new Exception("Aún no eres miembro con derecho a voto :( ¡Afíliate hoy!");
         }
-        if (!perteneceAEstadosDeVotacion(logvot.getMiembro(),logvot.getVotacion())) {
+        if (!perteneceAEstadosDeVotacion(logvot.getMiembro(), logvot.getVotacion())) {
             throw new Exception("¡No perteneces a los estados limitados a la votación!");
         }
         Date hoy = new Date();
         if (hoy.after(logvot.getVotacion().getFechaCierre())) {
             throw new Exception("¡La votación ya está cerrada! No es posible registrar más votos.");
         }
-        
-        if (isIPsaturado(logvot.getIp(),logvot.getVotacion())) {
+
+        if (isIPsaturado(logvot.getIp(), logvot.getVotacion())) {
             Actividad act = new Actividad();
             act.setMiembro(logvot.getMiembro());
             act.setIp(logvot.getIp());
             act.setFecha(new Date());
             act.setTipo("votacion");
-            act.setDescripcion("Rebase del límite de votacion :"+logvot.getVotacion().getId()+": "+logvot.getVotacion().getNombre());
+            act.setDescripcion("Rebase del límite de votacion :" + logvot.getVotacion().getId() + ": " + logvot.getVotacion().getNombre());
             persist(act);
             throw new Exception("Se ha alcanzado el límite de votos.");
         }
-        
+
         mrlog.log(Level.FINE, "Registrando Votos de {0} para votacion: {1}",
                 new Object[]{logvot.getMiembro().getNombre(), logvot.getVotacion()});
         mrlog.log(Level.FINE, "Verificando si {0} ya votó en esta votación...", logvot.getMiembro().getNombre());
@@ -267,7 +267,7 @@ public class VotoYDebateLogic implements Serializable {
     }
 
     public List<Miembro> completarMiembro(String query) {
-        mrlog.log(Level.FINE,"completando el miembro...");
+        mrlog.log(Level.FINE, "completando el miembro...");
         List<Miembro> miembros;
         StringBuilder q = new StringBuilder();
         q.append("select m from Miembro m where ");
@@ -288,9 +288,9 @@ public class VotoYDebateLogic implements Serializable {
             ejq.setParameter("p" + Integer.toString(i), "%" + p + "%");
             i++;
         }
-        mrlog.log(Level.FINE,"ejecutando el query...");
+        mrlog.log(Level.FINE, "ejecutando el query...");
         miembros = ejq.getResultList();
-        mrlog.log(Level.FINE,"regresando una lista de {0} miembros.",miembros.size());
+        mrlog.log(Level.FINE, "regresando una lista de {0} miembros.", miembros.size());
         return miembros;
     }
 
@@ -300,13 +300,14 @@ public class VotoYDebateLogic implements Serializable {
 
     @PermitAll
     public LazyResult getVotaciones(int start, int max) {
-        return getVotaciones(start, max, null, null, null, false, null, null);
+        return getVotaciones(start, max, null, null, null, false, false, null, null);
     }
 
     public LazyResult getVotaciones(int start, int max, Tema filtroTema, String filtroTexto,
-            Estado filtroEstado, boolean filtroAbiertas,
+            Estado filtroEstado, boolean filtroAbiertas, boolean filtroDesiertas,
             Date filtroFechaCierreDesde, Date filtroFechaCierreHasta) {
         mrlog.log(Level.FINE, "Buscando votaciones de {0} a {1}", new Object[]{start, max});
+        mrlog.log(Level.FINE, "filtroDesiertas: {0}", filtroDesiertas);
         StringBuilder ejbql = new StringBuilder();
         StringBuilder ejbqlCount = new StringBuilder();
         StringBuilder filtros = new StringBuilder();
@@ -314,9 +315,19 @@ public class VotoYDebateLogic implements Serializable {
         ejbql.append("select v from Votacion v ");
         ejbqlCount.append("select count(v) from Votacion v ");
         boolean filtrar = false;
+        if (!filtroDesiertas) {
+            froms.append(", ResultadoSchulze r ");
+        }
         if (filtroTema != null) {
             froms.append(", Tema t ");
             filtros.append(" t member of v.temas and t = :tema ");
+            filtrar = true;
+        }
+        if (!filtroDesiertas) {
+            if (filtrar) {
+                filtros.append(" and ");
+            }
+            filtros.append(" r.votacion = v and (r.hayQuorum = 1 or v.fechaCierre >= :hoyd) ");
             filtrar = true;
         }
         if (filtroTexto != null) {
@@ -346,6 +357,7 @@ public class VotoYDebateLogic implements Serializable {
             filtros.append(" v.fechaCierre >= :hoy ");
             filtrar = true;
         }
+
         if (filtrar) {
             ejbql.append(froms).append(" where ").append(filtros);
             ejbqlCount.append(froms).append(" where ").append(filtros);
@@ -376,11 +388,15 @@ public class VotoYDebateLogic implements Serializable {
                     }
                 }
             }
+                            Date hoy = new Date();
             if (filtroAbiertas) {
-                Date hoy = new Date();
                 query.setParameter("hoy", hoy);
                 queryCount.setParameter("hoy", hoy);
             }
+            if (!filtroDesiertas) {
+                query.setParameter("hoyd", hoy);
+                queryCount.setParameter("hoyd", hoy);
+            }            
         }
         mrlog.log(Level.FINE, query.toString());
         long sl = (Long) queryCount.getSingleResult();
@@ -440,15 +456,15 @@ public class VotoYDebateLogic implements Serializable {
         long participacion = getParticipacion(vot);
         // Cuantos miembros pueden votar
         long poblacion = getPoblacion(vot);
-        mrlog.log(Level.FINE,"Han participado {0} miembros",participacion);
-        mrlog.log(Level.FINE,"Total de Población para esta votación: {0} miembros.",poblacion);
-        
-        rs.setVotacion(vot);        
+        mrlog.log(Level.FINE, "Han participado {0} miembros", participacion);
+        mrlog.log(Level.FINE, "Total de Población para esta votación: {0} miembros.", poblacion);
+
+        rs.setVotacion(vot);
         rs.setParticipacion(participacion);
         rs.setPoblacion(poblacion);
         long quorum = getQuorum(poblacion);
         rs.setQuorum(quorum);
-        mrlog.log(Level.FINE,"El quorum es de {0} miembros",quorum);
+        mrlog.log(Level.FINE, "El quorum es de {0} miembros", quorum);
         if (participacion >= quorum) {
             rs.setHayQuorum(true);
         } else {
@@ -538,10 +554,10 @@ public class VotoYDebateLogic implements Serializable {
             scores.add(new Score(opciones.get(i), score[i]));
         }
         Collections.sort(scores);
-        int lugar=1;
-        for (i=0; i < scores.size()-1; i++) {
+        int lugar = 1;
+        for (i = 0; i < scores.size() - 1; i++) {
             scores.get(i).setLugar(lugar);
-            if (scores.get(i).getScore() > scores.get(i+1).getScore()) {
+            if (scores.get(i).getScore() > scores.get(i + 1).getScore()) {
                 lugar++;
             }
         }
@@ -727,10 +743,9 @@ public class VotoYDebateLogic implements Serializable {
 
         return res;
     }
-    
 
     public long getParticipacion(Votacion vot) {
-       return  (long) em.createQuery("select v.miembro.id from Voto v where v.votacion = :vot group by v.miembro.id").setParameter("vot", vot).getResultList().size();       
+        return (long) em.createQuery("select v.miembro.id from Voto v where v.votacion = :vot group by v.miembro.id").setParameter("vot", vot).getResultList().size();
     }
 
     public long getPoblacion(Votacion vot) {
@@ -758,21 +773,21 @@ public class VotoYDebateLogic implements Serializable {
     }
 
     public long getQuorum(long poblacion) {
-        double q = Math.exp(-.25*(Math.log(poblacion)/Math.log(2)))*100;
-        return (long)(q*poblacion/100);
+        double q = Math.exp(-.25 * (Math.log(poblacion) / Math.log(2))) * 100;
+        return (long) (q * poblacion / 100);
     }
-    
+
     public boolean perteneceAEstadosDeVotacion(Miembro m, Votacion v) {
         boolean pertenece = true;
         if (v.getEstados().size() < 1) {
             return pertenece;
         }
         try {
-        em.createQuery("select v from Votacion v, Estado e where e member of v.estados and e = :e and v=:v")
-                .setParameter("e", m.getEstado())
-                .setParameter("v", v).getSingleResult();
+            em.createQuery("select v from Votacion v, Estado e where e member of v.estados and e = :e and v=:v")
+                    .setParameter("e", m.getEstado())
+                    .setParameter("v", v).getSingleResult();
         } catch (Exception e) {
-            mrlog.log(Level.FINE,e.getMessage());
+            mrlog.log(Level.FINE, e.getMessage());
             return false;
         }
         return pertenece;

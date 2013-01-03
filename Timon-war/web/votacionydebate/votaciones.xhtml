@@ -44,10 +44,14 @@
                     </div>
                     <div style="float:left; margin-left: 10px;">
                         <div style="font-size:12px; margin-bottom: 5px;">Filtrar por Status:</div>
-                        Votaciones Abiertas:
+                        Sólo Votaciones Abiertas:
                         <p:selectBooleanCheckbox value="#{vc.filtroAbiertas}">
                             <p:ajax update="votaciones" listener="#{vc.reset()}"/>
                         </p:selectBooleanCheckbox>
+                        Ver Votaciones Desiertas:
+                        <p:selectBooleanCheckbox value="#{vc.filtroDesiertas}">
+                            <p:ajax update="votaciones" listener="#{vc.reset()}"/>
+                        </p:selectBooleanCheckbox>                        
                     </div>
                     <div style="clear:both;" />
                 </div>
