@@ -44,7 +44,7 @@
                         </div>
                         <div style="clear: both;" />
                     </div>
-                    <p:pickList value="#{vc.opciones}" var="op" itemValue="#{op}" converter="opcion" showTargetControls="true">
+                        <p:pickList value="#{vc.opciones}" var="op" itemValue="#{op}" itemLabel="#{op.nombre}" converter="opcion" showTargetControls="true" >
 
                         <p:column>
                             <p:graphicImage width="80" height="80" url="/ShowImagenOpcion?oid=#{op.id}" rendered="#{vc.tieneImagenLaOpcion(op.id)}" />

@@ -47,10 +47,10 @@
         <a href="nuevoArgumento.xhtml?vid=#{vc.vid}&amp;pater=0">Agregar un nuevo argumento</a>
         <h:form id="formaDebate">
 
-            <p:tree value="#{deco.raiz}" style="width:940px; margin-top: 10px; "  var="node" id="tree">
+            <p:tree value="#{deco.raiz}" style="width:940px; margin-top: 10px; white-space: normal; "  var="node" id="tree">
                 <p:treeNode id="treenode">
 
-                    <div class="caja" style="margin: 0px;">
+                    <div class="caja" style="margin: 0px; white-space: normal;">
                         <table border="0">
                             <tr><td valign="top">
                                     <div style="float:left; width: 120px;">
@@ -74,7 +74,7 @@
                                     </div>
                                 </td><td valign="top">
                                     <div style="float:right;">
-                                        <div><h:outputText value="#{node.discurso}" escape="false" /></div>
+                                        <div style="white-space: normal;"><h:outputText value="#{node.discurso}" escape="false" /></div>
                                         <div style="font-size:12px; margin-top: 20px;">
                                             <div>
 
