@@ -19,6 +19,7 @@ package timon.entities.showcase;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -36,6 +37,7 @@ import javax.persistence.Temporal;
  */
 
 @Entity
+@Cacheable(false)
 public class Slide implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
