@@ -239,10 +239,14 @@ public class Registro implements Serializable {
         return "";
     }
 
-    public Number cuantos() {
-        Number c = tl.cuantosMiembros();
+    public Number getCuantosRegistrados() {
+        Number c = tl.cuantosMiembrosRegistrados();
         return c;
     }
+    public Number getCuantosActivos() {
+        Number c = tl.cuantosMiembrosActivos();
+        return c;
+    }    
 
     public String nombreDeEstado(Long id) {
         Estado estado;
@@ -256,7 +260,7 @@ public class Registro implements Serializable {
     }
 
     public String registrar() throws Exception {
-
+        
         miembro.setUrl(miembro.getUrl().replace("http://", ""));
         System.out.println("Afiliando a " + miembro.getNombre() + " " + miembro.getApellidoPaterno());
         Miembro existe;

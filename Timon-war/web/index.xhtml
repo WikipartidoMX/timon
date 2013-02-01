@@ -13,46 +13,54 @@
     <ui:define name="content">
         <div class="encabezadoSeccion" />
         <link rel="stylesheet" href="#{facesContext.externalContext.request.contextPath}/resources/css/showcase/style.css" />
+        <div id="fb-root"></div>
+        <script>(function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&amp;appId=104846536218064";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));</script>
         <script type="text/javascript" src="#{facesContext.externalContext.request.contextPath}/resources/js/jquery.aw-showcase.min.js"></script>
         <script type="text/javascript">
 
-            $(document).ready(function()
+        $(document).ready(function()
+        {
+            $("#showcase").awShowcase(
             {
-                $("#showcase").awShowcase(
-                {
-                    content_width:			1050,
-                    content_height:			400,
-                    fit_to_parent:			true,
-                    auto:					true,
-                    interval:				7000,
-                    continuous:				true,
-                    loading:				true,
-                    tooltip_width:			200,
-                    tooltip_icon_width:		32,
-                    tooltip_icon_height:	32,
-                    tooltip_offsetx:		18,
-                    tooltip_offsety:		0,
-                    arrows:					true,
-                    buttons:				false,
-                    btn_numbers:			true,
-                    keybord_keys:			true,
-                    mousetrace:				false, /* Trace x and y coordinates for the mouse */
-                    pauseonover:			false,
-                    stoponclick:			false,
-                    transition:				'hslide', /* hslide/vslide/fade */
-                    transition_delay:		0,
-                    transition_speed:		500,
-                    show_caption:			'onload', /* onload/onhover/show */
-                    thumbnails:				false,
-                    thumbnails_position:	'outside-last', /* outside-last/outside-first/inside-last/inside-first */
-                    thumbnails_direction:	'vertical', /* vertical/horizontal */
-                    thumbnails_slidex:		1, /* 0 = auto / 1 = slide one thumbnail / 2 = slide two thumbnails / etc. */
-                    dynamic_height:			false, /* For dynamic height to work in webkit you need to set the width and height of images in the source. Usually works to only set the dimension of the first slide in the showcase. */
-                    speed_change:			true, /* Set to true to prevent users from swithing more then one slide at once. */
-                    viewline:				false, /* If set to true content_width, thumbnails, transition and dynamic_height will be disabled. As for dynamic height you need to set the width and height of images in the source. */
-                    custom_function:		null /* Define a custom function that runs on content change */
-                });
+                content_width:			1050,
+                content_height:			400,
+                fit_to_parent:			true,
+                auto:					true,
+                interval:				7000,
+                continuous:				true,
+                loading:				true,
+                tooltip_width:			200,
+                tooltip_icon_width:		32,
+                tooltip_icon_height:	32,
+                tooltip_offsetx:		18,
+                tooltip_offsety:		0,
+                arrows:					true,
+                buttons:				false,
+                btn_numbers:			true,
+                keybord_keys:			true,
+                mousetrace:				false, /* Trace x and y coordinates for the mouse */
+                pauseonover:			false,
+                stoponclick:			false,
+                transition:				'hslide', /* hslide/vslide/fade */
+                transition_delay:		0,
+                transition_speed:		500,
+                show_caption:			'onload', /* onload/onhover/show */
+                thumbnails:				false,
+                thumbnails_position:	'outside-last', /* outside-last/outside-first/inside-last/inside-first */
+                thumbnails_direction:	'vertical', /* vertical/horizontal */
+                thumbnails_slidex:		1, /* 0 = auto / 1 = slide one thumbnail / 2 = slide two thumbnails / etc. */
+                dynamic_height:			false, /* For dynamic height to work in webkit you need to set the width and height of images in the source. Usually works to only set the dimension of the first slide in the showcase. */
+                speed_change:			true, /* Set to true to prevent users from swithing more then one slide at once. */
+                viewline:				false, /* If set to true content_width, thumbnails, transition and dynamic_height will be disabled. As for dynamic height you need to set the width and height of images in the source. */
+                custom_function:		null /* Define a custom function that runs on content change */
             });
+        });
 
         </script>
         <div id="showcase" class="showcase">
@@ -88,35 +96,60 @@
                 </div>
             </div>
             <div style="float: right; padding: 5px;">
+                <div class="caja" style="width:200px; margin-top: 0px; color:red;">
+                    Ya somos #{registro.cuantosActivos} miembros activos y #{registro.cuantosRegistrados} registrados. 
+                    ¡Necesitamos ser más de 220,000 activos para obtener el registro!<br/><br/>
+                    <center><a href="faces/registro/registro.xhtml" style="font-size:18px;">¡AFÍLIATE HOY!</a></center><br/>
+                    <center>
+                        <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://wikipartido.mx" data-text="Te recomiendo el Wikipartido de México" data-via="WikipartidoMX" data-size="large">Tweet</a>
+                        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+                    </center>
+                    <br/>
+                    <!-- Place this tag where you want the +1 button to render. -->
+                    <div class="g-plusone" data-annotation="inline" data-width="300" data-href="http://www.wikipartido.mx"></div>
+
+                    <!-- Place this tag after the last +1 button tag. -->
+                    <script type="text/javascript">
+                    (function() {
+                        var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+                        po.src = 'https://apis.google.com/js/plusone.js';
+                        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+                    })();
+                    </script>
+                    <br/><br/>
+                    <center>
+                        <div class="fb-like" data-href="http://www.wikipartido.mx" data-send="true" data-layout="button_count" data-width="450" data-show-faces="true"></div>
+                    </center>
+                </div>
                 <div style="width: 250;">
                     <script charset="utf-8" src="http://widgets.twimg.com/j/2/widget.js"></script>
                     <script>
-                        new TWTR.Widget({
-                            version: 2,
-                            type: 'profile',
-                            rpp: 10,
-                            interval: 30000,
-                            width: 250,
-                            height: 600,
-                            theme: {
-                                shell: {
-                                    background: '#bfb8b2',
-                                    color: '#555555',
-                                    font: 'Francois One'
-                                },
-                                tweets: {
-                                    background: '#ffffff',
-                                    color: '#696969',
-                                    links: '#555555'
-                                }
+                    new TWTR.Widget({
+                        version: 2,
+                        type: 'profile',
+                        rpp: 10,
+                        interval: 30000,
+                        width: 250,
+                        height: 600,
+                        theme: {
+                            shell: {
+                                background: '#bfb8b2',
+                                color: '#555555',
+                                font: 'Francois One'
                             },
-                            features: {
-                                scrollbar: false,
-                                loop: false,
-                                live: false,
-                                behavior: 'all'
+                            tweets: {
+                                background: '#ffffff',
+                                color: '#696969',
+                                links: '#555555'
                             }
-                        }).render().setUser('wikipartidomx').start();
+                        },
+                        features: {
+                            scrollbar: false,
+                            loop: false,
+                            live: false,
+                            behavior: 'all'
+                        }
+                    }).render().setUser('wikipartidomx').start();
                     </script>
                 </div>
             </div>

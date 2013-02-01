@@ -56,14 +56,20 @@ public class TimonLogic implements Serializable {
         }
     }
     
-    public Number cuantosMiembros() {
+    public Number cuantosMiembrosRegistrados() {
         try {
             return (Number) em.createQuery("select count(m) from Miembro m").getSingleResult();
         } catch (Exception e) {
             return null;
         }
     }
-    
+    public Number cuantosMiembrosActivos() {
+        try {
+            return (Number) em.createQuery("select count(m) from Miembro m where m.paso=2").getSingleResult();
+        } catch (Exception e) {
+            return null;
+        }
+    }    
     public List<Estado> getEstados() {
         return em.createQuery("select e from Estado e").getResultList();
     }
