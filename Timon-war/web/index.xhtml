@@ -96,18 +96,27 @@
                 </div>
             </div>
             <div style="float: right; padding: 5px;">
-                <div class="caja" style="width:200px; margin-top: 0px; color:red;">
-                    Ya somos #{registro.cuantosActivos} miembros activos y #{registro.cuantosRegistrados} registrados. 
-                    ¡Necesitamos ser más de 220,000 activos para obtener el registro!<br/><br/>
-                    <center><a href="faces/registro/registro.xhtml" style="font-size:18px;">¡AFÍLIATE HOY!</a></center><br/>
+                <div class="cajaTituloChico" style="width:223px; color: red; text-align: center; margin-top: 2px; ">
+                    IMPORTANTE&nbsp;&nbsp;
+                </div>
+                <div class="cajaContent" style="width:210px; margin-top: 0px; ">
+                    Aunque ya somos #{registro.cuantosActivos} miembros afiliados,  
+                    necesitamos ser más de 220,000 a diciembre de 2013 para obtener el registro de Partido Político Nacional.<br/><br/>
+                    De tu afiliación depende revolucionar la política en México:<br/><br/>
+                    <center><a href="faces/registro/registro.xhtml" style="font-size:26px; text-decoration: underline;">¡AFÍLIATE HOY!</a></center><br/>
+                    
+                    Y ayuda a difundir esta nueva opción política:<br/>
+                    <br/>
                     <center>
-                        <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://wikipartido.mx" data-text="Te recomiendo el Wikipartido de México" data-via="WikipartidoMX" data-size="large">Tweet</a>
+                        <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://wikipartido.mx" data-text="¡Afíliate hoy al Wikipartido de México!" data-via="WikipartidoMX" data-size="large">Tweet</a>
                         <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
                     </center>
                     <br/>
-                    <!-- Place this tag where you want the +1 button to render. -->
-                    <div class="g-plusone" data-annotation="inline" data-width="300" data-href="http://www.wikipartido.mx"></div>
 
+                    <!-- Place this tag where you want the +1 button to render. -->
+                    <div style="margin-left: 20px;">
+                        <div class="g-plusone"  data-annotation="inline" data-width="300" data-href="http://www.wikipartido.mx"></div>
+                    </div>
                     <!-- Place this tag after the last +1 button tag. -->
                     <script type="text/javascript">
                     (function() {
@@ -116,9 +125,13 @@
                         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
                     })();
                     </script>
-                    <br/><br/>
+
+                    <br/>
                     <center>
                         <div class="fb-like" data-href="http://www.wikipartido.mx" data-send="true" data-layout="button_count" data-width="450" data-show-faces="true"></div>
+                    </center><br/>
+                    <center>
+                        #{registro.cuantosRegistrados} miembros aún no han completado su registro.
                     </center>
                 </div>
                 <div style="width: 250;">

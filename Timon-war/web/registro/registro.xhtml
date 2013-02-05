@@ -22,7 +22,7 @@
     </ui:define>
 
     <ui:define name="content">
-<div style="margin:5px;">&nbsp;</div>
+        <div style="margin:5px;">&nbsp;</div>
         <div class="cajaTitulo" style="width: 80%; margin-top: 20px;">
             Registro y Afiliación
         </div>
@@ -35,7 +35,7 @@
 
                 <br/><br/>
 
-                2. <b>¡AFÍLITATE HOY!</b> Adquiere el derecho a votar y ayúdanos a registrar el partido <a href="afiliacion.xhtml">HAZLO AQUÍ</a>
+                2. <span style="color: red; font-size: 18px;"><b>PASO 2: ¡AFÍLITATE HOY!</b> Adquiere el derecho a votar y ayúdanos a registrar el partido <a href="afiliacion.xhtml">HAZLO AQUÍ</a></span>
                 <br/><br/>
                 3. Actualiza tu avatar:
             </h:panelGroup>
@@ -71,8 +71,17 @@
 
             <br/>
             <h:panelGroup rendered="#{empty registro.miembro.paso}">
+                <div class="caja" style="color: red; width: 450px; font-size: 18px;">
+                    Completa los <strong>dos pasos</strong> para afiliarte y ayudar a superar los 220,000 miembros 
+                    requeridos para registrarnos como Partido Político Nacional.<br/><br/>
+                    <center>¡Aún nos faltan 
+                        <h:outputText value="#{220000 - registro.cuantosActivos}" >
+                            <f:convertNumber pattern="#0,000" />
+                        </h:outputText>
+                        miembros!</center>
+                </div>
                 <div id="encabezadoPasos" style="font-size: 18px;">
-                    <div style="float: left;"><span style="font-size: 32px">&rarr;PASO 1</span><br/>REGISTRO EN EL WIKI (COLABORADOR)</div> 
+                    <div style="float: left;"><span style="font-size: 32px">&rarr;PASO 1</span><br/>DATOS PARA ACCESO</div> 
                     <div style="float: right;"><span style="color:#c9c9c9; font-size: 32px">PASO 2</span><span style="color:#c9c9c9;"><br/>AFILIACIÓN AL PARTIDO (DERECHO A VOTO)</span></div>
                 </div>
                 <div style="clear: both;" />
@@ -139,7 +148,7 @@
             <br/>
 
         </div>
-                <br/>
+        <br/>
     </ui:define>
 
 
